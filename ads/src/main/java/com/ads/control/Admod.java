@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -49,11 +49,10 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 
 public class Admod {
     private static Admod instance;
-    private InterstitialAd mInterstitialAd;
-    private static int numClickedItem = 0;
-    private static final int NUM_SHOW_ADS = 2;
+    private static int currentClicked = 0;
     private String nativeId;
-    private String interId;
+    private boolean isLoadAds = true;
+    private int numShowAds = 3;
 
     public static Admod getInstance() {
         if (instance == null) {
@@ -66,6 +65,10 @@ public class Admod {
 
     }
 
+    public void setNumToShowAds(int numShowAds) {
+        this.numShowAds = numShowAds;
+    }
+
     public void init(Context context) {
         MobileAds.initialize(context, new OnInitializationCompleteListener() {
             @Override
@@ -73,6 +76,7 @@ public class Admod {
             }
         });
     }
+
 
     private AdRequest getAdRequest() {
 //        Bundle extras = new FacebookExtras()
@@ -104,92 +108,61 @@ public class Admod {
                 .addTestDevice("FD248C9F2C2870BF180FE9721AAC8554")
                 .addTestDevice("42B8D5D1D2E9208FD400BA395BBB2A76")
                 .addTestDevice("3D2AFE68C63AB5B40C60FCEDE028E18D")
+                .addTestDevice("E9F47CFACAA8BDFC9B2009D5D4BA84FB")
                 .build();
     }
 
-    //main
-    @Deprecated
-    public void initInterstital(Context context, String id) {
-        initInterstital(context, id, null);
+    private void requestInterstitialAds(InterstitialAd mInterstitialAd) {
+        if (mInterstitialAd != null && !mInterstitialAd.isLoading() && !mInterstitialAd.isLoaded()) {
+            mInterstitialAd.loadAd(getAdRequest());
+        }
     }
 
-    //splash
-    public void initInterstital(Context context, String id, final AdCallback adListener) {
-        this.interId = id;
+    public void splashInterstitalAds(final Context context, String id, long timeOut, final AdCallback adListener) {
         if (Pucharse.getInstance(context).isPucharsed()) {
             if (adListener != null) {
-                if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
-                    adListener.onAdFailedToLoad(0);
-                }
+                adListener.onAdClosed();
             }
             return;
         }
-        mInterstitialAd = new InterstitialAd(context);
-        mInterstitialAd.setAdUnitId(id);
+        final InterstitialAd mInterstitialAd = getInterstitalAds(context, id);
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
-            public void onAdLoaded() {
+            public void onAdFailedToLoad(int i) {
+                super.onAdFailedToLoad(i);
                 if (adListener != null) {
-                    adListener.onAdLoaded();
-                }
-            }
-
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                if (adListener != null) {
-                    if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
-                        adListener.onAdFailedToLoad(errorCode);
-                    }
-                }
-                mInterstitialAd = null;
-            }
-
-            @Override
-            public void onAdClosed() {
-                if (adListener != null) {
-                    adListener.onAdClosed();
-                } else {
-                    loadInterstitialAd();
+                    isLoadAds = false;
+                    adListener.onAdFailedToLoad(i);
                 }
             }
         });
-        loadInterstitialAd();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!isLoadAds) {
+                    return;
+                }
+                if (mInterstitialAd.isLoaded()) {
+                    isLoadAds = true;
+                    forceShowInterstitial(context, mInterstitialAd, adListener);
+                    return;
+                }
+                if (adListener != null) {
+                    isLoadAds = true;
+                    adListener.onAdClosed();
+                }
+            }
+        }, timeOut);
     }
 
-    public void showInterstitialAdByTimes(Context context) {
-        if (Pucharse.getInstance(context).isPucharsed()) {
-            return;
-        }
-        if (mInterstitialAd == null) {
-            initInterstital(context, interId);
-            return;
-        }
-        showInterstitialAd(mInterstitialAd, null);
-    }
-
-    public void forceShowInterstitial(Context context) {
-        if (Pucharse.getInstance(context).isPucharsed()) {
-            return;
-        }
-        numClickedItem = NUM_SHOW_ADS;
-        showInterstitialAdByTimes(context);
-    }
-
-
-    //div id ads
     public InterstitialAd getInterstitalAds(Context context, String id) {
         if (Pucharse.getInstance(context).isPucharsed()) {
             return null;
         }
         final InterstitialAd mInterstitialAd = new InterstitialAd(context);
-        mInterstitialAd.setAdListener(new AdListener(){
-            @Override
-            public void onAdFailedToLoad(int i) {
-                super.onAdFailedToLoad(i);
-            }
-        });
         mInterstitialAd.setAdUnitId(id);
-        loadInterstitialAd(mInterstitialAd);
+        requestInterstitialAds(mInterstitialAd);
         return mInterstitialAd;
     }
 
@@ -209,7 +182,7 @@ public class Admod {
             public void onAdClosed() {
                 if (callback != null) {
                     callback.onAdClosed();
-                    loadInterstitialAd(mInterstitialAd);
+                    requestInterstitialAds(mInterstitialAd);
                 }
             }
         });
@@ -217,30 +190,19 @@ public class Admod {
     }
 
     public void forceShowInterstitial(Context context, final InterstitialAd mInterstitialAd, final AdCallback callback) {
-        numClickedItem = NUM_SHOW_ADS;
+        currentClicked = numShowAds;
         showInterstitialAdByTimes(context, mInterstitialAd, callback);
     }
 
-    private void loadInterstitialAd(InterstitialAd mInterstitialAd) {
-        if (mInterstitialAd != null && !mInterstitialAd.isLoading() && !mInterstitialAd.isLoaded()) {
-            mInterstitialAd.loadAd(getAdRequest());
-        }
-    }
-
-    private void loadInterstitialAd() {
-        loadInterstitialAd(mInterstitialAd);
-    }
-
-
     private void showInterstitialAd(InterstitialAd mInterstitialAd, AdCallback callback) {
-        numClickedItem++;
-        if (numClickedItem >= NUM_SHOW_ADS && mInterstitialAd.isLoaded()) {
+        currentClicked++;
+        if (currentClicked >= numShowAds && mInterstitialAd.isLoaded()) {
             if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
                 mInterstitialAd.show();
             } else {
                 Log.d("AppInBackground", "App Is In Background Ad Is Not Going To Show");
             }
-            numClickedItem = 0;
+            currentClicked = 0;
         } else if (callback != null) {
             callback.onAdClosed();
         }
@@ -354,14 +316,6 @@ public class Admod {
                 .withNativeAdOptions(new NativeAdOptions.Builder().build())
                 .build();
         adLoader.loadAd(getAdRequest());
-    }
-
-    public void loadNative(final Activity mActivity, final FrameLayout frameLayout, final ShimmerFrameLayout containerShimmer, String id) {
-        if (Pucharse.getInstance(mActivity).isPucharsed()) {
-            containerShimmer.setVisibility(View.GONE);
-            return;
-        }
-        loadNative(mActivity, containerShimmer, frameLayout, id);
     }
 
     public void loadNativeFragment(final Activity mActivity, String id, final View rootView) {
@@ -499,7 +453,6 @@ public class Admod {
 
     }
 
-
     private RewardedAd rewardedAd;
 
     public void initVideoAds(Context context, String id) {
@@ -570,7 +523,6 @@ public class Admod {
 
     private AppOpenAd.AppOpenAdLoadCallback loadCallback;
 
-
     public void showAppOpenAds(final Activity activity, final String id) {
         if (isAdAvailable()) {
             FullScreenContentCallback fullScreenContentCallback =
@@ -594,28 +546,25 @@ public class Admod {
         }
     }
 
-
     public void initAppOpenAds(Activity activity, String id, final AdCallback callback) {
-        loadCallback =
-                new AppOpenAd.AppOpenAdLoadCallback() {
-                    @Override
-                    public void onAppOpenAdLoaded(AppOpenAd ad) {
-                        appOpenAd = ad;
-                        if (callback != null) {
-                            callback.onAdLoaded();
-                        }
-                    }
+        loadCallback = new AppOpenAd.AppOpenAdLoadCallback() {
+            @Override
+            public void onAppOpenAdLoaded(AppOpenAd ad) {
+                appOpenAd = ad;
+                if (callback != null) {
+                    callback.onAdLoaded();
+                }
+            }
 
-                    @Override
-                    public void onAppOpenAdFailedToLoad(LoadAdError loadAdError) {
-                    }
+            @Override
+            public void onAppOpenAdFailedToLoad(LoadAdError loadAdError) {
+            }
 
-                };
+        };
         AppOpenAd.load(
                 activity, id, getAdRequest(),
                 AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
     }
-
 
     public boolean isAdAvailable() {
         return appOpenAd != null;

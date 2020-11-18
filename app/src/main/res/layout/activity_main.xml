@@ -7,6 +7,23 @@
 
     <include layout="@layout/layout_native_control" />
 
+    <Button
+        android:id="@+id/btShowAds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="Click 3 lần hiện full" />
+
+
+    <Button
+        android:id="@+id/btForceShowAds"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btShowAds"
+        android:layout_centerHorizontal="true"
+        android:text="Click 1 lần hiện full" />
+
+
     <include
         layout="@layout/layout_banner_control"
         android:layout_width="match_parent"

@@ -8,7 +8,7 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.ads.control.funtion.SharedPreferencesHelper;
+import com.ads.control.funtion.AdmodHelper;
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
 
@@ -16,13 +16,13 @@ public class Pucharse {
     private static final String LICENSE_KEY = null;
     private static final String MERCHANT_ID = null;
     private BillingProcessor bp;
-        public static final String PRODUCT_ID = "no.ads_pdf.2209";
 //    public static final String PRODUCT_ID = "android.test.purchased";
     @SuppressLint("StaticFieldLeak")
     private static Pucharse instance;
 
     @SuppressLint("StaticFieldLeak")
     private static Context context;
+    private String productId;
 
     public static Pucharse getInstance(Context ctx) {
         if (instance == null) {
@@ -36,11 +36,12 @@ public class Pucharse {
 
     }
 
-    public void initBilling() {
+    public void initBilling(final String productId) {
+        this.productId=productId;
         bp = new BillingProcessor(context, LICENSE_KEY, MERCHANT_ID, new BillingProcessor.IBillingHandler() {
             @Override
             public void onProductPurchased(@NonNull String productId, @Nullable TransactionDetails details) {
-                SharedPreferencesHelper.setPurchased((Activity) context, true);
+                AdmodHelper.setPurchased((Activity) context, true);
             }
 
             @Override
@@ -54,8 +55,8 @@ public class Pucharse {
 
             @Override
             public void onPurchaseHistoryRestored() {
-                if (bp.isPurchased(PRODUCT_ID)) {
-                    SharedPreferencesHelper.setPurchased((Activity) context, true);
+                if (bp.isPurchased(productId)) {
+                    AdmodHelper.setPurchased((Activity) context, true);
                 }
             }
         });
@@ -64,7 +65,7 @@ public class Pucharse {
 
     public boolean isPucharsed() {
         try {
-            return SharedPreferencesHelper.isPurchased((Activity) context) || bp.isPurchased(PRODUCT_ID);
+            return AdmodHelper.isPurchased((Activity) context) || bp.isPurchased(productId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,7 +75,7 @@ public class Pucharse {
     public void purcharse(Activity activity) {
 //        bp.consumePurchase(PRODUCT_ID);
         try {
-            bp.purchase(activity, PRODUCT_ID);
+            bp.purchase(activity, productId);
         } catch (Exception e) {
             e.printStackTrace();
         }

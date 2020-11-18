@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 
-public class SharedPreferencesHelper {
+public class AdmodHelper {
     private static final String FILE_SETTING = "setting.pref";
     private static final String IS_PURCHASE = "IS_PURCHASE";
     private static final String IS_RATE = "IS_RATE";
