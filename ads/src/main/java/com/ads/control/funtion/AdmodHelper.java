@@ -3,6 +3,9 @@ package com.ads.control.funtion;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
+import static android.content.ContentValues.TAG;
 
 
 public class AdmodHelper {
@@ -63,7 +66,7 @@ public class AdmodHelper {
        /*
        qua q ngày reset lại data
         */
-        if (rs > 24 * 60 * 60) {
+        if (rs >= 24 * 60 * 60 * 1000) {
             resetAdmodData(context);
         }
     }
