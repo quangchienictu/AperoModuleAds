@@ -21,6 +21,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.ads.control.funtion.AdCallback;
+import com.ads.control.funtion.AdmodHelper;
 import com.ads.control.widget.NativeTemplateStyle;
 import com.ads.control.widget.TemplateView;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -54,6 +55,12 @@ public class Admod {
     private boolean isLoadAds = true;
     private int numShowAds = 3;
 
+    private int maxClickAds = 3;
+
+    public void setMaxClickAds(int maxClickAds) {
+        this.maxClickAds = maxClickAds;
+    }
+
     public static Admod getInstance() {
         if (instance == null) {
             instance = new Admod();
@@ -69,6 +76,11 @@ public class Admod {
         this.numShowAds = numShowAds;
     }
 
+    /**
+     * khởi tạo admod
+     *
+     * @param context
+     */
     public void init(Context context) {
         MobileAds.initialize(context, new OnInitializationCompleteListener() {
             @Override
@@ -118,6 +130,14 @@ public class Admod {
         }
     }
 
+    /**
+     * Load quảng cáo Full tại màn SplashActivity
+     * Sau khoảng thời gian timeout thì load ads và callback về cho View
+     * @param context
+     * @param id
+     * @param timeOut
+     * @param adListener
+     */
     public void splashInterstitalAds(final Context context, String id, long timeOut, final AdCallback adListener) {
         if (Pucharse.getInstance(context).isPucharsed()) {
             if (adListener != null) {
@@ -126,6 +146,7 @@ public class Admod {
             return;
         }
         final InterstitialAd mInterstitialAd = getInterstitalAds(context, id);
+
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdFailedToLoad(int i) {
@@ -156,6 +177,14 @@ public class Admod {
         }, timeOut);
     }
 
+
+    /**
+     * Trả về 1 InterstitialAd và request Ads
+     *
+     * @param context
+     * @param id
+     * @return
+     */
     public InterstitialAd getInterstitalAds(Context context, String id) {
         if (Pucharse.getInstance(context).isPucharsed()) {
             return null;
@@ -166,7 +195,17 @@ public class Admod {
         return mInterstitialAd;
     }
 
-    public void showInterstitialAdByTimes(Context context, final InterstitialAd mInterstitialAd, final AdCallback callback) {
+
+    /**
+     * Hiển thị ads theo số lần được xác định trước và callback result
+     * vd: click vào 3 lần thì show ads full.
+     *
+     * @param context
+     * @param mInterstitialAd
+     * @param callback
+     */
+    public void showInterstitialAdByTimes(final Context context, final InterstitialAd mInterstitialAd, final AdCallback callback) {
+        AdmodHelper.configTime(context);
         if (Pucharse.getInstance(context).isPucharsed()) {
             callback.onAdClosed();
             return;
@@ -185,22 +224,47 @@ public class Admod {
                     requestInterstitialAds(mInterstitialAd);
                 }
             }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                AdmodHelper.increaseNumClickAdsPerDay(context, mInterstitialAd.getAdUnitId());
+            }
         });
-        showInterstitialAd(mInterstitialAd, callback);
+
+        if (AdmodHelper.getNumClickAdsPerDay(context, mInterstitialAd.getAdUnitId()) < maxClickAds) {
+            showInterstitialAd(mInterstitialAd, callback);
+            return;
+        }
+
+        if (callback != null) {
+            callback.onAdClosed();
+        }
     }
 
+    /**
+     * Bắt buộc hiển thị  ads full và callback result
+     *
+     * @param context
+     * @param mInterstitialAd
+     * @param callback
+     */
     public void forceShowInterstitial(Context context, final InterstitialAd mInterstitialAd, final AdCallback callback) {
         currentClicked = numShowAds;
         showInterstitialAdByTimes(context, mInterstitialAd, callback);
     }
 
+    /**
+     * Kiểm tra và hiện thị ads
+     *
+     * @param mInterstitialAd
+     * @param callback
+     */
     private void showInterstitialAd(InterstitialAd mInterstitialAd, AdCallback callback) {
         currentClicked++;
         if (currentClicked >= numShowAds && mInterstitialAd.isLoaded()) {
             if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
                 mInterstitialAd.show();
-            } else {
-                Log.d("AppInBackground", "App Is In Background Ad Is Not Going To Show");
             }
             currentClicked = 0;
         } else if (callback != null) {
@@ -208,12 +272,33 @@ public class Admod {
         }
     }
 
-
+    /**
+     * Load quảng cáo Banner Trong Activity
+     *
+     * @param mActivity
+     * @param id
+     */
     public void loadBanner(final Activity mActivity, String id) {
         final LinearLayout adContainer = mActivity.findViewById(R.id.banner_container);
         adContainer.removeAllViews();
         final ShimmerFrameLayout containerShimmer =
                 mActivity.findViewById(R.id.shimmer_container);
+        loadBanner(mActivity, id, adContainer, containerShimmer);
+    }
+
+    /**
+     * Load Quảng Cáo Banner Trong Fragment
+     *
+     * @param mActivity
+     * @param id
+     * @param rootView
+     */
+    public void loadBannerFragment(final Activity mActivity, String id, final View rootView) {
+        final ShimmerFrameLayout containerShimmer =
+                rootView.findViewById(R.id.shimmer_container);
+        containerShimmer.setVisibility(View.VISIBLE);
+        containerShimmer.startShimmer();
+        final LinearLayout adContainer = (LinearLayout) rootView.findViewById(R.id.banner_container);
         loadBanner(mActivity, id, adContainer, containerShimmer);
     }
 
@@ -269,15 +354,13 @@ public class Admod {
 
     }
 
-    public void loadBannerFragment(final Activity mActivity, String id, final View rootView) {
-        final ShimmerFrameLayout containerShimmer =
-                rootView.findViewById(R.id.shimmer_container);
-        containerShimmer.setVisibility(View.VISIBLE);
-        containerShimmer.startShimmer();
-        final LinearLayout adContainer = (LinearLayout) rootView.findViewById(R.id.banner_container);
-        loadBanner(mActivity, id, adContainer, containerShimmer);
-    }
 
+    /**
+     * load quảng cáo big native
+     *
+     * @param mActivity
+     * @param id
+     */
     public void loadNative(final Activity mActivity, String id) {
         final FrameLayout frameLayout =
                 mActivity.findViewById(R.id.fl_adplaceholder);
@@ -286,6 +369,13 @@ public class Admod {
         loadNative(mActivity, containerShimmer, frameLayout, id);
     }
 
+    /**
+     * load quảng cáo small native
+     *
+     * @param context
+     * @param view
+     * @param adUnitId
+     */
     public void loadSmallNative(final Context context, final ViewGroup view, String adUnitId) {
         if (Pucharse.getInstance(context).isPucharsed()) {
             ViewGroup.LayoutParams param = view.getLayoutParams();
@@ -318,6 +408,13 @@ public class Admod {
         adLoader.loadAd(getAdRequest());
     }
 
+    /**
+     * load quảng cáo native trong fragment
+     *
+     * @param mActivity
+     * @param id
+     * @param rootView
+     */
     public void loadNativeFragment(final Activity mActivity, String id, final View rootView) {
         final ShimmerFrameLayout containerShimmer =
                 rootView.findViewById(R.id.shimmer_container);
@@ -455,6 +552,12 @@ public class Admod {
 
     private RewardedAd rewardedAd;
 
+    /**
+     * Khởi tạo quảng cáo reward
+     *
+     * @param context
+     * @param id
+     */
     public void initVideoAds(Context context, String id) {
         if (Pucharse.getInstance(context).isPucharsed()) {
             return;
@@ -478,6 +581,12 @@ public class Admod {
 
     }
 
+    /**
+     * Show quảng cáo reward và nhận kết quả trả về
+     *
+     * @param context
+     * @param adCallback
+     */
     public void loadVideoAds(final Activity context, final RewardedAdCallback adCallback) {
         if (Pucharse.getInstance(context).isPucharsed()) {
             adCallback.onUserEarnedReward(null);
@@ -523,6 +632,12 @@ public class Admod {
 
     private AppOpenAd.AppOpenAdLoadCallback loadCallback;
 
+    /**
+     * Hiển thị quảng cáo App Open
+     *
+     * @param activity
+     * @param id
+     */
     public void showAppOpenAds(final Activity activity, final String id) {
         if (isAdAvailable()) {
             FullScreenContentCallback fullScreenContentCallback =
@@ -546,6 +661,13 @@ public class Admod {
         }
     }
 
+    /**
+     * Khởi tạo quảng cáo App Open
+     *
+     * @param activity
+     * @param id
+     * @param callback
+     */
     public void initAppOpenAds(Activity activity, String id, final AdCallback callback) {
         loadCallback = new AppOpenAd.AppOpenAdLoadCallback() {
             @Override
