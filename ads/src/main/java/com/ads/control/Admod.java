@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,10 +55,14 @@ public class Admod {
     private int numShowAds = 3;
 
     private int maxClickAds = 3;
-
-    public void setMaxClickAds(int maxClickAds) {
+    /**
+     * Giới hạn số lần click trên 1 admod tren 1 ngay
+     * @param maxClickAds
+     */
+    public void setMaxClickAdsPerDay(int maxClickAds) {
         this.maxClickAds = maxClickAds;
     }
+
 
     public static Admod getInstance() {
         if (instance == null) {
@@ -180,7 +183,6 @@ public class Admod {
 
     /**
      * Trả về 1 InterstitialAd và request Ads
-     *
      * @param context
      * @param id
      * @return
@@ -199,13 +201,13 @@ public class Admod {
     /**
      * Hiển thị ads theo số lần được xác định trước và callback result
      * vd: click vào 3 lần thì show ads full.
-     *
+     * AdmodHelper.setupAdmodData(context) -> kiểm tra xem app đc hoạt động đc 1 ngày chưa nếu YES thì reset lại số lần click vào ads
      * @param context
      * @param mInterstitialAd
      * @param callback
      */
     public void showInterstitialAdByTimes(final Context context, final InterstitialAd mInterstitialAd, final AdCallback callback) {
-        AdmodHelper.configTime(context);
+        AdmodHelper.setupAdmodData(context);
         if (Pucharse.getInstance(context).isPucharsed()) {
             callback.onAdClosed();
             return;
