@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
+import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.AdmodHelper;
 import com.ads.control.widget.NativeTemplateStyle;
@@ -34,6 +35,7 @@ import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.VideoOptions;
 import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.gms.ads.formats.MediaView;
@@ -47,16 +49,22 @@ import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdCallback;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 
+import java.util.List;
+
 public class Admod {
     private static Admod instance;
     private static int currentClicked = 0;
     private String nativeId;
-    private boolean isLoadAds = true;
     private int numShowAds = 3;
 
     private int maxClickAds = 3;
+    private Handler handler;
+    private Runnable rd;
+    private PrepareLoadingAdsDialog dialog;
+
     /**
      * Giới hạn số lần click trên 1 admod tren 1 ngay
+     *
      * @param maxClickAds
      */
     public void setMaxClickAdsPerDay(int maxClickAds) {
@@ -84,46 +92,20 @@ public class Admod {
      *
      * @param context
      */
-    public void init(Context context) {
+    public void init(Context context, List<String> testDeviceList) {
         MobileAds.initialize(context, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });
+
+        MobileAds.setRequestConfiguration(new RequestConfiguration.Builder().setTestDeviceIds(testDeviceList).build());
     }
 
 
     private AdRequest getAdRequest() {
-//        Bundle extras = new FacebookExtras()
-//                .setNativeBanner(true)
-//                .build();
         return new AdRequest.Builder()
-//                .addNetworkExtrasBundle(FacebookAdapter.class, extras)
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("3C94990AA9A387A256D3B2BBBFEA51EA")
-                .addTestDevice("6F599887BC401CFB1C7087F15D7C0834")
-                .addTestDevice("B543DCF2C7591C7FB8B52A3A1E7138F6")
-                .addTestDevice("8619926A823916A224795141B93B7E0B")
-                .addTestDevice("6399D5AEE5C75205B6C0F6755365CF21")
-                .addTestDevice("2E379568A9F147A64B0E0C9571DE812D")
-                .addTestDevice("A0518C6FA4396B91F82B9656DE83AFC7")
-                .addTestDevice("C8EEFFC32272E3F1018FC72ECBD46F0C")
-                .addTestDevice("FEECD9793CCCE1E0FF8D392B0DB65559")
-                .addTestDevice("72939BB87E5DF5C9D9B9CBBC1BCC607F")
-                .addTestDevice("F2896A8563D5980884F86D46CDB83A7D")
-                .addTestDevice("28FF4F316894AEAB2563A7F1E48071CF")
-                .addTestDevice("BE2ACB822383D47366B73B13ADCA3A49")
-                .addTestDevice("107C4A0D40F4C1AA61E49A5654876F59")
-                .addTestDevice("3AFAB3D471440BF4CE5B77676B1EB89A")
-                .addTestDevice("EDAD373DD1386523618352C812180436")
-                .addTestDevice("7EA7F782CC0C164F7033F51403E4DD80")
-                .addTestDevice("282C15C8E8D5E71264437133CCE91852")
-                .addTestDevice("5865B7BE5322DF51F3CF6C1EBFB6E161")
-                .addTestDevice("75F769D7FE2708AF5C74CBBA495F2BCF")
-                .addTestDevice("FD248C9F2C2870BF180FE9721AAC8554")
-                .addTestDevice("42B8D5D1D2E9208FD400BA395BBB2A76")
-                .addTestDevice("3D2AFE68C63AB5B40C60FCEDE028E18D")
-                .addTestDevice("E9F47CFACAA8BDFC9B2009D5D4BA84FB")
                 .build();
     }
 
@@ -136,12 +118,13 @@ public class Admod {
     /**
      * Load quảng cáo Full tại màn SplashActivity
      * Sau khoảng thời gian timeout thì load ads và callback về cho View
+     *
      * @param context
      * @param id
      * @param timeOut
      * @param adListener
      */
-    public void splashInterstitalAds(final Context context, String id, long timeOut, final AdCallback adListener) {
+    public void loadSplashInterstitalAds(final Context context, String id, long timeOut, final AdCallback adListener) {
         if (Pucharse.getInstance(context).isPucharsed()) {
             if (adListener != null) {
                 adListener.onAdClosed();
@@ -155,34 +138,42 @@ public class Admod {
             public void onAdFailedToLoad(int i) {
                 super.onAdFailedToLoad(i);
                 if (adListener != null) {
-                    isLoadAds = false;
+                    if (handler != null && rd != null) {
+                        handler.removeCallbacks(rd);
+                    }
                     adListener.onAdFailedToLoad(i);
                 }
             }
-        });
 
-        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                if (handler != null && rd != null) {
+                    handler.removeCallbacks(rd);
+                }
+                forceShowInterstitial(context, mInterstitialAd, adListener);
+            }
+        });
+        handler = new Handler();
+        rd = new Runnable() {
             @Override
             public void run() {
-                if (!isLoadAds) {
-                    return;
-                }
                 if (mInterstitialAd.isLoaded()) {
-                    isLoadAds = true;
                     forceShowInterstitial(context, mInterstitialAd, adListener);
                     return;
                 }
                 if (adListener != null) {
-                    isLoadAds = true;
                     adListener.onAdClosed();
                 }
             }
-        }, timeOut);
+        };
+        handler.postDelayed(rd, timeOut);
     }
 
 
     /**
      * Trả về 1 InterstitialAd và request Ads
+     *
      * @param context
      * @param id
      * @return
@@ -202,6 +193,7 @@ public class Admod {
      * Hiển thị ads theo số lần được xác định trước và callback result
      * vd: click vào 3 lần thì show ads full.
      * AdmodHelper.setupAdmodData(context) -> kiểm tra xem app đc hoạt động đc 1 ngày chưa nếu YES thì reset lại số lần click vào ads
+     *
      * @param context
      * @param mInterstitialAd
      * @param callback
@@ -224,24 +216,31 @@ public class Admod {
                 if (callback != null) {
                     callback.onAdClosed();
                     requestInterstitialAds(mInterstitialAd);
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
                 }
             }
 
             @Override
             public void onAdClicked() {
                 super.onAdClicked();
+                if (callback != null) {
+                    callback.onAdClicked();
+                }
                 AdmodHelper.increaseNumClickAdsPerDay(context, mInterstitialAd.getAdUnitId());
             }
         });
 
         if (AdmodHelper.getNumClickAdsPerDay(context, mInterstitialAd.getAdUnitId()) < maxClickAds) {
-            showInterstitialAd(mInterstitialAd, callback);
+            showInterstitialAd(context, mInterstitialAd, callback);
             return;
         }
-
         if (callback != null) {
             callback.onAdClosed();
         }
+
+
     }
 
     /**
@@ -259,17 +258,27 @@ public class Admod {
     /**
      * Kiểm tra và hiện thị ads
      *
+     * @param context
      * @param mInterstitialAd
      * @param callback
      */
-    private void showInterstitialAd(InterstitialAd mInterstitialAd, AdCallback callback) {
+    private void showInterstitialAd(Context context, final InterstitialAd mInterstitialAd, AdCallback callback) {
         currentClicked++;
         if (currentClicked >= numShowAds && mInterstitialAd.isLoaded()) {
             if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
-                mInterstitialAd.show();
+                dialog = new PrepareLoadingAdsDialog(context);
+                dialog.show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mInterstitialAd.show();
+                    }
+                }, 1000);
+
             }
             currentClicked = 0;
         } else if (callback != null) {
+            dialog.dismiss();
             callback.onAdClosed();
         }
     }
