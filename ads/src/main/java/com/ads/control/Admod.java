@@ -274,11 +274,12 @@ public class Admod {
                         mInterstitialAd.show();
                     }
                 }, 1000);
-
             }
             currentClicked = 0;
         } else if (callback != null) {
-            dialog.dismiss();
+            if (dialog != null) {
+                dialog.dismiss();
+            }
             callback.onAdClosed();
         }
     }
