@@ -44,11 +44,12 @@ public class InAppDialog extends Dialog {
             @Override
             public void onClick(View view) {
                 callback.onPurcharse();
-//                dismiss();
             }
         });
         TextView tvOldPrice = findViewById(R.id.tv_old_price);
+        TextView tvPrice = findViewById(R.id.tv_price);
         tvOldPrice.setText(Pucharse.getInstance(mContext).getOldPrice());
+        tvPrice.setText(Pucharse.getInstance(mContext).getPrice());
         tvOldPrice.setPaintFlags(tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
     }
 

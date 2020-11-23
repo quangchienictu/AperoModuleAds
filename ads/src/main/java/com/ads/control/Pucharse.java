@@ -16,13 +16,23 @@ public class Pucharse {
     private static final String LICENSE_KEY = null;
     private static final String MERCHANT_ID = null;
     private BillingProcessor bp;
-//    public static final String PRODUCT_ID = "android.test.purchased";
+    //    public static final String PRODUCT_ID = "android.test.purchased";
     @SuppressLint("StaticFieldLeak")
     private static Pucharse instance;
 
     @SuppressLint("StaticFieldLeak")
     private static Context context;
     private String productId;
+    private String price = "1.49$";
+    private String oldPrice = "2.99$";
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public void setOldPrice(String oldPrice) {
+        this.oldPrice = oldPrice;
+    }
 
     public static Pucharse getInstance(Context ctx) {
         if (instance == null) {
@@ -37,7 +47,7 @@ public class Pucharse {
     }
 
     public void initBilling(final String productId) {
-        this.productId=productId;
+        this.productId = productId;
         bp = new BillingProcessor(context, LICENSE_KEY, MERCHANT_ID, new BillingProcessor.IBillingHandler() {
             @Override
             public void onProductPurchased(@NonNull String productId, @Nullable TransactionDetails details) {
@@ -86,10 +96,10 @@ public class Pucharse {
     }
 
     public String getPrice() {
-        return "1.49$";
+        return price;
     }
 
     public String getOldPrice() {
-        return "2.99$";
+        return oldPrice;
     }
 }

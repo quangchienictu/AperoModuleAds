@@ -145,6 +145,7 @@ public class Admod {
                 }
             }
 
+
             @Override
             public void onAdLoaded() {
                 super.onAdLoaded();
@@ -153,6 +154,8 @@ public class Admod {
                 }
                 forceShowInterstitial(context, mInterstitialAd, adListener);
             }
+
+
         });
         handler = new Handler();
         rd = new Runnable() {
@@ -273,7 +276,7 @@ public class Admod {
                     public void run() {
                         mInterstitialAd.show();
                     }
-                }, 1000);
+                }, 800);
             }
             currentClicked = 0;
         } else if (callback != null) {
