@@ -83,13 +83,21 @@ public class Pucharse {
     }
 
     public void purcharse(Activity activity) {
-//        bp.consumePurchase(PRODUCT_ID);
         try {
             bp.purchase(activity, productId);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    public void consumePurchase() {
+        try {
+            bp.consumePurchase(productId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public boolean handleActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         return bp.handleActivityResult(requestCode, resultCode, data);
