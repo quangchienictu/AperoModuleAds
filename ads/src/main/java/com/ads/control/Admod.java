@@ -166,6 +166,7 @@ public class Admod {
                     return;
                 }
                 if (adListener != null) {
+                    mInterstitialAd.setAdListener(null);
                     adListener.onAdClosed();
                 }
             }

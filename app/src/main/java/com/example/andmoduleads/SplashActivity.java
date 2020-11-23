@@ -20,7 +20,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         Admod.getInstance().init(this, list);
-        Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 10000, new AdCallback() {
+        Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 1000, new AdCallback() {
             @Override
             public void onAdClosed() {
                 startMain();
