@@ -61,6 +61,7 @@ public class Admod {
     private Handler handler;
     private Runnable rd;
     private PrepareLoadingAdsDialog dialog;
+    private boolean isTimeLimited;
 
     /**
      * Giới hạn số lần click trên 1 admod tren 1 ngay
@@ -102,7 +103,6 @@ public class Admod {
         MobileAds.setRequestConfiguration(new RequestConfiguration.Builder().setTestDeviceIds(testDeviceList).build());
     }
 
-
     private AdRequest getAdRequest() {
         return new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
@@ -132,7 +132,12 @@ public class Admod {
             return;
         }
         final InterstitialAd mInterstitialAd = getInterstitalAds(context, id);
-
+        if (mInterstitialAd == null) {
+            if (adListener != null) {
+                adListener.onAdFailedToLoad(0);
+            }
+            return;
+        }
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdFailedToLoad(int i) {
@@ -145,6 +150,16 @@ public class Admod {
                 }
             }
 
+            @Override
+            public void onAdFailedToLoad(LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+                if (adListener != null) {
+                    if (handler != null && rd != null) {
+                        handler.removeCallbacks(rd);
+                    }
+                    adListener.onAdFailedToLoad(loadAdError);
+                }
+            }
 
             @Override
             public void onAdLoaded() {
@@ -152,15 +167,20 @@ public class Admod {
                 if (handler != null && rd != null) {
                     handler.removeCallbacks(rd);
                 }
+                if (isTimeLimited) {
+                    return;
+                }
                 forceShowInterstitial(context, mInterstitialAd, adListener);
             }
 
 
         });
+
         handler = new Handler();
         rd = new Runnable() {
             @Override
             public void run() {
+                isTimeLimited = true;
                 if (mInterstitialAd.isLoaded()) {
                     forceShowInterstitial(context, mInterstitialAd, adListener);
                     return;
@@ -174,7 +194,6 @@ public class Admod {
         handler.postDelayed(rd, timeOut);
     }
 
-
     /**
      * Trả về 1 InterstitialAd và request Ads
      *
@@ -183,7 +202,7 @@ public class Admod {
      * @return
      */
     public InterstitialAd getInterstitalAds(Context context, String id) {
-        if (Pucharse.getInstance(context).isPucharsed()) {
+        if (Pucharse.getInstance(context).isPucharsed() || AdmodHelper.getNumClickAdsPerDay(context, id) >= maxClickAds) {
             return null;
         }
         final InterstitialAd mInterstitialAd = new InterstitialAd(context);
@@ -270,14 +289,20 @@ public class Admod {
         currentClicked++;
         if (currentClicked >= numShowAds && mInterstitialAd.isLoaded()) {
             if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
-                dialog = new PrepareLoadingAdsDialog(context);
-                dialog.show();
+                try {
+                    dialog = new PrepareLoadingAdsDialog(context);
+                    dialog.show();
+                } catch (Exception e) {
+                    dialog = null;
+                    e.printStackTrace();
+                }
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         mInterstitialAd.show();
                     }
                 }, 800);
+
             }
             currentClicked = 0;
         } else if (callback != null) {
@@ -340,6 +365,7 @@ public class Admod {
                     containerShimmer.stopShimmer();
                     containerShimmer.setVisibility(View.GONE);
                 }
+
 
                 @Override
                 public void onAdLoaded() {
@@ -431,6 +457,7 @@ public class Admod {
      * @param id
      * @param rootView
      */
+
     public void loadNativeFragment(final Activity mActivity, String id, final View rootView) {
         final ShimmerFrameLayout containerShimmer =
                 rootView.findViewById(R.id.shimmer_container);
@@ -597,12 +624,17 @@ public class Admod {
 
     }
 
+    public RewardedAd getRewardedAd() {
+        return rewardedAd;
+    }
+
     /**
      * Show quảng cáo reward và nhận kết quả trả về
      *
      * @param context
      * @param adCallback
      */
+
     public void loadVideoAds(final Activity context, final RewardedAdCallback adCallback) {
         if (Pucharse.getInstance(context).isPucharsed()) {
             adCallback.onUserEarnedReward(null);
@@ -636,6 +668,7 @@ public class Admod {
                     if (adCallback != null) {
                         adCallback.onRewardedAdFailedToShow(i);
                     }
+                    rewardedAd = null;
                 }
             });
         } else {
