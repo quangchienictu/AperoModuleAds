@@ -57,7 +57,7 @@ public class Admod {
     private String nativeId;
     private int numShowAds = 3;
 
-    private int maxClickAds = 3;
+    private int maxClickAds = 100;
     private Handler handler;
     private Runnable rd;
     private PrepareLoadingAdsDialog dialog;
@@ -119,9 +119,10 @@ public class Admod {
      * Load quảng cáo Full tại màn SplashActivity
      * Sau khoảng thời gian timeout thì load ads và callback về cho View
      *
+     *
      * @param context
      * @param id
-     * @param timeOut
+     * @param timeOut : thời gian chờ ads, timeout <= 0 tương đương với việc bỏ timeout
      * @param adListener
      */
     public void loadSplashInterstitalAds(final Context context, String id, long timeOut, final AdCallback adListener) {
@@ -170,28 +171,30 @@ public class Admod {
                 if (isTimeLimited) {
                     return;
                 }
-                forceShowInterstitial(context, mInterstitialAd, adListener);
+                forceShowInterstitial(context, mInterstitialAd, adListener, false);
             }
 
 
         });
 
-        handler = new Handler();
-        rd = new Runnable() {
-            @Override
-            public void run() {
-                isTimeLimited = true;
-                if (mInterstitialAd.isLoaded()) {
-                    forceShowInterstitial(context, mInterstitialAd, adListener);
-                    return;
+        if(timeOut > 0) {
+            handler = new Handler();
+            rd = new Runnable() {
+                @Override
+                public void run() {
+                    isTimeLimited = true;
+                    if (mInterstitialAd.isLoaded()) {
+                        forceShowInterstitial(context, mInterstitialAd, adListener, false);
+                        return;
+                    }
+                    if (adListener != null) {
+                        mInterstitialAd.setAdListener(null);
+                        adListener.onAdClosed();
+                    }
                 }
-                if (adListener != null) {
-                    mInterstitialAd.setAdListener(null);
-                    adListener.onAdClosed();
-                }
-            }
-        };
-        handler.postDelayed(rd, timeOut);
+            };
+            handler.postDelayed(rd, timeOut);
+        }
     }
 
     /**
@@ -222,6 +225,20 @@ public class Admod {
      * @param callback
      */
     public void showInterstitialAdByTimes(final Context context, final InterstitialAd mInterstitialAd, final AdCallback callback) {
+        showInterstitialAdByTimes(context, mInterstitialAd, callback, true);
+    }
+
+    /**
+     * Hiển thị ads theo số lần được xác định trước và callback result
+     * vd: click vào 3 lần thì show ads full.
+     * AdmodHelper.setupAdmodData(context) -> kiểm tra xem app đc hoạt động đc 1 ngày chưa nếu YES thì reset lại số lần click vào ads
+     *
+     * @param context
+     * @param mInterstitialAd
+     * @param callback
+     * @param shouldReloadAds
+     */
+    public void showInterstitialAdByTimes(final Context context, final InterstitialAd mInterstitialAd, final AdCallback callback, final boolean shouldReloadAds) {
         AdmodHelper.setupAdmodData(context);
         if (Pucharse.getInstance(context).isPucharsed()) {
             callback.onAdClosed();
@@ -238,7 +255,9 @@ public class Admod {
             public void onAdClosed() {
                 if (callback != null) {
                     callback.onAdClosed();
-                    requestInterstitialAds(mInterstitialAd);
+                    if(shouldReloadAds) {
+                        requestInterstitialAds(mInterstitialAd);
+                    }
                     if (dialog != null) {
                         dialog.dismiss();
                     }
@@ -262,8 +281,6 @@ public class Admod {
         if (callback != null) {
             callback.onAdClosed();
         }
-
-
     }
 
     /**
@@ -274,8 +291,19 @@ public class Admod {
      * @param callback
      */
     public void forceShowInterstitial(Context context, final InterstitialAd mInterstitialAd, final AdCallback callback) {
+        forceShowInterstitial(context, mInterstitialAd, callback, true);
+    }
+
+    /**
+     * Bắt buộc hiển thị  ads full và callback result
+     *
+     * @param context
+     * @param mInterstitialAd
+     * @param callback
+     */
+    public void forceShowInterstitial(Context context, final InterstitialAd mInterstitialAd, final AdCallback callback, boolean shouldReload) {
         currentClicked = numShowAds;
-        showInterstitialAdByTimes(context, mInterstitialAd, callback);
+        showInterstitialAdByTimes(context, mInterstitialAd, callback, shouldReload);
     }
 
     /**
