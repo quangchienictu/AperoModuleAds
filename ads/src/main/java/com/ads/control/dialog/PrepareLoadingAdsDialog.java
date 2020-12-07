@@ -24,8 +24,7 @@ public class PrepareLoadingAdsDialog extends Dialog {
         setContentView(R.layout.dialog_prepair_loading_ads);
     }
 
-
-
-
-
+    public void hideLoadingAdsText() {
+        findViewById(R.id.loading_dialog_tv).setVisibility(View.INVISIBLE);
+    }
 }
