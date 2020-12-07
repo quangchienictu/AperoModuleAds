@@ -319,7 +319,12 @@ public class Admod {
             if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
                 try {
                     dialog = new PrepareLoadingAdsDialog(context);
-                    dialog.show();
+                    try {
+                        dialog.show();
+                    }catch (Exception e) {
+                        callback.onAdClosed();
+                        return;
+                    }
                 } catch (Exception e) {
                     dialog = null;
                     e.printStackTrace();
