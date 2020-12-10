@@ -2,12 +2,9 @@ package com.ads.control.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
-import com.ads.control.Pucharse;
 import com.ads.control.R;
 
 

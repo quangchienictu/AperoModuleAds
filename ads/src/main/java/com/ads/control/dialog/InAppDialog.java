@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.ads.control.Pucharse;
+import com.ads.control.Purcharse;
 import com.ads.control.R;
 
 
@@ -32,7 +32,7 @@ public class InAppDialog extends Dialog {
     }
 
     private void initView() {
-        ((TextView) findViewById(R.id.tv_price)).setText(Pucharse.getInstance(mContext).getPrice());
+        ((TextView) findViewById(R.id.tv_price)).setText(Purcharse.getInstance().getPrice());
         findViewById(R.id.iv_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,8 +48,8 @@ public class InAppDialog extends Dialog {
         });
         TextView tvOldPrice = findViewById(R.id.tv_old_price);
         TextView tvPrice = findViewById(R.id.tv_price);
-        tvOldPrice.setText(Pucharse.getInstance(mContext).getOldPrice());
-        tvPrice.setText(Pucharse.getInstance(mContext).getPrice());
+        tvOldPrice.setText(Purcharse.getInstance().getOldPrice());
+        tvPrice.setText(Purcharse.getInstance().getPrice());
         tvOldPrice.setPaintFlags(tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
     }
 

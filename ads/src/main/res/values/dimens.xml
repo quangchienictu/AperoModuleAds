@@ -2,6 +2,7 @@
 
     <dimen name="text_details">10sp</dimen>
     <dimen name="height_native_ads">280dip</dimen>
+    <dimen name="height_native_small_ads">100dip</dimen>
     <dimen name="height_full_ads">300dip</dimen>
 
     <item name="gnt_medium_template_bottom_weight" format="float" type="dimen">0.4</item>

@@ -12,16 +12,15 @@ import com.ads.control.funtion.AdmodHelper;
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
 
-public class Pucharse {
+public class Purcharse {
     private static final String LICENSE_KEY = null;
     private static final String MERCHANT_ID = null;
     private BillingProcessor bp;
     //    public static final String PRODUCT_ID = "android.test.purchased";
     @SuppressLint("StaticFieldLeak")
-    private static Pucharse instance;
+    private static Purcharse instance;
 
     @SuppressLint("StaticFieldLeak")
-    private static Context context;
     private String productId;
     private String price = "1.49$";
     private String oldPrice = "2.99$";
@@ -34,19 +33,18 @@ public class Pucharse {
         this.oldPrice = oldPrice;
     }
 
-    public static Pucharse getInstance(Context ctx) {
+    public static Purcharse getInstance() {
         if (instance == null) {
-            context = ctx;
-            instance = new Pucharse();
+            instance = new Purcharse();
         }
         return instance;
     }
 
-    private Pucharse() {
+    private Purcharse() {
 
     }
 
-    public void initBilling(final String productId) {
+    public void initBilling(final Context context, final String productId) {
         this.productId = productId;
         bp = new BillingProcessor(context, LICENSE_KEY, MERCHANT_ID, new BillingProcessor.IBillingHandler() {
             @Override
@@ -73,7 +71,7 @@ public class Pucharse {
         bp.initialize();
     }
 
-    public boolean isPucharsed() {
+    public boolean isPurcharsed(Context context) {
         try {
             return AdmodHelper.isPurchased((Activity) context) || bp.isPurchased(productId);
         } catch (Exception e) {

@@ -24,6 +24,15 @@
         android:text="Click 1 lần hiện full" />
 
 
+    <Button
+
+        android:id="@+id/btIap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btForceShowAds"
+        android:layout_centerHorizontal="true"
+        android:text="IAP test" />
+
     <include
         layout="@layout/layout_banner_control"
         android:layout_width="match_parent"
