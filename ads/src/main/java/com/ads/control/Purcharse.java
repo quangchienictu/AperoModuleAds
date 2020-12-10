@@ -97,8 +97,8 @@ public class Purcharse {
     }
 
 
-    public boolean handleActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        return bp.handleActivityResult(requestCode, resultCode, data);
+    public void handleActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        bp.handleActivityResult(requestCode, resultCode, data);
     }
 
     public String getPrice() {

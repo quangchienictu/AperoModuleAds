@@ -3,27 +3,20 @@ package com.ads.control;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
-
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.AdmodHelper;
-import com.ads.control.widget.NativeTemplateStyle;
-import com.ads.control.widget.TemplateView;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
@@ -119,10 +112,9 @@ public class Admod {
      * Load quảng cáo Full tại màn SplashActivity
      * Sau khoảng thời gian timeout thì load ads và callback về cho View
      *
-     *
      * @param context
      * @param id
-     * @param timeOut : thời gian chờ ads, timeout <= 0 tương đương với việc bỏ timeout
+     * @param timeOut    : thời gian chờ ads, timeout <= 0 tương đương với việc bỏ timeout
      * @param adListener
      */
     public void loadSplashInterstitalAds(final Context context, String id, long timeOut, final AdCallback adListener) {
@@ -177,7 +169,7 @@ public class Admod {
 
         });
 
-        if(timeOut > 0) {
+        if (timeOut > 0) {
             handler = new Handler();
             rd = new Runnable() {
                 @Override
@@ -255,7 +247,7 @@ public class Admod {
             public void onAdClosed() {
                 if (callback != null) {
                     callback.onAdClosed();
-                    if(shouldReloadAds) {
+                    if (shouldReloadAds) {
                         requestInterstitialAds(mInterstitialAd);
                     }
                     if (dialog != null) {
@@ -321,7 +313,7 @@ public class Admod {
                     dialog = new PrepareLoadingAdsDialog(context);
                     try {
                         dialog.show();
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         callback.onAdClosed();
                         return;
                     }
@@ -353,10 +345,8 @@ public class Admod {
      * @param id
      */
     public void loadBanner(final Activity mActivity, String id) {
-        final LinearLayout adContainer = mActivity.findViewById(R.id.banner_container);
-        adContainer.removeAllViews();
-        final ShimmerFrameLayout containerShimmer =
-                mActivity.findViewById(R.id.shimmer_container);
+        final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
         loadBanner(mActivity, id, adContainer, containerShimmer);
     }
 
@@ -368,15 +358,12 @@ public class Admod {
      * @param rootView
      */
     public void loadBannerFragment(final Activity mActivity, String id, final View rootView) {
-        final ShimmerFrameLayout containerShimmer =
-                rootView.findViewById(R.id.shimmer_container);
-        containerShimmer.setVisibility(View.VISIBLE);
-        containerShimmer.startShimmer();
-        final LinearLayout adContainer = (LinearLayout) rootView.findViewById(R.id.banner_container);
+        final FrameLayout adContainer = rootView.findViewById(R.id.shimmer_container_banner);
+        final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_native);
         loadBanner(mActivity, id, adContainer, containerShimmer);
     }
 
-    private void loadBanner(final Activity mActivity, String id, final LinearLayout adContainer, final ShimmerFrameLayout containerShimmer) {
+    private void loadBanner(final Activity mActivity, String id, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer) {
         if (Purcharse.getInstance().isPurcharsed(mActivity)) {
             containerShimmer.setVisibility(View.GONE);
             return;
@@ -394,11 +381,10 @@ public class Admod {
                 @Override
                 public void onAdFailedToLoad(int i) {
                     super.onAdFailedToLoad(i);
-                    adContainer.setVisibility(View.GONE);
                     containerShimmer.stopShimmer();
+                    adContainer.setVisibility(View.GONE);
                     containerShimmer.setVisibility(View.GONE);
                 }
-
 
                 @Override
                 public void onAdLoaded() {
@@ -409,7 +395,8 @@ public class Admod {
             });
 
 
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -429,7 +416,6 @@ public class Admod {
 
     }
 
-
     /**
      * load quảng cáo big native
      *
@@ -437,50 +423,16 @@ public class Admod {
      * @param id
      */
     public void loadNative(final Activity mActivity, String id) {
-        final FrameLayout frameLayout =
-                mActivity.findViewById(R.id.fl_adplaceholder);
-        final ShimmerFrameLayout containerShimmer =
-                mActivity.findViewById(R.id.shimmer_container);
+        final FrameLayout frameLayout = mActivity.findViewById(R.id.fl_adplaceholder);
+        final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_native);
         loadNative(mActivity, containerShimmer, frameLayout, id);
     }
 
-    /**
-     * load quảng cáo small native
-     *
-     * @param context
-     * @param view
-     * @param adUnitId
-     */
-    public void loadSmallNative(final Context context, final ViewGroup view, String adUnitId) {
-        if (Purcharse.getInstance().isPurcharsed(context)) {
-            ViewGroup.LayoutParams param = view.getLayoutParams();
-            param.width = 0;
-            param.height = 0;
-            view.requestLayout();
-            return;
-        }
-        AdLoader adLoader = new AdLoader.Builder(context, adUnitId)
-                .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
-                    @Override
-                    public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
-                        NativeTemplateStyle styles = new NativeTemplateStyle.Builder().withMainBackgroundColor(new ColorDrawable()).build();
-                        TemplateView template = view.findViewById(R.id.ads_small);
-                        template.setStyles(styles);
-                        template.setNativeAd(unifiedNativeAd);
-                    }
-                })
-                .withAdListener(new AdListener() {
-                    @Override
-                    public void onAdFailedToLoad(int i) {
-                        ViewGroup.LayoutParams param = view.getLayoutParams();
-                        param.width = 0;
-                        param.height = 0;
-                        view.requestLayout();
-                    }
-                })
-                .withNativeAdOptions(new NativeAdOptions.Builder().build())
-                .build();
-        adLoader.loadAd(getAdRequest());
+
+    public void loadSmallNative(final Activity mActivity, String adUnitId) {
+        final FrameLayout frameLayout = mActivity.findViewById(R.id.fl_adplaceholder);
+        final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_small_native);
+        loadNative(mActivity, containerShimmer, frameLayout, adUnitId);
     }
 
     /**
@@ -490,10 +442,9 @@ public class Admod {
      * @param id
      * @param rootView
      */
-
     public void loadNativeFragment(final Activity mActivity, String id, final View rootView) {
         final ShimmerFrameLayout containerShimmer =
-                rootView.findViewById(R.id.shimmer_container);
+                rootView.findViewById(R.id.shimmer_container_native);
         final FrameLayout frameLayout =
                 rootView.findViewById(R.id.fl_adplaceholder);
         loadNative(mActivity, containerShimmer, frameLayout, id);
@@ -505,7 +456,6 @@ public class Admod {
             return;
         }
         frameLayout.removeAllViews();
-        containerShimmer.removeAllViews();
         containerShimmer.setVisibility(View.VISIBLE);
         containerShimmer.startShimmer();
 
@@ -530,7 +480,6 @@ public class Admod {
                         populateUnifiedNativeAdView(unifiedNativeAd, adView);
                         frameLayout.removeAllViews();
                         frameLayout.addView(adView);
-
                     }
                 })
                 .withAdListener(new AdListener() {
@@ -546,9 +495,8 @@ public class Admod {
         adLoader.loadAd(getAdRequest());
     }
 
+
     private void populateUnifiedNativeAdView(UnifiedNativeAd nativeAd, UnifiedNativeAdView adView) {
-
-
         MediaView mediaView = adView.findViewById(R.id.ad_media);
         adView.setMediaView(mediaView);
 
@@ -712,8 +660,6 @@ public class Admod {
 
     private AppOpenAd appOpenAd = null;
 
-    private AppOpenAd.AppOpenAdLoadCallback loadCallback;
-
     /**
      * Hiển thị quảng cáo App Open
      *
@@ -751,7 +697,7 @@ public class Admod {
      * @param callback
      */
     public void initAppOpenAds(Activity activity, String id, final AdCallback callback) {
-        loadCallback = new AppOpenAd.AppOpenAdLoadCallback() {
+        AppOpenAd.AppOpenAdLoadCallback loadCallback = new AppOpenAd.AppOpenAdLoadCallback() {
             @Override
             public void onAppOpenAdLoaded(AppOpenAd ad) {
                 appOpenAd = ad;

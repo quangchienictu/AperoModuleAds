@@ -12,5 +12,6 @@ public class ContentActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
+        Admod.getInstance().loadSmallNative(this,getString(R.string.admod_native_id));
     }
 }
