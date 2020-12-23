@@ -12,13 +12,13 @@ import com.ads.control.funtion.AdmodHelper;
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
 
-public class Purcharse {
+public class Purchase {
     private static final String LICENSE_KEY = null;
     private static final String MERCHANT_ID = null;
     private BillingProcessor bp;
     //    public static final String PRODUCT_ID = "android.test.purchased";
     @SuppressLint("StaticFieldLeak")
-    private static Purcharse instance;
+    private static Purchase instance;
 
     @SuppressLint("StaticFieldLeak")
     private String productId;
@@ -33,14 +33,14 @@ public class Purcharse {
         this.oldPrice = oldPrice;
     }
 
-    public static Purcharse getInstance() {
+    public static Purchase getInstance() {
         if (instance == null) {
-            instance = new Purcharse();
+            instance = new Purchase();
         }
         return instance;
     }
 
-    private Purcharse() {
+    private Purchase() {
 
     }
 

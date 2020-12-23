@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ads.control.Admod;
-import com.ads.control.Purcharse;
+import com.ads.control.Purchase;
 import com.ads.control.dialog.InAppDialog;
 import com.ads.control.funtion.AdCallback;
 import com.google.android.gms.ads.InterstitialAd;
@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Purcharse.getInstance().initBilling(this, "android.test.purchased");
+        Purchase.getInstance().initBilling(this, "android.test.purchased");
         Admod.getInstance().loadBanner(this, getString(R.string.admod_banner_id));
         Admod.getInstance().loadNative(this, getString(R.string.admod_native_id));
         Admod.getInstance().setNumToShowAds(3);
@@ -44,10 +44,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.btIap).setOnClickListener(v -> {
-            Purcharse.getInstance().consumePurchase();
+            Purchase.getInstance().consumePurchase();
             InAppDialog dialog = new InAppDialog(this);
             dialog.setCallback(() -> {
-                Purcharse.getInstance().purcharse(this);
+                Purchase.getInstance().purcharse(this);
                 dialog.dismiss();
             });
             dialog.show();
@@ -57,8 +57,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Purcharse.getInstance().handleActivityResult(requestCode, resultCode, data);
-        if (Purcharse.getInstance().isPurcharsed(this)) {
+        Purchase.getInstance().handleActivityResult(requestCode, resultCode, data);
+        if (Purchase.getInstance().isPurcharsed(this)) {
             findViewById(R.id.btIap).setVisibility(View.GONE);
         }
     }

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/height_native_small_ads"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <FrameLayout
@@ -12,7 +11,6 @@
         android:background="@drawable/bg_card_ads"
         android:orientation="vertical"
         android:visibility="gone" />
-
 
 
     <include layout="@layout/load_fb_small_native" />

@@ -118,7 +118,7 @@ public class Admod {
      * @param adListener
      */
     public void loadSplashInterstitalAds(final Context context, String id, long timeOut, final AdCallback adListener) {
-        if (Purcharse.getInstance().isPurcharsed(context)) {
+        if (Purchase.getInstance().isPurcharsed(context)) {
             if (adListener != null) {
                 adListener.onAdClosed();
             }
@@ -197,7 +197,7 @@ public class Admod {
      * @return
      */
     public InterstitialAd getInterstitalAds(Context context, String id) {
-        if (Purcharse.getInstance().isPurcharsed(context) || AdmodHelper.getNumClickAdsPerDay(context, id) >= maxClickAds) {
+        if (Purchase.getInstance().isPurcharsed(context) || AdmodHelper.getNumClickAdsPerDay(context, id) >= maxClickAds) {
             return null;
         }
         final InterstitialAd mInterstitialAd = new InterstitialAd(context);
@@ -232,7 +232,7 @@ public class Admod {
      */
     public void showInterstitialAdByTimes(final Context context, final InterstitialAd mInterstitialAd, final AdCallback callback, final boolean shouldReloadAds) {
         AdmodHelper.setupAdmodData(context);
-        if (Purcharse.getInstance().isPurcharsed(context)) {
+        if (Purchase.getInstance().isPurcharsed(context)) {
             callback.onAdClosed();
             return;
         }
@@ -364,7 +364,7 @@ public class Admod {
     }
 
     private void loadBanner(final Activity mActivity, String id, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer) {
-        if (Purcharse.getInstance().isPurcharsed(mActivity)) {
+        if (Purchase.getInstance().isPurcharsed(mActivity)) {
             containerShimmer.setVisibility(View.GONE);
             return;
         }
@@ -451,7 +451,7 @@ public class Admod {
     }
 
     private void loadNative(final Activity mActivity, final ShimmerFrameLayout containerShimmer, final FrameLayout frameLayout, final String id) {
-        if (Purcharse.getInstance().isPurcharsed(mActivity)) {
+        if (Purchase.getInstance().isPurcharsed(mActivity)) {
             containerShimmer.setVisibility(View.GONE);
             return;
         }
@@ -583,11 +583,11 @@ public class Admod {
      * @param id
      */
     public void initVideoAds(Context context, String id) {
-        if (Purcharse.getInstance().isPurcharsed(context)) {
+        if (Purchase.getInstance().isPurcharsed(context)) {
             return;
         }
         this.nativeId = id;
-        if (Purcharse.getInstance().isPurcharsed(context)) {
+        if (Purchase.getInstance().isPurcharsed(context)) {
             return;
         }
         rewardedAd = new RewardedAd(context, id);
@@ -617,7 +617,7 @@ public class Admod {
      */
 
     public void loadVideoAds(final Activity context, final RewardedAdCallback adCallback) {
-        if (Purcharse.getInstance().isPurcharsed(context)) {
+        if (Purchase.getInstance().isPurcharsed(context)) {
             adCallback.onUserEarnedReward(null);
             adCallback.onRewardedAdClosed();
             return;
