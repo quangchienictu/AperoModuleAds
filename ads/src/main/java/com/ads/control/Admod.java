@@ -430,10 +430,21 @@ public class Admod {
         loadNative(mActivity, containerShimmer, frameLayout, id);
     }
 
+    public void loadNative(final Activity mActivity, String id, View parent) {
+        final FrameLayout frameLayout = parent.findViewById(R.id.fl_adplaceholder);
+        final ShimmerFrameLayout containerShimmer = parent.findViewById(R.id.shimmer_container_native);
+        loadNative(mActivity, containerShimmer, frameLayout, id);
+    }
 
     public void loadSmallNative(final Activity mActivity, String adUnitId) {
         final FrameLayout frameLayout = mActivity.findViewById(R.id.fl_adplaceholder);
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_small_native);
+        loadNative(mActivity, containerShimmer, frameLayout, adUnitId);
+    }
+
+    public void loadSmallNative(final Activity mActivity, String adUnitId, View parent) {
+        final FrameLayout frameLayout = parent.findViewById(R.id.fl_adplaceholder);
+        final ShimmerFrameLayout containerShimmer = parent.findViewById(R.id.shimmer_container_small_native);
         loadNative(mActivity, containerShimmer, frameLayout, adUnitId);
     }
 
