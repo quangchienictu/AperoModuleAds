@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -45,6 +46,7 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import java.util.List;
 
 public class Admod {
+    private static final String TAG = "Admod";
     private static Admod instance;
     private static int currentClicked = 0;
     private String nativeId;
@@ -484,9 +486,13 @@ public class Admod {
                 })
                 .withAdListener(new AdListener() {
                     @Override
-                    public void onAdFailedToLoad(int errorCode) {
+                    public void onAdFailedToLoad(LoadAdError error) {
+                        Log.e(TAG, "onAdFailedToLoad: "  + error.getMessage() );
                         containerShimmer.stopShimmer();
                         containerShimmer.setVisibility(View.GONE);
+                        if(frameLayout != null) {
+                            frameLayout.setVisibility(View.GONE);
+                        }
                     }
                 })
                 .withNativeAdOptions(adOptions)
