@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Purchase.getInstance().initBilling(this, "android.test.purchased");
         Admod.getInstance().loadBanner(this, getString(R.string.admod_banner_id));
-        Admod.getInstance().loadNative(this, getString(R.string.admod_native_id));
+        Admod.getInstance().loadSmallNative(this, getString(R.string.admod_native_id));
         Admod.getInstance().setNumToShowAds(3);
         InterstitialAd mInterstitialAd = Admod.getInstance().getInterstitalAds(this, getString(R.string.admod_interstitial_id));
 

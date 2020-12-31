@@ -461,6 +461,13 @@ public class Admod {
         loadNative(mActivity, containerShimmer, frameLayout, adUnitId);
     }
 
+
+    public void loadSmallNative(final Activity mActivity, String adUnitId, int layoutAds) {
+        final FrameLayout frameLayout = mActivity.findViewById(R.id.fl_adplaceholder);
+        final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_small_native);
+        loadNative(mActivity, containerShimmer, frameLayout, adUnitId, layoutAds);
+    }
+
     public void loadSmallNative(final Activity mActivity, String adUnitId, View parent) {
         final FrameLayout frameLayout = parent.findViewById(R.id.fl_adplaceholder);
         final ShimmerFrameLayout containerShimmer = parent.findViewById(R.id.shimmer_container_small_native);
@@ -482,7 +489,12 @@ public class Admod {
         loadNative(mActivity, containerShimmer, frameLayout, id);
     }
 
-    private void loadNative(final Activity mActivity, final ShimmerFrameLayout containerShimmer, final FrameLayout frameLayout, final String id) {
+
+    private void loadNative(Activity mActivity, ShimmerFrameLayout containerShimmer, FrameLayout frameLayout, String adUnitId) {
+        loadNative(mActivity, containerShimmer, frameLayout, adUnitId, R.layout.native_admob_ad);
+    }
+
+    private void loadNative(final Activity mActivity, final ShimmerFrameLayout containerShimmer, final FrameLayout frameLayout, final String id, final int layout) {
         if (Purchase.getInstance().isPurchased(mActivity)) {
             containerShimmer.setVisibility(View.GONE);
             return;
@@ -509,7 +521,7 @@ public class Admod {
                         containerShimmer.setVisibility(View.GONE);
                         frameLayout.setVisibility(View.VISIBLE);
                         @SuppressLint("InflateParams") UnifiedNativeAdView adView = (UnifiedNativeAdView) mActivity.getLayoutInflater()
-                                .inflate(R.layout.native_admob_ad, null);
+                                .inflate(layout, null);
                         populateUnifiedNativeAdView(unifiedNativeAd, adView);
                         frameLayout.removeAllViews();
                         frameLayout.addView(adView);
@@ -547,59 +559,91 @@ public class Admod {
         adView.setAdvertiserView(adView.findViewById(R.id.ad_advertiser));
 
         // The headline is guaranteed to be in every UnifiedNativeAd.
-        ((TextView) adView.getHeadlineView()).setText(nativeAd.getHeadline());
+        try {
+            ((TextView) adView.getHeadlineView()).setText(nativeAd.getHeadline());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // These assets aren't guaranteed to be in every UnifiedNativeAd, so it's important to
         // check before trying to display them.
-        if (nativeAd.getBody() == null) {
-            adView.getBodyView().setVisibility(View.INVISIBLE);
-        } else {
-            adView.getBodyView().setVisibility(View.VISIBLE);
-            ((TextView) adView.getBodyView()).setText(nativeAd.getBody());
+        try {
+            if (nativeAd.getBody() == null) {
+                adView.getBodyView().setVisibility(View.INVISIBLE);
+            } else {
+                adView.getBodyView().setVisibility(View.VISIBLE);
+                ((TextView) adView.getBodyView()).setText(nativeAd.getBody());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        if (nativeAd.getCallToAction() == null) {
-            adView.getCallToActionView().setVisibility(View.INVISIBLE);
-        } else {
-            adView.getCallToActionView().setVisibility(View.VISIBLE);
-            ((TextView) adView.getCallToActionView()).setText(nativeAd.getCallToAction());
+        try {
+            if (nativeAd.getCallToAction() == null) {
+                adView.getCallToActionView().setVisibility(View.INVISIBLE);
+            } else {
+                adView.getCallToActionView().setVisibility(View.VISIBLE);
+                ((TextView) adView.getCallToActionView()).setText(nativeAd.getCallToAction());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        if (nativeAd.getIcon() == null) {
-            adView.getIconView().setVisibility(View.GONE);
-        } else {
-            ((ImageView) adView.getIconView()).setImageDrawable(
-                    nativeAd.getIcon().getDrawable());
-            adView.getIconView().setVisibility(View.VISIBLE);
+        try {
+            if (nativeAd.getIcon() == null) {
+                adView.getIconView().setVisibility(View.GONE);
+            } else {
+                ((ImageView) adView.getIconView()).setImageDrawable(
+                        nativeAd.getIcon().getDrawable());
+                adView.getIconView().setVisibility(View.VISIBLE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        if (nativeAd.getPrice() == null) {
-            adView.getPriceView().setVisibility(View.INVISIBLE);
-        } else {
-            adView.getPriceView().setVisibility(View.VISIBLE);
-            ((TextView) adView.getPriceView()).setText(nativeAd.getPrice());
+        try {
+            if (nativeAd.getPrice() == null) {
+                adView.getPriceView().setVisibility(View.INVISIBLE);
+            } else {
+                adView.getPriceView().setVisibility(View.VISIBLE);
+                ((TextView) adView.getPriceView()).setText(nativeAd.getPrice());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        if (nativeAd.getStore() == null) {
-            adView.getStoreView().setVisibility(View.INVISIBLE);
-        } else {
-            adView.getStoreView().setVisibility(View.VISIBLE);
-            ((TextView) adView.getStoreView()).setText(nativeAd.getStore());
+        try {
+            if (nativeAd.getStore() == null) {
+                adView.getStoreView().setVisibility(View.INVISIBLE);
+            } else {
+                adView.getStoreView().setVisibility(View.VISIBLE);
+                ((TextView) adView.getStoreView()).setText(nativeAd.getStore());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        if (nativeAd.getStarRating() == null) {
-            adView.getStarRatingView().setVisibility(View.INVISIBLE);
-        } else {
-            ((RatingBar) adView.getStarRatingView())
-                    .setRating(nativeAd.getStarRating().floatValue());
-            adView.getStarRatingView().setVisibility(View.VISIBLE);
+        try {
+            if (nativeAd.getStarRating() == null) {
+                adView.getStarRatingView().setVisibility(View.INVISIBLE);
+            } else {
+                ((RatingBar) adView.getStarRatingView())
+                        .setRating(nativeAd.getStarRating().floatValue());
+                adView.getStarRatingView().setVisibility(View.VISIBLE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        if (nativeAd.getAdvertiser() == null) {
-            adView.getAdvertiserView().setVisibility(View.INVISIBLE);
-        } else {
-            ((TextView) adView.getAdvertiserView()).setText(nativeAd.getAdvertiser());
-            adView.getAdvertiserView().setVisibility(View.VISIBLE);
+        try {
+            if (nativeAd.getAdvertiser() == null) {
+                adView.getAdvertiserView().setVisibility(View.INVISIBLE);
+            } else {
+                ((TextView) adView.getAdvertiserView()).setText(nativeAd.getAdvertiser());
+                adView.getAdvertiserView().setVisibility(View.VISIBLE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         // This method tells the Google Mobile Ads SDK that you have finished populating your
