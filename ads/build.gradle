@@ -38,5 +38,5 @@ dependencies {
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
     implementation 'androidx.lifecycle:lifecycle-process:2.2.0'
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
-//    implementation 'com.google.ads.mediation:facebook:6.0.0.0'
+    implementation 'com.google.ads.mediation:facebook:6.0.0.0'
 }

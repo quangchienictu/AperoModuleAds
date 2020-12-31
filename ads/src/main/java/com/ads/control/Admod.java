@@ -3,6 +3,7 @@ package com.ads.control;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -12,13 +13,17 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
+
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.AdmodHelper;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.ads.mediation.facebook.FacebookAdapter;
+import com.google.ads.mediation.facebook.FacebookExtras;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
@@ -57,6 +62,11 @@ public class Admod {
     private Runnable rd;
     private PrepareLoadingAdsDialog dialog;
     private boolean isTimeLimited;
+    private boolean isFan;
+
+    public void setFan(boolean fan) {
+        isFan = fan;
+    }
 
     /**
      * Giới hạn số lần click trên 1 admod tren 1 ngay
@@ -99,6 +109,15 @@ public class Admod {
     }
 
     private AdRequest getAdRequest() {
+        if (isFan) {
+            Bundle extras = new FacebookExtras()
+                    .setNativeBanner(true)
+                    .build();
+            return new AdRequest.Builder()
+                    .addNetworkExtrasBundle(FacebookAdapter.class, extras)
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .build();
+        }
         return new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .build();
@@ -469,6 +488,7 @@ public class Admod {
             return;
         }
         frameLayout.removeAllViews();
+        frameLayout.setVisibility(View.GONE);
         containerShimmer.setVisibility(View.VISIBLE);
         containerShimmer.startShimmer();
 
@@ -498,12 +518,10 @@ public class Admod {
                 .withAdListener(new AdListener() {
                     @Override
                     public void onAdFailedToLoad(LoadAdError error) {
-                        Log.e(TAG, "onAdFailedToLoad: "  + error.getMessage() );
+                        Log.e(TAG, "onAdFailedToLoad: " + error.getMessage());
                         containerShimmer.stopShimmer();
                         containerShimmer.setVisibility(View.GONE);
-                        if(frameLayout != null) {
-                            frameLayout.setVisibility(View.GONE);
-                        }
+                        frameLayout.setVisibility(View.GONE);
                     }
                 })
                 .withNativeAdOptions(adOptions)
