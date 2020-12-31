@@ -474,6 +474,12 @@ public class Admod {
         loadNative(mActivity, containerShimmer, frameLayout, adUnitId);
     }
 
+    public void loadSmallNative(final Activity mActivity, String adUnitId, View parent, int layoutAds) {
+        final FrameLayout frameLayout = parent.findViewById(R.id.fl_adplaceholder);
+        final ShimmerFrameLayout containerShimmer = parent.findViewById(R.id.shimmer_container_small_native);
+        loadNative(mActivity, containerShimmer, frameLayout, adUnitId,layoutAds);
+    }
+
     /**
      * load quảng cáo native trong fragment
      *
