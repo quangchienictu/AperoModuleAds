@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             Purchase.getInstance().consumePurchase();
             InAppDialog dialog = new InAppDialog(this);
             dialog.setCallback(() -> {
-                Purchase.getInstance().purcharse(this);
+                Purchase.getInstance().purchase(this);
                 dialog.dismiss();
             });
             dialog.show();
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Purchase.getInstance().handleActivityResult(requestCode, resultCode, data);
-        if (Purchase.getInstance().isPurcharsed(this)) {
+        if (Purchase.getInstance().isPurchased(this)) {
             findViewById(R.id.btIap).setVisibility(View.GONE);
         }
     }

@@ -71,7 +71,7 @@ public class Purchase {
         bp.initialize();
     }
 
-    public boolean isPurcharsed(Context context) {
+    public boolean isPurchased(Context context) {
         try {
             return AdmodHelper.isPurchased((Activity) context) || bp.isPurchased(productId);
         } catch (Exception e) {
@@ -80,7 +80,7 @@ public class Purchase {
         return false;
     }
 
-    public void purcharse(Activity activity) {
+    public void purchase(Activity activity) {
         try {
             bp.purchase(activity, productId);
         } catch (Exception e) {
