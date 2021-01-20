@@ -18,14 +18,18 @@ import com.google.android.gms.ads.appopen.AppOpenAd;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AppOpenManager implements Application.ActivityLifecycleCallbacks, LifecycleObserver {
     private static final String TAG = "AppOpenManager";
     private static volatile  AppOpenManager INSTANCE;
     private AppOpenAd appOpenAd = null;
-    private AppOpenAd.AppOpenAdLoadCallback loadCallback;
-    private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/3419835294";
+
+    private String appOpenAdId;
+    private final Map<String, String> appOpenAdIdMap;
+
     private Activity currentActivity;
 
     private Application myApplication;
@@ -33,13 +37,14 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     private static boolean isShowingAd = false;
     private long loadTime = 0;
 
-    private List<Class> disabledAppOpenList;
+    private final List<Class> disabledAppOpenList;
 
     /**
      * Constructor
      */
     private AppOpenManager() {
         disabledAppOpenList = new ArrayList<>();
+        appOpenAdIdMap = new HashMap<>();
     }
 
     public static synchronized AppOpenManager getInstance() {
@@ -76,6 +81,14 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         disabledAppOpenList.add(activityClass);
     }
 
+    public void setAppOpenAdId(String appOpenAdId) {
+        this.appOpenAdId = appOpenAdId;
+    }
+
+    public void setAppOpenAdIdWithActivity(Class activityClass, String appOpenAdId) {
+        appOpenAdIdMap.put(activityClass.getName(), appOpenAdId);
+    }
+
     /**
      * Request an ad
      */
@@ -84,30 +97,40 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             return;
         }
 
-        loadCallback =
-                new AppOpenAd.AppOpenAdLoadCallback() {
-                    /**
-                     * Called when an app open ad has loaded.
-                     *
-                     * @param ad the loaded app open ad.
-                     */
-                    @Override
-                    public void onAppOpenAdLoaded(AppOpenAd ad) {
-                        AppOpenManager.this.appOpenAd = ad;
-                        AppOpenManager.this.loadTime = (new Date()).getTime();
-                    }
+        /**
+         * Called when an app open ad has loaded.
+         *
+         * @param ad the loaded app open ad.
+         */
+        /**
+         * Called when an app open ad has failed to load.
+         *
+         * @param loadAdError the error.
+         */
+        // Handle the error.
+        AppOpenAd.AppOpenAdLoadCallback loadCallback = new AppOpenAd.AppOpenAdLoadCallback() {
+            /**
+             * Called when an app open ad has loaded.
+             *
+             * @param ad the loaded app open ad.
+             */
+            @Override
+            public void onAppOpenAdLoaded(AppOpenAd ad) {
+                AppOpenManager.this.appOpenAd = ad;
+                AppOpenManager.this.loadTime = (new Date()).getTime();
+            }
 
-                    /**
-                     * Called when an app open ad has failed to load.
-                     *
-                     * @param loadAdError the error.
-                     */
-                    @Override
-                    public void onAppOpenAdFailedToLoad(LoadAdError loadAdError) {
-                        // Handle the error.
-                    }
+            /**
+             * Called when an app open ad has failed to load.
+             *
+             * @param loadAdError the error.
+             */
+            @Override
+            public void onAppOpenAdFailedToLoad(LoadAdError loadAdError) {
+                // Handle the error.
+            }
 
-                };
+        };
         AdRequest request = getAdRequest();
         AppOpenAd.load(
                 myApplication, adId, request,
@@ -161,7 +184,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         currentActivity = null;
     }
 
-    public void showAdIfAvailable() {
+    public void showAdIfAvailable(final String adId) {
         // Only show ad if there is not already an app open ad currently showing
         // and an ad is available.
         if (!isShowingAd && isAdAvailable()) {
@@ -174,7 +197,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             // Set the reference to null so isAdAvailable() returns false.
                             AppOpenManager.this.appOpenAd = null;
                             isShowingAd = false;
-                            fetchAd(AD_UNIT_ID);
+                            fetchAd(adId);
                         }
 
                         @Override
@@ -190,19 +213,23 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
         } else {
             Log.d(TAG, "Can not show ad.");
-            fetchAd(AD_UNIT_ID);
+            fetchAd(adId);
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void onStart() {
         for(Class activity : disabledAppOpenList) {
-            if(activity.getName().equals(currentActivity.getClass().getName()) && activity.getPackage().getName().equals(currentActivity.getPackageName())) {
+            if(activity.getName().equals(currentActivity.getClass().getName())) {
                 return;
             }
         }
-        showAdIfAvailable();
-        Log.d(TAG, "onStart");
+
+        if(appOpenAdIdMap.get(currentActivity.getClass().getName()) != null) {
+            showAdIfAvailable(appOpenAdIdMap.get(currentActivity.getClass().getName()));
+        } else {
+            showAdIfAvailable(appOpenAdId);
+        }
     }
 }
 
