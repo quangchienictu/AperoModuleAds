@@ -1,0 +1,13 @@
+com/example/andmoduleads/BuildConfig.java
+ com.example.andmoduleads.BuildConfig
+com/example/andmoduleads/MainActivity.java
+ com.example.andmoduleads.MainActivity
+ com.example.andmoduleads.MainActivity$1
+ com.example.andmoduleads.MainActivity$2
+com/example/andmoduleads/ContentActivity.java
+ com.example.andmoduleads.ContentActivity
+com/example/andmoduleads/MyApplication.java
+ com.example.andmoduleads.MyApplication
+com/example/andmoduleads/SplashActivity.java
+ com.example.andmoduleads.SplashActivity
+ com.example.andmoduleads.SplashActivity$1

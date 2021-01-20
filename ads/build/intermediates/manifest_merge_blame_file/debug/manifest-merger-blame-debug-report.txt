@@ -1,0 +1,24 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.ads.control"
+4    android:versionCode="9"
+5    android:versionName="1.1.3" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="16"
+8-->/Volumes/DATA/AndroidProject/AndMuduleAds/ads/src/main/AndroidManifest.xml
+9        android:targetSdkVersion="30" />
+9-->/Volumes/DATA/AndroidProject/AndMuduleAds/ads/src/main/AndroidManifest.xml
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->/Volumes/DATA/AndroidProject/AndMuduleAds/ads/src/main/AndroidManifest.xml:4:5-67
+11-->/Volumes/DATA/AndroidProject/AndMuduleAds/ads/src/main/AndroidManifest.xml:4:22-64
+12    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+12-->/Volumes/DATA/AndroidProject/AndMuduleAds/ads/src/main/AndroidManifest.xml:5:5-79
+12-->/Volumes/DATA/AndroidProject/AndMuduleAds/ads/src/main/AndroidManifest.xml:5:22-76
+13
+14    <application>
+14-->/Volumes/DATA/AndroidProject/AndMuduleAds/ads/src/main/AndroidManifest.xml:6:5-7:19
+15    </application>
+16
+17</manifest>
