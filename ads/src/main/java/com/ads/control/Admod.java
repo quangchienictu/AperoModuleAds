@@ -24,19 +24,16 @@ import com.ads.control.funtion.AdmodHelper;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.ads.mediation.facebook.FacebookAdapter;
 import com.google.ads.mediation.facebook.FacebookExtras;
-import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.VideoOptions;
-import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.gms.ads.formats.MediaView;
 import com.google.android.gms.ads.formats.NativeAdOptions;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
@@ -63,6 +60,10 @@ public class Admod {
     private PrepareLoadingAdsDialog dialog;
     private boolean isTimeLimited;
     private boolean isFan;
+//    private AppOpenAd appOpenAd = null;
+//    private static final String SHARED_PREFERENCE_NAME = "ads_shared_preference";
+
+//    private final Map<String, AppOpenAd> appOpenAdMap = new HashMap<>();
 
     public void setFan(boolean fan) {
         isFan = fan;
@@ -743,66 +744,51 @@ public class Admod {
     }
 
 
-    private AppOpenAd appOpenAd = null;
-
-    /**
-     * Hiển thị quảng cáo App Open
-     *
-     * @param activity
-     * @param id
-     */
-    public void showAppOpenAds(final Activity activity, final String id) {
-        if (isAdAvailable()) {
-            FullScreenContentCallback fullScreenContentCallback =
-                    new FullScreenContentCallback() {
-                        @Override
-                        public void onAdDismissedFullScreenContent() {
-                            appOpenAd = null;
-                            initAppOpenAds(activity, id, null);
-                        }
-
-                        @Override
-                        public void onAdFailedToShowFullScreenContent(AdError adError) {
-
-                        }
-
-                        @Override
-                        public void onAdShowedFullScreenContent() {
-                        }
-                    };
-            appOpenAd.show(activity, fullScreenContentCallback);
-        }
-    }
-
-    /**
-     * Khởi tạo quảng cáo App Open
-     *
-     * @param activity
-     * @param id
-     * @param callback
-     */
-    public void initAppOpenAds(Activity activity, String id, final AdCallback callback) {
-        AppOpenAd.AppOpenAdLoadCallback loadCallback = new AppOpenAd.AppOpenAdLoadCallback() {
-            @Override
-            public void onAppOpenAdLoaded(AppOpenAd ad) {
-                appOpenAd = ad;
-                if (callback != null) {
-                    callback.onAdLoaded();
-                }
-            }
-
-            @Override
-            public void onAppOpenAdFailedToLoad(LoadAdError loadAdError) {
-            }
-
-        };
-        AppOpenAd.load(
-                activity, id, getAdRequest(),
-                AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
-    }
-
-    public boolean isAdAvailable() {
-        return appOpenAd != null;
-    }
+//    /**
+//     * Khởi tạo quảng cáo App Open
+//     *
+//     * @param activity
+//     * @param id
+//     * @param callback
+//     */
+//    public void initAppOpenAds(final Activity activity, final String id, final AdCallback callback) {
+//        AppOpenAd.AppOpenAdLoadCallback loadCallback = new AppOpenAd.AppOpenAdLoadCallback() {
+//            @Override
+//            public void onAppOpenAdLoaded(AppOpenAd ad) {
+//                appOpenAdMap.put(id, ad);
+//                activity.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).edit().putLong(id, System.currentTimeMillis()).apply();
+//                if (callback != null) {
+//                    callback.onAdLoaded();
+//                }
+//            }
+//
+//            @Override
+//            public void onAppOpenAdFailedToLoad(LoadAdError loadAdError) {
+//                if(callback != null) {
+//                    callback.onAdFailedToLoad(loadAdError);
+//                }
+//            }
+//        };
+//
+//        AppOpenAd.load(
+//                activity, id, getAdRequest(),
+//                activity.getResources().getConfiguration().orientation, loadCallback);
+//    }
+//
+//    public boolean isAppOpenAdAvailable(Context context, String openAppAdId) {
+//        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
+//        long appOpenAdLoadedTime = sharedPreferences.getLong(openAppAdId, 0);
+//        return appOpenAdMap.get(openAppAdId) != null &&
+//                appOpenAdLoadedTime > 0 &&
+//                System.currentTimeMillis() - appOpenAdLoadedTime < 4 * 3600 * 1000 ;
+//    }
+//
+//    public void showAppOpenAds(Activity activity, String appOpenAdId, FullScreenContentCallback callback ) {
+//        if(isAppOpenAdAvailable(activity, appOpenAdId)) {
+//            appOpenAd.show(activity, callback);
+//        }
+//
+//        initAppOpenAds(activity, appOpenAdId, null);
+//    }
 
 }
