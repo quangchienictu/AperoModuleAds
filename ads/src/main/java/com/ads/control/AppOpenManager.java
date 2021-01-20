@@ -57,10 +57,14 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
      * Init AppOpenManager
      * @param application
      */
-    public void init(Application application) {
+    public void init(Application application, String appOpenAdId) {
         this.myApplication = application;
         this.myApplication.registerActivityLifecycleCallbacks(this);
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
+        this.appOpenAdId = appOpenAdId;
+        if(!isAdAvailable() && appOpenAdId != null) {
+            fetchAd(appOpenAdId);
+        }
     }
 
     /**

@@ -13,7 +13,6 @@ public class MyApplication extends AdsApplication {
     public void onCreate() {
         super.onCreate();
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
-        AppOpenManager.getInstance().setAppOpenAdId("ca-app-pub-3940256099942544/3419835294");
     }
 
     @Override
@@ -24,5 +23,10 @@ public class MyApplication extends AdsApplication {
     @Override
     public List<String> getListTestDeviceId() {
         return Collections.singletonList("25D0EDA72688913D9FC256A6EB2E6DEF");
+    }
+
+    @Override
+    public String getOpenAppAdId() {
+        return "ca-app-pub-3940256099942544/3419835294";
     }
 }
