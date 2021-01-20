@@ -12,9 +12,8 @@ public class MyApplication extends AdsApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-//        AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
-        AppOpenManager.getInstance().setAppOpenAdIdWithActivity(MainActivity.class, "ca-app-pub-3940256099942544/3419835294");
-        AppOpenManager.getInstance().setAppOpenAdId("ca-app-pub-3940256099942544/3419835295");
+        AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
+        AppOpenManager.getInstance().setAppOpenAdId("ca-app-pub-3940256099942544/3419835294");
     }
 
     @Override

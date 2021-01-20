@@ -23,24 +23,28 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-       if(!AppOpenManager.getInstance().isAdAvailable()) {
-            Log.d(TAG, "onCreate: show splash ads");
-            Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 0, new AdCallback() {
-                @Override
-                public void onAdClosed() {
-                    startMain();
-                }
+        Log.d(TAG, "onCreate: show splash ads");
+        Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 0, new AdCallback() {
+            @Override
+            public void onAdClosed() {
+                startMain();
+            }
 
-                @Override
-                public void onAdFailedToLoad(int i) {
-                    startMain();
-                }
-            });
-        }
+            @Override
+            public void onAdFailedToLoad(int i) {
+                startMain();
+            }
+        });
     }
 
     private void startMain() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        AppOpenManager.getInstance().removeFullScreenContentCallback();
+        super.onDestroy();
     }
 }

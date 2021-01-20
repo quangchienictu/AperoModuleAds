@@ -18,17 +18,17 @@ import com.google.android.gms.ads.appopen.AppOpenAd;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class AppOpenManager implements Application.ActivityLifecycleCallbacks, LifecycleObserver {
     private static final String TAG = "AppOpenManager";
     private static volatile  AppOpenManager INSTANCE;
     private AppOpenAd appOpenAd = null;
+    private AppOpenAd.AppOpenAdLoadCallback loadCallback;
+    private FullScreenContentCallback fullScreenContentCallback;
 
+    private static final String AD_UNIT_ID_TEST = "ca-app-pub-3940256099942544/3419835294";
     private String appOpenAdId;
-    private final Map<String, String> appOpenAdIdMap;
 
     private Activity currentActivity;
 
@@ -44,7 +44,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
      */
     private AppOpenManager() {
         disabledAppOpenList = new ArrayList<>();
-        appOpenAdIdMap = new HashMap<>();
     }
 
     public static synchronized AppOpenManager getInstance() {
@@ -72,7 +71,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         return isShowingAd;
     }
 
-
     /**
      * Disable app open app on specific activity
      * @param activityClass
@@ -85,8 +83,12 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         this.appOpenAdId = appOpenAdId;
     }
 
-    public void setAppOpenAdIdWithActivity(Class activityClass, String appOpenAdId) {
-        appOpenAdIdMap.put(activityClass.getName(), appOpenAdId);
+    public void setFullScreenContentCallback(FullScreenContentCallback callback) {
+        this.fullScreenContentCallback = callback;
+    }
+
+    public void removeFullScreenContentCallback() {
+        this.fullScreenContentCallback = null;
     }
 
     /**
@@ -97,40 +99,31 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             return;
         }
 
-        /**
-         * Called when an app open ad has loaded.
-         *
-         * @param ad the loaded app open ad.
-         */
-        /**
-         * Called when an app open ad has failed to load.
-         *
-         * @param loadAdError the error.
-         */
-        // Handle the error.
-        AppOpenAd.AppOpenAdLoadCallback loadCallback = new AppOpenAd.AppOpenAdLoadCallback() {
-            /**
-             * Called when an app open ad has loaded.
-             *
-             * @param ad the loaded app open ad.
-             */
-            @Override
-            public void onAppOpenAdLoaded(AppOpenAd ad) {
-                AppOpenManager.this.appOpenAd = ad;
-                AppOpenManager.this.loadTime = (new Date()).getTime();
-            }
+        loadCallback =
+                new AppOpenAd.AppOpenAdLoadCallback() {
+                    /**
+                     * Called when an app open ad has loaded.
+                     *
+                     * @param ad the loaded app open ad.
+                     */
+                    @Override
+                    public void onAppOpenAdLoaded(AppOpenAd ad) {
+                        Log.d(TAG, "onAppOpenAdLoaded: ");
+                        AppOpenManager.this.appOpenAd = ad;
+                        AppOpenManager.this.loadTime = (new Date()).getTime();
+                    }
 
-            /**
-             * Called when an app open ad has failed to load.
-             *
-             * @param loadAdError the error.
-             */
-            @Override
-            public void onAppOpenAdFailedToLoad(LoadAdError loadAdError) {
-                // Handle the error.
-            }
+                    /**
+                     * Called when an app open ad has failed to load.
+                     *
+                     * @param loadAdError the error.
+                     */
+                    @Override
+                    public void onAppOpenAdFailedToLoad(LoadAdError loadAdError) {
+                        Log.d(TAG, "onAppOpenAdFailedToLoad: " + loadAdError.getMessage());
+                    }
 
-        };
+                };
         AdRequest request = getAdRequest();
         AppOpenAd.load(
                 myApplication, adId, request,
@@ -154,7 +147,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
      * Utility method that checks if ad exists and can be shown.
      */
     public boolean isAdAvailable() {
-        return appOpenAd != null && wasLoadTimeLessThanNHoursAgo(4);
+        boolean wasLoadTimeLessThanNHoursAgo = wasLoadTimeLessThanNHoursAgo(4);
+        Log.d(TAG, "isAdAvailable: " + wasLoadTimeLessThanNHoursAgo);
+        return appOpenAd != null && wasLoadTimeLessThanNHoursAgo;
     }
 
     @Override
@@ -190,18 +185,25 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         if (!isShowingAd && isAdAvailable()) {
             Log.d(TAG, "Will show ad.");
 
-            FullScreenContentCallback fullScreenContentCallback =
+            FullScreenContentCallback callback =
                     new FullScreenContentCallback() {
                         @Override
                         public void onAdDismissedFullScreenContent() {
                             // Set the reference to null so isAdAvailable() returns false.
-                            AppOpenManager.this.appOpenAd = null;
+                            appOpenAd = null;
+                            if(fullScreenContentCallback != null) {
+                                fullScreenContentCallback.onAdDismissedFullScreenContent();
+                            }
                             isShowingAd = false;
                             fetchAd(adId);
                         }
 
                         @Override
-                        public void onAdFailedToShowFullScreenContent(AdError adError) {}
+                        public void onAdFailedToShowFullScreenContent(AdError adError) {
+                            if(fullScreenContentCallback != null) {
+                                fullScreenContentCallback.onAdFailedToShowFullScreenContent(adError);
+                            }
+                        }
 
                         @Override
                         public void onAdShowedFullScreenContent() {
@@ -209,10 +211,10 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         }
                     };
 
-            appOpenAd.show(currentActivity, fullScreenContentCallback);
+            appOpenAd.show(currentActivity, callback);
 
         } else {
-            Log.d(TAG, "Can not show ad.");
+            Log.d(TAG, "Ad is not ready");
             fetchAd(adId);
         }
     }
@@ -225,11 +227,8 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             }
         }
 
-        if(appOpenAdIdMap.get(currentActivity.getClass().getName()) != null) {
-            showAdIfAvailable(appOpenAdIdMap.get(currentActivity.getClass().getName()));
-        } else {
-            showAdIfAvailable(appOpenAdId);
-        }
+        showAdIfAvailable(appOpenAdId);
+        Log.d(TAG, "onStart");
     }
 }
 
