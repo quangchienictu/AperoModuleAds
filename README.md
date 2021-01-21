@@ -3,7 +3,7 @@
 	maven { url 'https://jitpack.io' }
 
 
-	implementation 'com.github.eGame-Global:AndMuduleAds:1.1.18'
+	implementation 'com.github.eGame-Global:AndMuduleAds:1.1.10'
 ## IntertitialAds
 ### init ads module
     Admod.getInstance().init(this, idTestList);
