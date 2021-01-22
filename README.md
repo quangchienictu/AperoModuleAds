@@ -1,9 +1,10 @@
+
 # AndModuleAds
 
 	maven { url 'https://jitpack.io' }
 
 
-	implementation 'com.github.eGame-Global:AndMuduleAds:1.1.18'
+	implementation 'com.github.eGame-Global:AndMuduleAds:1.1.10'
 ## IntertitialAds
 ### init ads module
     Admod.getInstance().init(this, idTestList);
@@ -69,4 +70,13 @@ Coming soon
 	    dialog.dismiss();  
 	});  
 	dialog.show();
-    
+
+
+# Ads rule
+## Always add device test to idTestList with all of your team's device
+To ignore invalid ads traffic
+https://support.google.com/adsense/answer/16737?hl=en
+## Before show full-screen ad (interstitial, app open ad), alway show a short loading dialog
+To ignore accident click from user. This feature is existed in library
+## Never reload ad on onAdFailedToLoad
+To ignore infinite loop
