@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <include layout="@layout/layout_small_native_control" />
+    <include layout="@layout/layout_native_control" />
 
     <Button
         android:id="@+id/btShowAds"

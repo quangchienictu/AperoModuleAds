@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -447,62 +448,30 @@ public class Admod {
     public void loadNative(final Activity mActivity, String id) {
         final FrameLayout frameLayout = mActivity.findViewById(R.id.fl_adplaceholder);
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_native);
-        loadNative(mActivity, containerShimmer, frameLayout, id);
+        loadNative(mActivity, containerShimmer, frameLayout, id, R.layout.native_admob_ad);
     }
 
-    public void loadNative(final Activity mActivity, String id, View parent) {
+    public void loadNativeFragment(final Activity mActivity, String id, View parent) {
         final FrameLayout frameLayout = parent.findViewById(R.id.fl_adplaceholder);
         final ShimmerFrameLayout containerShimmer = parent.findViewById(R.id.shimmer_container_native);
-        loadNative(mActivity, containerShimmer, frameLayout, id);
+        loadNative(mActivity, containerShimmer, frameLayout, id, R.layout.native_admob_ad);
     }
 
     public void loadSmallNative(final Activity mActivity, String adUnitId) {
         final FrameLayout frameLayout = mActivity.findViewById(R.id.fl_adplaceholder);
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_small_native);
-        loadNative(mActivity, containerShimmer, frameLayout, adUnitId);
+        loadNative(mActivity, containerShimmer, frameLayout, adUnitId, R.layout.small_native_admod_ad);
     }
 
-
-    public void loadSmallNative(final Activity mActivity, String adUnitId, int layoutAds) {
-        final FrameLayout frameLayout = mActivity.findViewById(R.id.fl_adplaceholder);
-        final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_small_native);
-        loadNative(mActivity, containerShimmer, frameLayout, adUnitId, layoutAds);
-    }
-
-    public void loadSmallNative(final Activity mActivity, String adUnitId, View parent) {
+    public void loadSmallNativeFragment(final Activity mActivity, String adUnitId, View parent) {
         final FrameLayout frameLayout = parent.findViewById(R.id.fl_adplaceholder);
         final ShimmerFrameLayout containerShimmer = parent.findViewById(R.id.shimmer_container_small_native);
-        loadNative(mActivity, containerShimmer, frameLayout, adUnitId);
-    }
-
-    public void loadSmallNative(final Activity mActivity, String adUnitId, View parent, int layoutAds) {
-        final FrameLayout frameLayout = parent.findViewById(R.id.fl_adplaceholder);
-        final ShimmerFrameLayout containerShimmer = parent.findViewById(R.id.shimmer_container_small_native);
-        loadNative(mActivity, containerShimmer, frameLayout, adUnitId,layoutAds);
-    }
-
-    /**
-     * load quảng cáo native trong fragment
-     *
-     * @param mActivity
-     * @param id
-     * @param rootView
-     */
-    public void loadNativeFragment(final Activity mActivity, String id, final View rootView) {
-        final ShimmerFrameLayout containerShimmer =
-                rootView.findViewById(R.id.shimmer_container_native);
-        final FrameLayout frameLayout =
-                rootView.findViewById(R.id.fl_adplaceholder);
-        loadNative(mActivity, containerShimmer, frameLayout, id);
+        loadNative(mActivity, containerShimmer, frameLayout, adUnitId, R.layout.small_native_admod_ad);
     }
 
 
-    private void loadNative(Activity mActivity, ShimmerFrameLayout containerShimmer, FrameLayout frameLayout, String adUnitId) {
-        loadNative(mActivity, containerShimmer, frameLayout, adUnitId, R.layout.native_admob_ad);
-    }
-
-    private void loadNative(final Activity mActivity, final ShimmerFrameLayout containerShimmer, final FrameLayout frameLayout, final String id, final int layout) {
-        if (Purchase.getInstance().isPurchased(mActivity)) {
+    private void loadNative(final Context context, final ShimmerFrameLayout containerShimmer, final FrameLayout frameLayout, final String id, final int layout) {
+        if (Purchase.getInstance().isPurchased(context)) {
             containerShimmer.setVisibility(View.GONE);
             return;
         }
@@ -520,14 +489,14 @@ public class Admod {
                 .build();
 
 
-        AdLoader adLoader = new AdLoader.Builder(mActivity, id)
+        AdLoader adLoader = new AdLoader.Builder(context, id)
                 .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
                     @Override
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
                         containerShimmer.stopShimmer();
                         containerShimmer.setVisibility(View.GONE);
                         frameLayout.setVisibility(View.VISIBLE);
-                        @SuppressLint("InflateParams") UnifiedNativeAdView adView = (UnifiedNativeAdView) mActivity.getLayoutInflater()
+                        @SuppressLint("InflateParams") UnifiedNativeAdView adView = (UnifiedNativeAdView) LayoutInflater.from(context)
                                 .inflate(layout, null);
                         populateUnifiedNativeAdView(unifiedNativeAd, adView);
                         frameLayout.removeAllViews();
@@ -660,6 +629,7 @@ public class Admod {
 
     }
 
+
     private RewardedAd rewardedAd;
 
     /**
@@ -742,53 +712,5 @@ public class Admod {
             adCallback.onRewardedAdFailedToShow(0);
         }
     }
-
-
-//    /**
-//     * Khởi tạo quảng cáo App Open
-//     *
-//     * @param activity
-//     * @param id
-//     * @param callback
-//     */
-//    public void initAppOpenAds(final Activity activity, final String id, final AdCallback callback) {
-//        AppOpenAd.AppOpenAdLoadCallback loadCallback = new AppOpenAd.AppOpenAdLoadCallback() {
-//            @Override
-//            public void onAppOpenAdLoaded(AppOpenAd ad) {
-//                appOpenAdMap.put(id, ad);
-//                activity.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE).edit().putLong(id, System.currentTimeMillis()).apply();
-//                if (callback != null) {
-//                    callback.onAdLoaded();
-//                }
-//            }
-//
-//            @Override
-//            public void onAppOpenAdFailedToLoad(LoadAdError loadAdError) {
-//                if(callback != null) {
-//                    callback.onAdFailedToLoad(loadAdError);
-//                }
-//            }
-//        };
-//
-//        AppOpenAd.load(
-//                activity, id, getAdRequest(),
-//                activity.getResources().getConfiguration().orientation, loadCallback);
-//    }
-//
-//    public boolean isAppOpenAdAvailable(Context context, String openAppAdId) {
-//        SharedPreferences sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
-//        long appOpenAdLoadedTime = sharedPreferences.getLong(openAppAdId, 0);
-//        return appOpenAdMap.get(openAppAdId) != null &&
-//                appOpenAdLoadedTime > 0 &&
-//                System.currentTimeMillis() - appOpenAdLoadedTime < 4 * 3600 * 1000 ;
-//    }
-//
-//    public void showAppOpenAds(Activity activity, String appOpenAdId, FullScreenContentCallback callback ) {
-//        if(isAppOpenAdAvailable(activity, appOpenAdId)) {
-//            appOpenAd.show(activity, callback);
-//        }
-//
-//        initAppOpenAds(activity, appOpenAdId, null);
-//    }
 
 }
