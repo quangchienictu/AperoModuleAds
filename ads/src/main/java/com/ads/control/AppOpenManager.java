@@ -2,7 +2,9 @@ package com.ads.control;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.Dialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.lifecycle.Lifecycle;
@@ -10,6 +12,8 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
+import com.ads.control.dialog.PrepareLoadingAdsDialog;
+import com.google.android.gms.ads.AdActivity;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -68,9 +72,10 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         this.myApplication.registerActivityLifecycleCallbacks(this);
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         this.appResumeAdId = appOpenAdId;
-        if (!Purchase.getInstance().isPurchased(application.getApplicationContext()) && !isAdAvailable(false) && appOpenAdId != null) {
-            fetchAd(false);
-        }
+//        if (!Purchase.getInstance().isPurchased(application.getApplicationContext()) &&
+//                !isAdAvailable(false) && appOpenAdId != null) {
+//            fetchAd(false);
+//        }
     }
 
     /**
@@ -190,7 +195,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     public void onActivityResumed(Activity activity) {
         currentActivity = activity;
         Log.d(TAG, "onActivityResumed: ");
-        if (!activity.getClass().getName().equals(splashActivity.getName())) {
+        if (!activity.getClass().getName().equals(splashActivity.getName()) && !activity.getClass().getName().equals(AdActivity.class.getName())) {
             Log.d(TAG, "onActivityResumed: with " + activity.getClass().getName());
             fetchAd(false);
         }
@@ -262,19 +267,59 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         public void onAdShowedFullScreenContent() {
                             Log.d(TAG, "onAdShowedFullScreenContent: isSplash = " + isSplash);
                             isShowingAd = true;
+                            if(isSplash) {
+                                splashAd = null;
+                            } else {
+                                appResumeAd = null;
+                            }
                         }
                     };
-            if (isSplash) {
-                splashAd.show(currentActivity, callback);
-            } else {
-                appResumeAd.show(currentActivity, callback);
-            }
+//            if (isSplash) {
+//                splashAd.show(currentActivity, callback);
+//            } else {
+//                appResumeAd.show(currentActivity, callback);
+//            }
+            showAdsWithLoading(isSplash, callback);
 
         } else {
             Log.d(TAG, "Ad is not ready");
             if (!isSplash) {
                 fetchAd(false);
             }
+        }
+    }
+
+    private void showAdsWithLoading(final boolean isSplash, final FullScreenContentCallback callback) {
+
+        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+            Dialog dialog = null;
+            try {
+                dialog = new PrepareLoadingAdsDialog(currentActivity);
+                try {
+                    dialog.show();
+                } catch (Exception e) {
+                    if (fullScreenContentCallback != null) {
+                        fullScreenContentCallback.onAdDismissedFullScreenContent();
+                    }
+                    return;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            final Dialog finalDialog = dialog;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (isSplash) {
+                        splashAd.show(currentActivity, callback);
+                    } else {
+                        appResumeAd.show(currentActivity, callback);
+                    }
+                    if (finalDialog != null) {
+                        finalDialog.dismiss();
+                    }
+                }
+            }, 800);
         }
     }
 
@@ -288,6 +333,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
         if (isAdAvailable(true)) {
             showAdIfAvailable(true);
+            return;
         }
 
         loadCallback =
@@ -321,7 +367,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                 };
         AdRequest request = getAdRequest();
         AppOpenAd.load(
-                myApplication, adId, request,
+                myApplication, splashAdId, request,
                 AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
     }
 
