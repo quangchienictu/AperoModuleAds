@@ -12,7 +12,7 @@ public class MyApplication extends AdsApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
+        AppOpenManager.getInstance().addSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST);
     }
 
     @Override
@@ -27,6 +27,6 @@ public class MyApplication extends AdsApplication {
 
     @Override
     public String getOpenAppAdId() {
-        return "ca-app-pub-3940256099942544/3419835294";
+        return AppOpenManager.AD_UNIT_ID_TEST;
     }
 }

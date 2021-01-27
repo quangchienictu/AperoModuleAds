@@ -18,16 +18,21 @@ import com.google.android.gms.ads.appopen.AppOpenAd;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class AppOpenManager implements Application.ActivityLifecycleCallbacks, LifecycleObserver {
     private static final String TAG = "AppOpenManager";
-    private static volatile  AppOpenManager INSTANCE;
+    public static final String AD_UNIT_ID_TEST = "ca-app-pub-3940256099942544/3419835294";
+
+    private static volatile AppOpenManager INSTANCE;
     private AppOpenAd appOpenAd = null;
     private AppOpenAd.AppOpenAdLoadCallback loadCallback;
     private FullScreenContentCallback fullScreenContentCallback;
 
-    private static final String AD_UNIT_ID_TEST = "ca-app-pub-3940256099942544/3419835294";
     private String appOpenAdId;
 
     private Activity currentActivity;
@@ -38,16 +43,20 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     private long loadTime = 0;
 
     private final List<Class> disabledAppOpenList;
+    private final Set<Class> splashActivityList;
+    private final Map<Class, String> classAdMap;
 
     /**
      * Constructor
      */
     private AppOpenManager() {
         disabledAppOpenList = new ArrayList<>();
+        splashActivityList = new HashSet<>();
+        classAdMap = new HashMap<>();
     }
 
     public static synchronized AppOpenManager getInstance() {
-        if(INSTANCE == null) {
+        if (INSTANCE == null) {
             INSTANCE = new AppOpenManager();
         }
         return INSTANCE;
@@ -55,6 +64,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
     /**
      * Init AppOpenManager
+     *
      * @param application
      */
     public void init(Application application, String appOpenAdId) {
@@ -62,13 +72,14 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         this.myApplication.registerActivityLifecycleCallbacks(this);
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
         this.appOpenAdId = appOpenAdId;
-        if(!isAdAvailable() && appOpenAdId != null) {
+        if (!Purchase.getInstance().isPurchased(application.getApplicationContext()) && !isAdAvailable() && appOpenAdId != null) {
             fetchAd(appOpenAdId);
         }
     }
 
     /**
      * Check app open ads is showing
+     *
      * @return
      */
     public boolean isShowingAd() {
@@ -77,10 +88,20 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
     /**
      * Disable app open app on specific activity
+     *
      * @param activityClass
      */
     public void disableAppResumeWithActivity(Class activityClass) {
         disabledAppOpenList.add(activityClass);
+    }
+
+    public void addSplashActivity(Class splashActivity, String adId) {
+        splashActivityList.add(splashActivity);
+        classAdMap.put(splashActivity, adId);
+    }
+
+    public void removeSplashActivity(Class splasActivity) {
+        splashActivityList.remove(splasActivity);
     }
 
     public void setAppOpenAdId(String appOpenAdId) {
@@ -157,7 +178,8 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     }
 
     @Override
-    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {}
+    public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+    }
 
     @Override
     public void onActivityStarted(Activity activity) {
@@ -170,13 +192,16 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     }
 
     @Override
-    public void onActivityStopped(Activity activity) {}
+    public void onActivityStopped(Activity activity) {
+    }
 
     @Override
-    public void onActivityPaused(Activity activity) {}
+    public void onActivityPaused(Activity activity) {
+    }
 
     @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {}
+    public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+    }
 
     @Override
     public void onActivityDestroyed(Activity activity) {
@@ -186,6 +211,19 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     public void showAdIfAvailable(final String adId) {
         // Only show ad if there is not already an app open ad currently showing
         // and an ad is available.
+        if (currentActivity != null && Purchase.getInstance().isPurchased(currentActivity)) {
+            if (fullScreenContentCallback != null) {
+                fullScreenContentCallback.onAdDismissedFullScreenContent();
+            }
+            return;
+        }
+
+        Log.d(TAG, "showAdIfAvailable: " +ProcessLifecycleOwner.get().getLifecycle().getCurrentState());
+        if (!ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+            Log.d(TAG, "showAdIfAvailable: return");
+            return;
+        }
+
         if (!isShowingAd && isAdAvailable()) {
             Log.d(TAG, "Will show ad.");
 
@@ -195,16 +233,17 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         public void onAdDismissedFullScreenContent() {
                             // Set the reference to null so isAdAvailable() returns false.
                             appOpenAd = null;
-                            if(fullScreenContentCallback != null) {
+                            if (fullScreenContentCallback != null) {
                                 fullScreenContentCallback.onAdDismissedFullScreenContent();
                             }
                             isShowingAd = false;
                             fetchAd(adId);
+
                         }
 
                         @Override
                         public void onAdFailedToShowFullScreenContent(AdError adError) {
-                            if(fullScreenContentCallback != null) {
+                            if (fullScreenContentCallback != null) {
                                 fullScreenContentCallback.onAdFailedToShowFullScreenContent(adError);
                             }
                         }
@@ -223,16 +262,74 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    public void onStart() {
-        for(Class activity : disabledAppOpenList) {
-            if(activity.getName().equals(currentActivity.getClass().getName())) {
+    public void loadAndShowSplashAds(final String adId) {
+        if (currentActivity != null && Purchase.getInstance().isPurchased(currentActivity)) {
+            if (fullScreenContentCallback != null) {
+                fullScreenContentCallback.onAdDismissedFullScreenContent();
+            }
+            return;
+        }
+
+        if (isAdAvailable()) {
+            showAdIfAvailable(adId);
+        }
+
+        loadCallback =
+                new AppOpenAd.AppOpenAdLoadCallback() {
+                    /**
+                     * Called when an app open ad has loaded.
+                     *
+                     * @param ad the loaded app open ad.
+                     */
+                    @Override
+                    public void onAppOpenAdLoaded(AppOpenAd ad) {
+                        Log.d(TAG, "onAppOpenAdLoaded: splash");
+                        AppOpenManager.this.appOpenAd = ad;
+                        AppOpenManager.this.loadTime = (new Date()).getTime();
+                        showAdIfAvailable(adId);
+                    }
+
+                    /**
+                     * Called when an app open ad has failed to load.
+                     *
+                     * @param loadAdError the error.
+                     */
+                    @Override
+                    public void onAppOpenAdFailedToLoad(LoadAdError loadAdError) {
+                        if(fullScreenContentCallback != null){
+                            fullScreenContentCallback.onAdDismissedFullScreenContent();
+                        }
+                    }
+
+                };
+        AdRequest request = getAdRequest();
+        AppOpenAd.load(
+                myApplication, adId, request,
+                AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    public void onResume() {
+        for (Class activity : disabledAppOpenList) {
+            if (activity.getName().equals(currentActivity.getClass().getName())) {
                 return;
             }
         }
 
+        for (Class activity : splashActivityList) {
+            if (activity.getName().equals(currentActivity.getClass().getName())) {
+                String adId = classAdMap.get(activity);
+                if(adId == null) {
+                    adId = appOpenAdId;
+                }
+                loadAndShowSplashAds(adId);
+                return;
+            }
+
+        }
         showAdIfAvailable(appOpenAdId);
         Log.d(TAG, "onStart");
     }
+
 }
 
