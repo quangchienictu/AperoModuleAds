@@ -21,9 +21,9 @@
         <item name="android:paddingBottom">1.0dip</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:minWidth">13.0px</item>
-        <item name="android:minHeight">13.0px</item>
-        <item name="android:text">AD</item>
+        <item name="android:minWidth">15.0px</item>
+        <item name="android:minHeight">15.0px</item>
+        <item name="android:text">Ad</item>
     </style>
 
 
