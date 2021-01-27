@@ -18,41 +18,37 @@ import com.google.android.gms.ads.appopen.AppOpenAd;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class AppOpenManager implements Application.ActivityLifecycleCallbacks, LifecycleObserver {
     private static final String TAG = "AppOpenManager";
     public static final String AD_UNIT_ID_TEST = "ca-app-pub-3940256099942544/3419835294";
 
     private static volatile AppOpenManager INSTANCE;
-    private AppOpenAd appOpenAd = null;
+    private AppOpenAd appResumeAd = null;
+    private AppOpenAd splashAd = null;
     private AppOpenAd.AppOpenAdLoadCallback loadCallback;
     private FullScreenContentCallback fullScreenContentCallback;
 
-    private String appOpenAdId;
+    private String appResumeAdId;
+    private String splashAdId;
 
     private Activity currentActivity;
 
     private Application myApplication;
 
     private static boolean isShowingAd = false;
-    private long loadTime = 0;
+    private long appResumeLoadTime = 0;
+    private long splashLoadTime = 0;
 
     private final List<Class> disabledAppOpenList;
-    private final Set<Class> splashActivityList;
-    private final Map<Class, String> classAdMap;
+    private Class splashActivity;
 
     /**
      * Constructor
      */
     private AppOpenManager() {
         disabledAppOpenList = new ArrayList<>();
-        splashActivityList = new HashSet<>();
-        classAdMap = new HashMap<>();
     }
 
     public static synchronized AppOpenManager getInstance() {
@@ -71,9 +67,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         this.myApplication = application;
         this.myApplication.registerActivityLifecycleCallbacks(this);
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
-        this.appOpenAdId = appOpenAdId;
-        if (!Purchase.getInstance().isPurchased(application.getApplicationContext()) && !isAdAvailable() && appOpenAdId != null) {
-            fetchAd(appOpenAdId);
+        this.appResumeAdId = appOpenAdId;
+        if (!Purchase.getInstance().isPurchased(application.getApplicationContext()) && !isAdAvailable(false) && appOpenAdId != null) {
+            fetchAd(false);
         }
     }
 
@@ -95,17 +91,13 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         disabledAppOpenList.add(activityClass);
     }
 
-    public void addSplashActivity(Class splashActivity, String adId) {
-        splashActivityList.add(splashActivity);
-        classAdMap.put(splashActivity, adId);
+    public void setSplashActivity(Class splashActivity, String adId) {
+        this.splashActivity = splashActivity;
+        splashAdId = adId;
     }
 
-    public void removeSplashActivity(Class splasActivity) {
-        splashActivityList.remove(splasActivity);
-    }
-
-    public void setAppOpenAdId(String appOpenAdId) {
-        this.appOpenAdId = appOpenAdId;
+    public void setAppResumeAdId(String appResumeAdId) {
+        this.appResumeAdId = appResumeAdId;
     }
 
     public void setFullScreenContentCallback(FullScreenContentCallback callback) {
@@ -119,8 +111,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     /**
      * Request an ad
      */
-    public void fetchAd(String adId) {
-        if (isAdAvailable()) {
+    public void fetchAd(final boolean isSplash) {
+        Log.d(TAG, "fetchAd: isSplash = " + isSplash);
+        if (isAdAvailable(isSplash)) {
             return;
         }
 
@@ -133,9 +126,14 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                      */
                     @Override
                     public void onAppOpenAdLoaded(AppOpenAd ad) {
-                        Log.d(TAG, "onAppOpenAdLoaded: ");
-                        AppOpenManager.this.appOpenAd = ad;
-                        AppOpenManager.this.loadTime = (new Date()).getTime();
+                        Log.d(TAG, "onAppOpenAdLoaded: isSplash = " + isSplash);
+                        if (!isSplash) {
+                            AppOpenManager.this.appResumeAd = ad;
+                            AppOpenManager.this.appResumeLoadTime = (new Date()).getTime();
+                        } else {
+                            AppOpenManager.this.splashAd = ad;
+                            AppOpenManager.this.splashLoadTime = (new Date()).getTime();
+                        }
                     }
 
                     /**
@@ -145,13 +143,13 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                      */
                     @Override
                     public void onAppOpenAdFailedToLoad(LoadAdError loadAdError) {
-                        Log.d(TAG, "onAppOpenAdFailedToLoad: " + loadAdError.getMessage());
+                        Log.d(TAG, "onAppOpenAdFailedToLoad: isSplash" + isSplash + " message " + loadAdError.getMessage());
                     }
 
                 };
         AdRequest request = getAdRequest();
         AppOpenAd.load(
-                myApplication, adId, request,
+                myApplication, isSplash ? splashAdId : appResumeAdId, request,
                 AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
     }
 
@@ -162,8 +160,8 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         return new AdRequest.Builder().build();
     }
 
-    private boolean wasLoadTimeLessThanNHoursAgo(long numHours) {
-        long dateDifference = (new Date()).getTime() - this.loadTime;
+    private boolean wasLoadTimeLessThanNHoursAgo(long loadTime, long numHours) {
+        long dateDifference = (new Date()).getTime() - loadTime;
         long numMilliSecondsPerHour = 3600000;
         return (dateDifference < (numMilliSecondsPerHour * numHours));
     }
@@ -171,10 +169,12 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     /**
      * Utility method that checks if ad exists and can be shown.
      */
-    public boolean isAdAvailable() {
-        boolean wasLoadTimeLessThanNHoursAgo = wasLoadTimeLessThanNHoursAgo(4);
+    public boolean isAdAvailable(boolean isSplash) {
+        long loadTime = isSplash ? splashLoadTime : appResumeLoadTime;
+        boolean wasLoadTimeLessThanNHoursAgo = wasLoadTimeLessThanNHoursAgo(loadTime, 4);
         Log.d(TAG, "isAdAvailable: " + wasLoadTimeLessThanNHoursAgo);
-        return appOpenAd != null && wasLoadTimeLessThanNHoursAgo;
+        return (isSplash ? splashAd != null : appResumeAd != null)
+                && wasLoadTimeLessThanNHoursAgo;
     }
 
     @Override
@@ -189,6 +189,12 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     @Override
     public void onActivityResumed(Activity activity) {
         currentActivity = activity;
+        Log.d(TAG, "onActivityResumed: ");
+        if (!activity.getClass().getName().equals(splashActivity.getName())) {
+            Log.d(TAG, "onActivityResumed: with " + activity.getClass().getName());
+            fetchAd(false);
+        }
+//        fetchAd(false);
     }
 
     @Override
@@ -208,7 +214,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         currentActivity = null;
     }
 
-    public void showAdIfAvailable(final String adId) {
+    public void showAdIfAvailable(final boolean isSplash) {
         // Only show ad if there is not already an app open ad currently showing
         // and an ad is available.
         if (currentActivity != null && Purchase.getInstance().isPurchased(currentActivity)) {
@@ -218,13 +224,17 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             return;
         }
 
-        Log.d(TAG, "showAdIfAvailable: " +ProcessLifecycleOwner.get().getLifecycle().getCurrentState());
+        Log.d(TAG, "showAdIfAvailable: " + ProcessLifecycleOwner.get().getLifecycle().getCurrentState());
         if (!ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
             Log.d(TAG, "showAdIfAvailable: return");
+            if (fullScreenContentCallback != null) {
+                fullScreenContentCallback.onAdDismissedFullScreenContent();
+            }
+            
             return;
         }
 
-        if (!isShowingAd && isAdAvailable()) {
+        if (!isShowingAd && isAdAvailable(isSplash)) {
             Log.d(TAG, "Will show ad.");
 
             FullScreenContentCallback callback =
@@ -232,12 +242,12 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         @Override
                         public void onAdDismissedFullScreenContent() {
                             // Set the reference to null so isAdAvailable() returns false.
-                            appOpenAd = null;
+                            appResumeAd = null;
                             if (fullScreenContentCallback != null) {
                                 fullScreenContentCallback.onAdDismissedFullScreenContent();
                             }
                             isShowingAd = false;
-                            fetchAd(adId);
+                            fetchAd(isSplash);
 
                         }
 
@@ -250,15 +260,21 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
                         @Override
                         public void onAdShowedFullScreenContent() {
+                            Log.d(TAG, "onAdShowedFullScreenContent: isSplash = " + isSplash);
                             isShowingAd = true;
                         }
                     };
-
-            appOpenAd.show(currentActivity, callback);
+            if (isSplash) {
+                splashAd.show(currentActivity, callback);
+            } else {
+                appResumeAd.show(currentActivity, callback);
+            }
 
         } else {
             Log.d(TAG, "Ad is not ready");
-            fetchAd(adId);
+            if (!isSplash) {
+                fetchAd(false);
+            }
         }
     }
 
@@ -270,8 +286,8 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             return;
         }
 
-        if (isAdAvailable()) {
-            showAdIfAvailable(adId);
+        if (isAdAvailable(true)) {
+            showAdIfAvailable(true);
         }
 
         loadCallback =
@@ -284,9 +300,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                     @Override
                     public void onAppOpenAdLoaded(AppOpenAd ad) {
                         Log.d(TAG, "onAppOpenAdLoaded: splash");
-                        AppOpenManager.this.appOpenAd = ad;
-                        AppOpenManager.this.loadTime = (new Date()).getTime();
-                        showAdIfAvailable(adId);
+                        AppOpenManager.this.splashAd = ad;
+                        splashLoadTime = new Date().getTime();
+                        showAdIfAvailable(true);
                     }
 
                     /**
@@ -296,7 +312,8 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                      */
                     @Override
                     public void onAppOpenAdFailedToLoad(LoadAdError loadAdError) {
-                        if(fullScreenContentCallback != null){
+                        Log.e(TAG, "onAppOpenAdFailedToLoad: splash " + loadAdError.getMessage() );
+                        if (fullScreenContentCallback != null) {
                             fullScreenContentCallback.onAdDismissedFullScreenContent();
                         }
                     }
@@ -316,19 +333,18 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             }
         }
 
-        for (Class activity : splashActivityList) {
-            if (activity.getName().equals(currentActivity.getClass().getName())) {
-                String adId = classAdMap.get(activity);
-                if(adId == null) {
-                    adId = appOpenAdId;
-                }
-                loadAndShowSplashAds(adId);
-                return;
+        if (splashActivity.getName().equals(currentActivity.getClass().getName())) {
+            String adId = splashAdId;
+            if (adId == null) {
+                Log.e(TAG, "splash ad id must not be null");
             }
-
+            Log.d(TAG, "onResume: load and show splash ads");
+            loadAndShowSplashAds(adId);
+            return;
         }
-        showAdIfAvailable(appOpenAdId);
-        Log.d(TAG, "onStart");
+
+        Log.d(TAG, "onResume: show resume ads");
+        showAdIfAvailable(false);
     }
 
 }
