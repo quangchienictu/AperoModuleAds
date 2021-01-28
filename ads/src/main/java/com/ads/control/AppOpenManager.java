@@ -96,6 +96,10 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         disabledAppOpenList.add(activityClass);
     }
 
+    public void enableAppResumeWithActivity(Class activityClass) {
+        disabledAppOpenList.remove(activityClass);
+    }
+
     public void setSplashActivity(Class splashActivity, String adId) {
         this.splashActivity = splashActivity;
         splashAdId = adId;
