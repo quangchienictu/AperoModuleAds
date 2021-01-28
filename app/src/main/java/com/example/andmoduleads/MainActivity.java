@@ -1,11 +1,16 @@
 package com.example.andmoduleads;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.ads.control.Admod;
 import com.ads.control.Purchase;
@@ -25,7 +30,9 @@ public class MainActivity extends AppCompatActivity {
         Admod.getInstance().setNumToShowAds(3);
         InterstitialAd mInterstitialAd = Admod.getInstance().getInterstitalAds(this, getString(R.string.admod_interstitial_id));
 
-
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+        }
         findViewById(R.id.btShowAds).setOnClickListener(v -> {
             Admod.getInstance().showInterstitialAdByTimes(this, mInterstitialAd, new AdCallback() {
                 @Override
@@ -61,5 +68,10 @@ public class MainActivity extends AppCompatActivity {
         if (Purchase.getInstance().isPurchased(this)) {
             findViewById(R.id.btIap).setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

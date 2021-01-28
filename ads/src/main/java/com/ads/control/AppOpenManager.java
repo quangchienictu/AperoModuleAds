@@ -93,10 +93,12 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
      * @param activityClass
      */
     public void disableAppResumeWithActivity(Class activityClass) {
+        Log.d(TAG, "disableAppResumeWithActivity: " + activityClass.getName());
         disabledAppOpenList.add(activityClass);
     }
 
     public void enableAppResumeWithActivity(Class activityClass) {
+        Log.d(TAG, "enableAppResumeWithActivity: " + activityClass.getName());
         disabledAppOpenList.remove(activityClass);
     }
 
@@ -234,7 +236,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         }
 
         Log.d(TAG, "showAdIfAvailable: " + ProcessLifecycleOwner.get().getLifecycle().getCurrentState());
-        if (!ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+        if (!ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
             Log.d(TAG, "showAdIfAvailable: return");
             if (fullScreenContentCallback != null) {
                 fullScreenContentCallback.onAdDismissedFullScreenContent();
@@ -295,7 +297,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
     private void showAdsWithLoading(final boolean isSplash, final FullScreenContentCallback callback) {
 
-        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
             Dialog dialog = null;
             try {
                 dialog = new PrepareLoadingAdsDialog(currentActivity);
@@ -375,10 +377,11 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                 AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void onResume() {
         for (Class activity : disabledAppOpenList) {
             if (activity.getName().equals(currentActivity.getClass().getName())) {
+                Log.d(TAG, "onStart: activity is disabled");
                 return;
             }
         }
@@ -388,12 +391,12 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             if (adId == null) {
                 Log.e(TAG, "splash ad id must not be null");
             }
-            Log.d(TAG, "onResume: load and show splash ads");
+            Log.d(TAG, "onStart: load and show splash ads");
             loadAndShowSplashAds(adId);
             return;
         }
 
-        Log.d(TAG, "onResume: show resume ads");
+        Log.d(TAG, "onStart: show resume ads");
         showAdIfAvailable(false);
     }
 
