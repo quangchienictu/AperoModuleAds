@@ -1,7 +1,5 @@
 package com.ads.control;
 
-import android.app.Application;
-
 import androidx.multidex.MultiDexApplication;
 
 import java.util.List;
@@ -12,7 +10,7 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         Admod.getInstance().init(this, getListTestDeviceId());
-        if(enableAdsResume()) {
+        if (enableAdsResume()) {
             AppOpenManager.getInstance().init(this, getOpenAppAdId());
         }
     }

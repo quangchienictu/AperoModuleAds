@@ -40,9 +40,9 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="2"
-                        android:text="@string/appbar_scrolling_view_behavior"
+                        android:text="hellop .this ius dsa dsadsa "
                         android:textColor="@android:color/black"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/_10sdp" />
 
                     <LinearLayout
                         android:layout_width="fill_parent"
@@ -51,45 +51,20 @@
 
                         <TextView
                             android:id="@+id/ad_advertiser"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="bottom"
                             android:lines="1"
-                            android:text="@string/appbar_scrolling_view_behavior"
+                            android:text=" dá dsa dsa ds a dsads ad sad sa"
                             android:textColor="@color/colorAds"
-                            android:textSize="11sp"
+                            android:textSize="@dimen/_8sdp"
                             android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/ad_price"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dip"
-                            android:layout_marginRight="5dip"
-                            android:text="@string/s5"
-                            android:textColor="@color/colorAds"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
 
-                        <RatingBar
-                            android:id="@+id/ad_stars"
-                            style="?android:ratingBarStyleSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:isIndicator="true"
-                            android:numStars="5"
-                            android:stepSize="0.5" />
-
-                        <TextView
-                            android:id="@+id/ad_store"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dip"
-                            android:text="@string/s5"
-                            android:textColor="@android:color/darker_gray"
-                            android:textSize="11sp" />
                     </LinearLayout>
+
+
                 </LinearLayout>
             </LinearLayout>
 
@@ -100,29 +75,26 @@
                 android:layout_marginLeft="10dip"
                 android:layout_marginRight="10dip"
                 android:maxLines="3"
-                android:textSize="12sp" />
+                android:text="@string/appbar_scrolling_view_behavior"
+                android:textSize="@dimen/_10sdp" />
 
             <com.google.android.gms.ads.formats.MediaView
                 android:id="@+id/ad_media"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="5dip"
                 android:layout_weight="1" />
-
 
             <Button
                 android:id="@+id/ad_call_to_action"
                 android:layout_width="fill_parent"
-                android:layout_height="40dip"
-                android:layout_marginLeft="10dip"
-                android:layout_marginTop="5dip"
-                android:layout_marginRight="10dip"
-                android:layout_marginBottom="5dip"
+                android:layout_height="@dimen/_35sdp"
                 android:background="@drawable/ads_bg_lib"
                 android:gravity="center"
+                android:layout_margin="@dimen/_16sdp"
+                android:text="Cài Đặt"
                 android:textColor="@color/colorWhite"
-                android:textSize="13sp"
+                android:textSize="@dimen/_12sdp"
                 android:textStyle="bold" />
         </LinearLayout>
 

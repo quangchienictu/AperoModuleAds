@@ -1,8 +1,9 @@
 package com.ads.control.funtion;
 
 import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.formats.UnifiedNativeAd;
 
-public class AdCallback  {
+public class AdCallback {
     public AdCallback() {
     }
 
@@ -28,5 +29,10 @@ public class AdCallback  {
     }
 
     public void onAdImpression() {
+    }
+
+
+    public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+
     }
 }

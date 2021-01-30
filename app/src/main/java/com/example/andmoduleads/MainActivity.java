@@ -1,11 +1,14 @@
 package com.example.andmoduleads;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,20 +20,35 @@ import com.ads.control.Purchase;
 import com.ads.control.dialog.InAppDialog;
 import com.ads.control.funtion.AdCallback;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.formats.UnifiedNativeAd;
+import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 
 public class MainActivity extends AppCompatActivity {
+    private FrameLayout frAds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        frAds = findViewById(R.id.fr_ads);
+
+
+        Admod.getInstance().loadUnifiedNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {
+            @Override
+            public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+                @SuppressLint("InflateParams") UnifiedNativeAdView adView = (UnifiedNativeAdView) LayoutInflater.from(MainActivity.this)
+                        .inflate(R.layout.custom_native, null);
+                frAds.addView(adView);
+                Admod.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, adView);
+            }
+        });
         Purchase.getInstance().initBilling(this, "android.test.purchased");
         Admod.getInstance().loadBanner(this, getString(R.string.admod_banner_id));
-        Admod.getInstance().loadNative(this, getString(R.string.admod_native_id));
+//        Admod.getInstance().loadNative(this, getString(R.string.admod_native_id));
         Admod.getInstance().setNumToShowAds(3);
         InterstitialAd mInterstitialAd = Admod.getInstance().getInterstitalAds(this, getString(R.string.admod_interstitial_id));
 
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         }
         findViewById(R.id.btShowAds).setOnClickListener(v -> {

@@ -472,6 +472,28 @@ public class Admod {
         loadNative(mActivity, containerShimmer, frameLayout, adUnitId, R.layout.small_native_admod_ad);
     }
 
+    public void loadUnifiedNativeAd(Context context, String id, final AdCallback callback) {
+        if (Purchase.getInstance().isPurchased(context)) {
+            return;
+        }
+        VideoOptions videoOptions = new VideoOptions.Builder()
+                .setStartMuted(true)
+                .build();
+
+        NativeAdOptions adOptions = new NativeAdOptions.Builder()
+                .setVideoOptions(videoOptions)
+                .build();
+        AdLoader adLoader = new AdLoader.Builder(context, id)
+                .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
+                    @Override
+                    public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+                        callback.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                    }
+                })
+                .withNativeAdOptions(adOptions)
+                .build();
+        adLoader.loadAd(getAdRequest());
+    }
 
     private void loadNative(final Context context, final ShimmerFrameLayout containerShimmer, final FrameLayout frameLayout, final String id, final int layout) {
         if (Purchase.getInstance().isPurchased(context)) {
@@ -522,7 +544,7 @@ public class Admod {
     }
 
 
-    private void populateUnifiedNativeAdView(UnifiedNativeAd nativeAd, UnifiedNativeAdView adView) {
+    public void populateUnifiedNativeAdView(UnifiedNativeAd nativeAd, UnifiedNativeAdView adView) {
         MediaView mediaView = adView.findViewById(R.id.ad_media);
         adView.setMediaView(mediaView);
 
@@ -530,11 +552,10 @@ public class Admod {
         adView.setHeadlineView(adView.findViewById(R.id.ad_headline));
         adView.setBodyView(adView.findViewById(R.id.ad_body));
         adView.setCallToActionView(adView.findViewById(R.id.ad_call_to_action));
-
         adView.setIconView(adView.findViewById(R.id.ad_app_icon));
-        adView.setPriceView(adView.findViewById(R.id.ad_price));
-        adView.setStarRatingView(adView.findViewById(R.id.ad_stars));
-        adView.setStoreView(adView.findViewById(R.id.ad_store));
+//        adView.setPriceView(adView.findViewById(R.id.ad_price));
+//        adView.setStarRatingView(adView.findViewById(R.id.ad_stars));
+//        adView.setStoreView(adView.findViewById(R.id.ad_store));
         adView.setAdvertiserView(adView.findViewById(R.id.ad_advertiser));
 
         // The headline is guaranteed to be in every UnifiedNativeAd.
