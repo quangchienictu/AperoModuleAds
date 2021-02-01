@@ -64,6 +64,7 @@ public class Admod {
     private PrepareLoadingAdsDialog dialog;
     private boolean isTimeLimited;
     private boolean isFan;
+    private boolean openActivityAfterShowInterAds = false;
 //    private AppOpenAd appOpenAd = null;
 //    private static final String SHARED_PREFERENCE_NAME = "ads_shared_preference";
 
@@ -111,6 +112,10 @@ public class Admod {
         });
 
         MobileAds.setRequestConfiguration(new RequestConfiguration.Builder().setTestDeviceIds(testDeviceList).build());
+    }
+
+    public void setOpenActivityAfterShowInterAds(boolean openActivityAfterShowInterAds) {
+        this.openActivityAfterShowInterAds = openActivityAfterShowInterAds;
     }
 
     public AdRequest getAdRequest() {
@@ -275,7 +280,9 @@ public class Admod {
                     AppOpenManager.getInstance().enableAppResume();
                 }
                 if (callback != null) {
-                    callback.onAdClosed();
+                    if(!openActivityAfterShowInterAds) {
+                        callback.onAdClosed();
+                    }
                     if (shouldReloadAds) {
                         requestInterstitialAds(mInterstitialAd);
                     }
@@ -351,14 +358,15 @@ public class Admod {
                     dialog = null;
                     e.printStackTrace();
                 }
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(AppOpenManager.getInstance().isInitialized()) {
-                            AppOpenManager.getInstance().disableAppResume();
-                        }
-                        mInterstitialAd.show();
+                new Handler().postDelayed(() -> {
+                    if(AppOpenManager.getInstance().isInitialized()) {
+                        AppOpenManager.getInstance().disableAppResume();
                     }
+
+                    if(openActivityAfterShowInterAds && callback != null) {
+                        callback.onAdClosed();
+                    }
+                    mInterstitialAd.show();
                 }, 800);
 
             }
