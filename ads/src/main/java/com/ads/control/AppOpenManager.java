@@ -44,9 +44,23 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     private static boolean isShowingAd = false;
     private long appResumeLoadTime = 0;
     private long splashLoadTime = 0;
+    private int splashTimeout = 0;
+
+    private boolean isInitialized = false;
+    private boolean isAppResumeEnabled = true;
 
     private final List<Class> disabledAppOpenList;
     private Class splashActivity;
+
+    private boolean isTimeout = false;
+    private static final int TIMEOUT_MSG = 11;
+
+    private Handler timeoutHandler = new Handler(msg -> {
+        if (msg.what == TIMEOUT_MSG) {
+            isTimeout = true;
+        }
+        return false;
+    });
 
     /**
      * Constructor
@@ -68,6 +82,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
      * @param application
      */
     public void init(Application application, String appOpenAdId) {
+        isInitialized = true;
         this.myApplication = application;
         this.myApplication.registerActivityLifecycleCallbacks(this);
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
@@ -76,6 +91,10 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 //                !isAdAvailable(false) && appOpenAdId != null) {
 //            fetchAd(false);
 //        }
+    }
+
+    public boolean isInitialized() {
+        return isInitialized;
     }
 
     /**
@@ -102,9 +121,18 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         disabledAppOpenList.remove(activityClass);
     }
 
-    public void setSplashActivity(Class splashActivity, String adId) {
+    public void disableAppResume() {
+        isAppResumeEnabled = false;
+    }
+
+    public void enableAppResume() {
+        isAppResumeEnabled = true;
+    }
+
+    public void setSplashActivity(Class splashActivity, String adId, int timeoutInMillis) {
         this.splashActivity = splashActivity;
         splashAdId = adId;
+        this.splashTimeout = timeoutInMillis;
     }
 
     public void setAppResumeAdId(String appResumeAdId) {
@@ -330,6 +358,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     }
 
     public void loadAndShowSplashAds(final String adId) {
+        isTimeout = false;
         if (currentActivity != null && Purchase.getInstance().isPurchased(currentActivity)) {
             if (fullScreenContentCallback != null) {
                 fullScreenContentCallback.onAdDismissedFullScreenContent();
@@ -354,6 +383,13 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         Log.d(TAG, "onAppOpenAdLoaded: splash");
                         AppOpenManager.this.splashAd = ad;
                         splashLoadTime = new Date().getTime();
+                        if(isTimeout) {
+                            Log.e(TAG, "onAppOpenAdLoaded: splash timeout" );
+                            if(fullScreenContentCallback != null) {
+                                fullScreenContentCallback.onAdDismissedFullScreenContent();
+                            }
+                            return;
+                        }
                         showAdIfAvailable(true);
                     }
 
@@ -375,10 +411,18 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         AppOpenAd.load(
                 myApplication, splashAdId, request,
                 AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
+
+        if(splashTimeout > 0 ) {
+            timeoutHandler.sendEmptyMessageDelayed(TIMEOUT_MSG, splashTimeout);
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void onResume() {
+        if(!isAppResumeEnabled) {
+            Log.d(TAG, "onResume: app resume is disabled");
+            return;
+        }
         for (Class activity : disabledAppOpenList) {
             if (activity.getName().equals(currentActivity.getClass().getName())) {
                 Log.d(TAG, "onStart: activity is disabled");

@@ -271,6 +271,9 @@ public class Admod {
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
+                if(AppOpenManager.getInstance().isInitialized()) {
+                    AppOpenManager.getInstance().enableAppResume();
+                }
                 if (callback != null) {
                     callback.onAdClosed();
                     if (shouldReloadAds) {
@@ -280,6 +283,7 @@ public class Admod {
                         dialog.dismiss();
                     }
                 }
+
             }
 
             @Override
@@ -350,6 +354,9 @@ public class Admod {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        if(AppOpenManager.getInstance().isInitialized()) {
+                            AppOpenManager.getInstance().disableAppResume();
+                        }
                         mInterstitialAd.show();
                     }
                 }, 800);
