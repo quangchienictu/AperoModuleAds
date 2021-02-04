@@ -32,7 +32,7 @@ public class InAppDialog extends Dialog {
     }
 
     private void initView() {
-        ((TextView) findViewById(R.id.tv_price)).setText(Purchase.getInstance().getPrice());
+        ((TextView) findViewById(R.id.tv_price)).setText(Purchase.getInstance().getPrice(""));
         findViewById(R.id.iv_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -48,8 +48,8 @@ public class InAppDialog extends Dialog {
         });
         TextView tvOldPrice = findViewById(R.id.tv_old_price);
         TextView tvPrice = findViewById(R.id.tv_price);
-        tvOldPrice.setText(Purchase.getInstance().getOldPrice());
-        tvPrice.setText(Purchase.getInstance().getPrice());
+        tvOldPrice.setText(Purchase.getInstance().getOldPrice(""));
+        tvPrice.setText(Purchase.getInstance().getPrice(""));
         tvOldPrice.setPaintFlags(tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
     }
 

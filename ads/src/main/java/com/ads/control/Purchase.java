@@ -21,9 +21,9 @@ public class Purchase {
     private static Purchase instance;
 
     @SuppressLint("StaticFieldLeak")
-    private String productId;
     private String price = "1.49$";
     private String oldPrice = "2.99$";
+    private String productId;
 
     public void setPrice(String price) {
         this.price = price;
@@ -44,12 +44,15 @@ public class Purchase {
 
     }
 
-    public void initBilling(final Context context, final String productId) {
+    public void setProductId(String productId) {
         this.productId = productId;
+    }
+
+    public void initBilling(final Context context) {
         bp = new BillingProcessor(context, LICENSE_KEY, MERCHANT_ID, new BillingProcessor.IBillingHandler() {
             @Override
             public void onProductPurchased(@NonNull String productId, @Nullable TransactionDetails details) {
-                AdmodHelper.setPurchased((Activity) context, true);
+
             }
 
             @Override
@@ -63,32 +66,44 @@ public class Purchase {
 
             @Override
             public void onPurchaseHistoryRestored() {
-                if (bp.isPurchased(productId)) {
-                    AdmodHelper.setPurchased((Activity) context, true);
-                }
+
             }
         });
         bp.initialize();
     }
 
     public boolean isPurchased(Context context) {
-        try {
-            return AdmodHelper.isPurchased((Activity) context) || bp.isPurchased(productId);
-        } catch (Exception e) {
-            e.printStackTrace();
+        return isPurchased(context, productId);
+    }
+
+    public boolean isPurchased(Context context, String productId) {
+        if (bp == null) {
+            initBilling(context);
         }
-        return false;
+        return bp.isPurchased(productId) || bp.isSubscribed(productId);
     }
 
     public void purchase(Activity activity) {
-        try {
-            bp.purchase(activity, productId);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        purchase(activity, productId);
     }
 
-    public void consumePurchase() {
+
+    public void purchase(Activity activity, String productId) {
+        if (bp == null) {
+            initBilling(activity);
+        }
+        bp.purchase(activity, productId);
+    }
+
+    public void subscribe(Activity activity, String productId) {
+        if (bp == null) {
+            initBilling(activity);
+        }
+        bp.subscribe(activity, productId);
+    }
+
+
+    public void consumePurchase(String productId) {
         try {
             bp.consumePurchase(productId);
         } catch (Exception e) {
@@ -101,11 +116,11 @@ public class Purchase {
         bp.handleActivityResult(requestCode, resultCode, data);
     }
 
-    public String getPrice() {
-        return price;
+    public String getPrice(String productId) {
+        return bp.getPurchaseListingDetails(productId).priceText;
     }
 
-    public String getOldPrice() {
+    public String getOldPrice(String productId) {
         return oldPrice;
     }
 }

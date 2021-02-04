@@ -24,6 +24,7 @@ import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String PRODUCT_ID = "android.test.purchased";
     private FrameLayout frAds;
 
     @Override
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 Admod.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, adView);
             }
         });
-        Purchase.getInstance().initBilling(this, "android.test.purchased");
+        Purchase.getInstance().initBilling(this);
         Admod.getInstance().loadBanner(this, getString(R.string.admod_banner_id));
 //        Admod.getInstance().loadNative(this, getString(R.string.admod_native_id));
         Admod.getInstance().setNumToShowAds(3);
@@ -69,10 +70,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.btIap).setOnClickListener(v -> {
-            Purchase.getInstance().consumePurchase();
+            Purchase.getInstance().consumePurchase(PRODUCT_ID);
             InAppDialog dialog = new InAppDialog(this);
             dialog.setCallback(() -> {
-                Purchase.getInstance().purchase(this);
+                Purchase.getInstance().purchase(this,PRODUCT_ID);
                 dialog.dismiss();
             });
             dialog.show();
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Purchase.getInstance().handleActivityResult(requestCode, resultCode, data);
-        if (Purchase.getInstance().isPurchased(this)) {
+        if (Purchase.getInstance().isPurchased(this,PRODUCT_ID)) {
             findViewById(R.id.btIap).setVisibility(View.GONE);
         }
     }
