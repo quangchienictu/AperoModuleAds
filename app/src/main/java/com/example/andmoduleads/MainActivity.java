@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -19,6 +20,7 @@ import com.ads.control.Admod;
 import com.ads.control.Purchase;
 import com.ads.control.dialog.InAppDialog;
 import com.ads.control.funtion.AdCallback;
+import com.ads.control.funtion.PurchaseListioner;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         Purchase.getInstance().initBilling(this);
+        Purchase.getInstance().setProductId(PRODUCT_ID);
         Admod.getInstance().loadBanner(this, getString(R.string.admod_banner_id));
 //        Admod.getInstance().loadNative(this, getString(R.string.admod_native_id));
         Admod.getInstance().setNumToShowAds(3);
@@ -73,10 +76,17 @@ public class MainActivity extends AppCompatActivity {
             Purchase.getInstance().consumePurchase(PRODUCT_ID);
             InAppDialog dialog = new InAppDialog(this);
             dialog.setCallback(() -> {
+                Purchase.getInstance().consumePurchase(PRODUCT_ID);
                 Purchase.getInstance().purchase(this,PRODUCT_ID);
                 dialog.dismiss();
             });
             dialog.show();
+        });
+        Purchase.getInstance().setPurchaseListioner(new PurchaseListioner() {
+            @Override
+            public void onProductPurchased(String productId) {
+                Log.e("PurchaseListioner","ProductPurchased:"+ productId);
+            }
         });
     }
 
@@ -84,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Purchase.getInstance().handleActivityResult(requestCode, resultCode, data);
+        Log.e("onActivityResult","ProductPurchased:"+ data.toString());
         if (Purchase.getInstance().isPurchased(this,PRODUCT_ID)) {
             findViewById(R.id.btIap).setVisibility(View.GONE);
         }

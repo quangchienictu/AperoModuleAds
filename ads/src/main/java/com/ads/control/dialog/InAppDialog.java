@@ -32,7 +32,7 @@ public class InAppDialog extends Dialog {
     }
 
     private void initView() {
-        ((TextView) findViewById(R.id.tv_price)).setText(Purchase.getInstance().getPrice(""));
+        ((TextView) findViewById(R.id.tv_price)).setText(Purchase.getInstance().getPrice());
         findViewById(R.id.iv_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

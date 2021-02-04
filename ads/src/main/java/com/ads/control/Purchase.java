@@ -4,17 +4,22 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.ads.control.funtion.AdmodHelper;
+import com.ads.control.funtion.PurchaseListioner;
 import com.anjlab.android.iab.v3.BillingProcessor;
+import com.anjlab.android.iab.v3.SkuDetails;
 import com.anjlab.android.iab.v3.TransactionDetails;
 
 public class Purchase {
     private static final String LICENSE_KEY = null;
     private static final String MERCHANT_ID = null;
+    private static final String TAG = "PurchaseEG";
     private BillingProcessor bp;
     //    public static final String PRODUCT_ID = "android.test.purchased";
     @SuppressLint("StaticFieldLeak")
@@ -24,6 +29,11 @@ public class Purchase {
     private String price = "1.49$";
     private String oldPrice = "2.99$";
     private String productId;
+    private PurchaseListioner purchaseListioner;
+
+    public void setPurchaseListioner(PurchaseListioner purchaseListioner) {
+        this.purchaseListioner = purchaseListioner;
+    }
 
     public void setPrice(String price) {
         this.price = price;
@@ -52,7 +62,9 @@ public class Purchase {
         bp = new BillingProcessor(context, LICENSE_KEY, MERCHANT_ID, new BillingProcessor.IBillingHandler() {
             @Override
             public void onProductPurchased(@NonNull String productId, @Nullable TransactionDetails details) {
-
+                Log.e(TAG,"ProductPurchased:"+ productId);
+                if (purchaseListioner!=null)
+                    purchaseListioner.onProductPurchased(productId);
             }
 
             @Override
@@ -66,7 +78,7 @@ public class Purchase {
 
             @Override
             public void onPurchaseHistoryRestored() {
-
+                Log.e(TAG,"PurchaseHistoryRestored");
             }
         });
         bp.initialize();
@@ -80,10 +92,17 @@ public class Purchase {
         if (bp == null) {
             initBilling(context);
         }
+        if (productId == null)
+            return false;
         return bp.isPurchased(productId) || bp.isSubscribed(productId);
     }
 
     public void purchase(Activity activity) {
+        if (productId == null) {
+            Log.e(TAG,"Purchase false:productId null" );
+            Toast.makeText(activity, "Product id must not be empty!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         purchase(activity, productId);
     }
 
@@ -103,6 +122,14 @@ public class Purchase {
     }
 
 
+    public void consumePurchase() {
+        if (productId == null) {
+            Log.e(TAG,"Consume Purchase false:productId null " );
+            return;
+        }
+        consumePurchase(productId);
+    }
+
     public void consumePurchase(String productId) {
         try {
             bp.consumePurchase(productId);
@@ -116,8 +143,14 @@ public class Purchase {
         bp.handleActivityResult(requestCode, resultCode, data);
     }
 
+    public String getPrice() {
+      return   getPrice(productId);
+    }
     public String getPrice(String productId) {
-        return bp.getPurchaseListingDetails(productId).priceText;
+        SkuDetails skuDetails= bp.getPurchaseListingDetails(productId);
+        if (bp.getPurchaseListingDetails(productId)==null)
+            return "";
+        return skuDetails.priceText;
     }
 
     public String getOldPrice(String productId) {
