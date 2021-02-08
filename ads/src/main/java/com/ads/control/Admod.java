@@ -49,6 +49,7 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.List;
 
 public class Admod {
@@ -105,13 +106,17 @@ public class Admod {
      * @param context
      */
     public void init(Context context, List<String> testDeviceList) {
-        MobileAds.initialize(context, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
+        MobileAds.initialize(context, initializationStatus -> {
         });
-
         MobileAds.setRequestConfiguration(new RequestConfiguration.Builder().setTestDeviceIds(testDeviceList).build());
+    }
+
+    public void init(Context context) {
+        MobileAds.initialize(context, initializationStatus -> {
+        });
+        if (BuildConfig.DEBUG) {
+            MobileAds.setRequestConfiguration(new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList(getDeviceId((Activity) context))).build());
+        }
     }
 
     public void setOpenActivityAfterShowInterAds(boolean openActivityAfterShowInterAds) {
@@ -276,11 +281,11 @@ public class Admod {
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
-                if(AppOpenManager.getInstance().isInitialized()) {
+                if (AppOpenManager.getInstance().isInitialized()) {
                     AppOpenManager.getInstance().enableAppResume();
                 }
                 if (callback != null) {
-                    if(!openActivityAfterShowInterAds) {
+                    if (!openActivityAfterShowInterAds) {
                         callback.onAdClosed();
                     }
                     if (shouldReloadAds) {
@@ -359,11 +364,11 @@ public class Admod {
                     e.printStackTrace();
                 }
                 new Handler().postDelayed(() -> {
-                    if(AppOpenManager.getInstance().isInitialized()) {
+                    if (AppOpenManager.getInstance().isInitialized()) {
                         AppOpenManager.getInstance().disableAppResume();
                     }
 
-                    if(openActivityAfterShowInterAds && callback != null) {
+                    if (openActivityAfterShowInterAds && callback != null) {
                         callback.onAdClosed();
                     }
                     mInterstitialAd.show();
@@ -503,6 +508,12 @@ public class Admod {
                     @Override
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
                         callback.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                    }
+                })
+                .withAdListener(new AdListener() {
+                    @Override
+                    public void onAdFailedToLoad(LoadAdError error) {
+                        callback.onAdFailedToLoad(error);
                     }
                 })
                 .withNativeAdOptions(adOptions)
