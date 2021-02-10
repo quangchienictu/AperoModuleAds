@@ -10,7 +10,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.ads.control.funtion.AdmodHelper;
 import com.ads.control.funtion.PurchaseListioner;
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.SkuDetails;
@@ -143,8 +142,18 @@ public class Purchase {
         bp.handleActivityResult(requestCode, resultCode, data);
     }
 
+    private boolean isUserSetPrice = false;
+    public void setPriceByCode(String price) {
+        isUserSetPrice = true;
+        this.price = price;
+    }
+
+    public String getPriceByCode() {
+        return price;
+    }
+
     public String getPrice() {
-      return   getPrice(productId);
+      return isUserSetPrice ? getPriceByCode() :  getPrice(productId);
     }
     public String getPrice(String productId) {
         SkuDetails skuDetails= bp.getPurchaseListingDetails(productId);
