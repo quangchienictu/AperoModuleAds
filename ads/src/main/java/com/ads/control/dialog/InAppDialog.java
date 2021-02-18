@@ -47,7 +47,14 @@ public class InAppDialog extends Dialog {
         });
         TextView tvOldPrice = findViewById(R.id.tv_old_price);
         TextView tvPrice = findViewById(R.id.tv_price);
-        tvOldPrice.setText(Purchase.getInstance().getOldPrice(""));
+        if (Purchase.getInstance().getDiscount() == 1) {
+            tvOldPrice.setVisibility(View.GONE);
+            findViewById(R.id.view_split).setVisibility(View.GONE);
+        } else {
+            tvOldPrice.setVisibility(View.VISIBLE);
+            findViewById(R.id.view_split).setVisibility(View.VISIBLE);
+        }
+        tvOldPrice.setText(Purchase.getInstance().getOldPrice());
         tvPrice.setText(Purchase.getInstance().getPrice());
         tvOldPrice.setPaintFlags(tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
     }

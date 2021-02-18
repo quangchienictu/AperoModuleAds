@@ -10,10 +10,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.ads.control.funtion.AdmodHelper;
 import com.ads.control.funtion.PurchaseListioner;
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.SkuDetails;
 import com.anjlab.android.iab.v3.TransactionDetails;
+
+import java.text.NumberFormat;
+import java.util.Currency;
 
 public class Purchase {
     private static final String LICENSE_KEY = null;
@@ -61,13 +65,16 @@ public class Purchase {
         bp = new BillingProcessor(context, LICENSE_KEY, MERCHANT_ID, new BillingProcessor.IBillingHandler() {
             @Override
             public void onProductPurchased(@NonNull String productId, @Nullable TransactionDetails details) {
-                Log.e(TAG,"ProductPurchased:"+ productId);
-                if (purchaseListioner!=null)
+                Toast.makeText(context, "Purchase success!", Toast.LENGTH_SHORT).show();
+
+                Log.e(TAG, "ProductPurchased:" + productId);
+                if (purchaseListioner != null)
                     purchaseListioner.onProductPurchased(productId);
             }
 
             @Override
             public void onBillingError(int errorCode, @Nullable Throwable error) {
+                Toast.makeText(context, "Purchase error " + error, Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -77,10 +84,12 @@ public class Purchase {
 
             @Override
             public void onPurchaseHistoryRestored() {
-                Log.e(TAG,"PurchaseHistoryRestored");
+                Log.e(TAG, "PurchaseHistoryRestored");
             }
         });
+
         bp.initialize();
+        bp.loadOwnedPurchasesFromGoogle();
     }
 
     public boolean isPurchased(Context context) {
@@ -93,12 +102,17 @@ public class Purchase {
         }
         if (productId == null)
             return false;
-        return bp.isPurchased(productId) || bp.isSubscribed(productId);
+        TransactionDetails transactionDetails = bp.getSubscriptionTransactionDetails(productId);
+//        if (transactionDetails != null)
+//            Toast.makeText(context, "TransactionDetails autoRenewing:" + transactionDetails.purchaseInfo.purchaseData.autoRenewing, Toast.LENGTH_SHORT).show();
+        boolean pp = bp.isPurchased(productId) || bp.isSubscribed(productId);
+        Log.e(TAG, "isPurchased:" + pp);
+        return pp;
     }
 
     public void purchase(Activity activity) {
         if (productId == null) {
-            Log.e(TAG,"Purchase false:productId null" );
+            Log.e(TAG, "Purchase false:productId null");
             Toast.makeText(activity, "Product id must not be empty!", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -120,10 +134,9 @@ public class Purchase {
         bp.subscribe(activity, productId);
     }
 
-
     public void consumePurchase() {
         if (productId == null) {
-            Log.e(TAG,"Consume Purchase false:productId null " );
+            Log.e(TAG, "Consume Purchase false:productId null ");
             return;
         }
         consumePurchase(productId);
@@ -142,27 +155,38 @@ public class Purchase {
         bp.handleActivityResult(requestCode, resultCode, data);
     }
 
-    private boolean isUserSetPrice = false;
-    public void setPriceByCode(String price) {
-        isUserSetPrice = true;
-        this.price = price;
-    }
-
-    public String getPriceByCode() {
-        return price;
-    }
-
     public String getPrice() {
-      return isUserSetPrice ? getPriceByCode() :  getPrice(productId);
-    }
-    public String getPrice(String productId) {
-        SkuDetails skuDetails= bp.getPurchaseListingDetails(productId);
-        if (bp.getPurchaseListingDetails(productId)==null)
-            return "";
-        return skuDetails.priceText;
+        return getPrice(productId);
     }
 
-    public String getOldPrice(String productId) {
-        return oldPrice;
+    public String getPrice(String productId) {
+        SkuDetails skuDetails = bp.getPurchaseListingDetails(productId);
+        if (skuDetails == null)
+            return "";
+        return formatCurrency(skuDetails.priceValue, skuDetails.currency);
+    }
+
+    public String getOldPrice() {
+        SkuDetails skuDetails = bp.getPurchaseListingDetails(productId);
+        if (skuDetails == null)
+            return "";
+        return formatCurrency(skuDetails.priceValue / discount, skuDetails.currency);
+    }
+
+    private String formatCurrency(double price, String currency) {
+        NumberFormat format = NumberFormat.getCurrencyInstance();
+        format.setMaximumFractionDigits(0);
+        format.setCurrency(Currency.getInstance(currency));
+        return format.format(price);
+    }
+
+    private double discount = 1;
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+
+    public double getDiscount() {
+        return discount;
     }
 }
