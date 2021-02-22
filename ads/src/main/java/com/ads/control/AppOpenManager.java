@@ -3,10 +3,18 @@ package com.ads.control;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.Toast;
 
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
@@ -21,6 +29,7 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.appopen.AppOpenAd;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -186,10 +195,32 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                     }
 
                 };
+
+        if (Arrays.asList(currentActivity.getResources().getStringArray(R.array.list_id_test)).contains(isSplash ? splashAdId : appResumeAdId)) {
+            showTestIdAlert(currentActivity, isSplash, isSplash ? splashAdId : appResumeAdId);
+        }
         AdRequest request = getAdRequest();
         AppOpenAd.load(
                 myApplication, isSplash ? splashAdId : appResumeAdId, request,
                 AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
+    }
+
+    private void showTestIdAlert(Context context, boolean isSplash, String id) {
+        Notification notification = new NotificationCompat.Builder(context,"warning_ads")
+                .setContentTitle("Found test ad id")
+                .setContentText((isSplash ? "Splash Ads: " : "AppResume Ads: " + id))
+                .setSmallIcon(R.drawable.ic_warning)
+                .build();
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("warning_ads",
+                    "Warning Ads",
+                    NotificationManager.IMPORTANCE_LOW);
+            notificationManager.createNotificationChannel(channel);
+        }
+        notificationManager.notify(isSplash ? Admod.SPLASH_ADS : Admod.RESUME_ADS, notification);
     }
 
     /**
