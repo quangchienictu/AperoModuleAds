@@ -65,8 +65,6 @@ public class Purchase {
         bp = new BillingProcessor(context, LICENSE_KEY, MERCHANT_ID, new BillingProcessor.IBillingHandler() {
             @Override
             public void onProductPurchased(@NonNull String productId, @Nullable TransactionDetails details) {
-                Toast.makeText(context, "Purchase success!", Toast.LENGTH_SHORT).show();
-
                 Log.e(TAG, "ProductPurchased:" + productId);
                 if (purchaseListioner != null)
                     purchaseListioner.onProductPurchased(productId);
@@ -74,7 +72,6 @@ public class Purchase {
 
             @Override
             public void onBillingError(int errorCode, @Nullable Throwable error) {
-                Toast.makeText(context, "Purchase error " + error, Toast.LENGTH_SHORT).show();
             }
 
             @Override
