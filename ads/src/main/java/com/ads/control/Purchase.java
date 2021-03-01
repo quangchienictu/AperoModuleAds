@@ -67,6 +67,7 @@ public class Purchase {
                     purchaseListioner.onProductPurchased(productId);
             }
 
+
             @Override
             public void onBillingError(int errorCode, @Nullable Throwable error) {
             }
@@ -81,6 +82,8 @@ public class Purchase {
                 Log.e(TAG,"PurchaseHistoryRestored");
             }
         });
+
+
         bp.initialize();
     }
 
@@ -94,7 +97,9 @@ public class Purchase {
         }
         if (productId == null)
             return false;
-        return bp.isPurchased(productId) || bp.isSubscribed(productId);
+        boolean pp = bp.isPurchased(productId) || bp.isSubscribed(productId);
+        Log.e(TAG,"isPurchased:"+ pp);
+        return pp;
     }
 
     public void purchase(Activity activity) {
@@ -119,6 +124,7 @@ public class Purchase {
             initBilling(activity);
         }
         bp.subscribe(activity, productId);
+
     }
 
 

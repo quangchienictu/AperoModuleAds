@@ -26,7 +26,7 @@ import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String PRODUCT_ID = "android.test.purchased";
+      static final String PRODUCT_ID = "android.test.purchased";
     private FrameLayout frAds;
 
     @Override
@@ -45,8 +45,7 @@ public class MainActivity extends AppCompatActivity {
                 Admod.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, adView);
             }
         });
-        Purchase.getInstance().initBilling(this);
-        Purchase.getInstance().setProductId(PRODUCT_ID);
+
         Admod.getInstance().loadBanner(this, getString(R.string.admod_banner_id));
 //        Admod.getInstance().loadNative(this, getString(R.string.admod_native_id));
         Admod.getInstance().setNumToShowAds(3);
