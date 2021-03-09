@@ -32,6 +32,7 @@ import com.ads.control.funtion.AdmodHelper;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.ads.mediation.facebook.FacebookAdapter;
 import com.google.ads.mediation.facebook.FacebookExtras;
+import com.google.ads.mediation.adcolony.AdColonyMediationAdapter;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
@@ -50,6 +51,8 @@ import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdCallback;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.jirbo.adcolony.AdColonyAdapter;
+import com.jirbo.adcolony.AdColonyBundleBuilder;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -69,6 +72,7 @@ public class Admod {
     private PrepareLoadingAdsDialog dialog;
     private boolean isTimeLimited;
     private boolean isFan;
+    private boolean isAdcolony;
     private boolean openActivityAfterShowInterAds = false;
 //    private AppOpenAd appOpenAd = null;
 //    private static final String SHARED_PREFERENCE_NAME = "ads_shared_preference";
@@ -77,6 +81,10 @@ public class Admod {
 
     public void setFan(boolean fan) {
         isFan = fan;
+    }
+
+    public void setColony(boolean adcolony) {
+        isAdcolony = adcolony;
     }
 
     /**
@@ -136,7 +144,18 @@ public class Admod {
                     .addNetworkExtrasBundle(FacebookAdapter.class, extras)
                     .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                     .build();
+
         }
+
+        if (isAdcolony) {
+            AdColonyBundleBuilder.setShowPrePopup(true);
+            AdColonyBundleBuilder.setShowPostPopup(true);
+            return new AdRequest.Builder()
+                    .addNetworkExtrasBundle(AdColonyAdapter.class, AdColonyBundleBuilder.build())
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                    .build();
+        }
+
         return new AdRequest.Builder()
                 .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .build();
@@ -424,6 +443,7 @@ public class Admod {
             containerShimmer.setVisibility(View.GONE);
             return;
         }
+        
         containerShimmer.setVisibility(View.VISIBLE);
         containerShimmer.startShimmer();
         try {
@@ -444,6 +464,7 @@ public class Admod {
 
                 @Override
                 public void onAdLoaded() {
+                    Log.d(TAG,"Banner adapter class name: " + adView.getResponseInfo().getMediationAdapterClassName());
                     containerShimmer.stopShimmer();
                     containerShimmer.setVisibility(View.GONE);
                     adContainer.setVisibility(View.VISIBLE);
