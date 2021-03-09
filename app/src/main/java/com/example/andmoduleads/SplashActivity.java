@@ -6,7 +6,9 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ads.control.Admod;
 import com.ads.control.AppOpenManager;
+import com.ads.control.funtion.AdCallback;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.FullScreenContentCallback;
 
@@ -24,36 +26,36 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
         Log.d(TAG, "onCreate: show splash ads");
-//        Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 0, new AdCallback() {
+        Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 0, new AdCallback() {
+            @Override
+            public void onAdClosed() {
+                startMain();
+            }
+
+            @Override
+            public void onAdFailedToLoad(int i) {
+                startMain();
+            }
+        });
+
+//        AppOpenManager.getInstance().setFullScreenContentCallback(new FullScreenContentCallback() {
 //            @Override
-//            public void onAdClosed() {
+//            public void onAdDismissedFullScreenContent() {
+//                super.onAdDismissedFullScreenContent();
 //                startMain();
 //            }
 //
 //            @Override
-//            public void onAdFailedToLoad(int i) {
+//            public void onAdFailedToShowFullScreenContent(AdError adError) {
+//                super.onAdFailedToShowFullScreenContent(adError);
 //                startMain();
 //            }
+//
+//            @Override
+//            public void onAdShowedFullScreenContent() {
+//                super.onAdShowedFullScreenContent();
+//            }
 //        });
-
-        AppOpenManager.getInstance().setFullScreenContentCallback(new FullScreenContentCallback() {
-            @Override
-            public void onAdDismissedFullScreenContent() {
-                super.onAdDismissedFullScreenContent();
-                startMain();
-            }
-
-            @Override
-            public void onAdFailedToShowFullScreenContent(AdError adError) {
-                super.onAdFailedToShowFullScreenContent(adError);
-                startMain();
-            }
-
-            @Override
-            public void onAdShowedFullScreenContent() {
-                super.onAdShowedFullScreenContent();
-            }
-        });
     }
 
     private void startMain() {
@@ -63,7 +65,7 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        AppOpenManager.getInstance().removeFullScreenContentCallback();
+//        AppOpenManager.getInstance().removeFullScreenContentCallback();
         super.onDestroy();
     }
 }
