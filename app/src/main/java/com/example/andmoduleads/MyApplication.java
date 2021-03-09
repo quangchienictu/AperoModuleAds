@@ -12,7 +12,8 @@ public class MyApplication extends AdsApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 10000);
+//        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 10000);
+        AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
     }
 
     @Override
