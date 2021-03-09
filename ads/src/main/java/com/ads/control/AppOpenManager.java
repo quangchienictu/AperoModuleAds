@@ -461,7 +461,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             }
         }
 
-        if (splashActivity.getName().equals(currentActivity.getClass().getName())) {
+        if (splashActivity != null && splashActivity.getName().equals(currentActivity.getClass().getName())) {
             String adId = splashAdId;
             if (adId == null) {
                 Log.e(TAG, "splash ad id must not be null");
