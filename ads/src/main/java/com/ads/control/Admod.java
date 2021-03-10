@@ -32,7 +32,6 @@ import com.ads.control.funtion.AdmodHelper;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.ads.mediation.facebook.FacebookAdapter;
 import com.google.ads.mediation.facebook.FacebookExtras;
-import com.google.ads.mediation.adcolony.AdColonyMediationAdapter;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
@@ -79,6 +78,7 @@ public class Admod {
 
 //    private final Map<String, AppOpenAd> appOpenAdMap = new HashMap<>();
 
+    InterstitialAd mInterstitialSplash;
     public void setFan(boolean fan) {
         isFan = fan;
     }
@@ -167,6 +167,17 @@ public class Admod {
         }
     }
 
+    public boolean interstialSplashLoead() {
+        if (mInterstitialSplash == null)
+            return false;
+        return mInterstitialSplash.isLoaded();
+    }
+
+    public InterstitialAd getmInterstitialSplash() {
+        return mInterstitialSplash;
+    }
+
+
     /**
      * Load quảng cáo Full tại màn SplashActivity
      * Sau khoảng thời gian timeout thì load ads và callback về cho View
@@ -183,14 +194,14 @@ public class Admod {
             }
             return;
         }
-        final InterstitialAd mInterstitialAd = getInterstitalAds(context, id);
-        if (mInterstitialAd == null) {
+        mInterstitialSplash = getInterstitalAds(context, id);
+        if (mInterstitialSplash == null) {
             if (adListener != null) {
                 adListener.onAdFailedToLoad(0);
             }
             return;
         }
-        mInterstitialAd.setAdListener(new AdListener() {
+        mInterstitialSplash.setAdListener(new AdListener() {
             @Override
             public void onAdFailedToLoad(int i) {
                 super.onAdFailedToLoad(i);
@@ -222,7 +233,7 @@ public class Admod {
                 if (isTimeLimited) {
                     return;
                 }
-                forceShowInterstitial(context, mInterstitialAd, adListener, false);
+                forceShowInterstitial(context, mInterstitialSplash, adListener, false);
             }
 
 
@@ -234,12 +245,12 @@ public class Admod {
                 @Override
                 public void run() {
                     isTimeLimited = true;
-                    if (mInterstitialAd.isLoaded()) {
-                        forceShowInterstitial(context, mInterstitialAd, adListener, false);
+                    if (mInterstitialSplash.isLoaded()) {
+                        forceShowInterstitial(context, mInterstitialSplash, adListener, false);
                         return;
                     }
                     if (adListener != null) {
-                        mInterstitialAd.setAdListener(null);
+                        mInterstitialSplash.setAdListener(null);
                         adListener.onAdClosed();
                     }
                 }
@@ -281,6 +292,31 @@ public class Admod {
     public void showInterstitialAdByTimes(final Context context, final InterstitialAd mInterstitialAd, final AdCallback callback) {
         showInterstitialAdByTimes(context, mInterstitialAd, callback, true);
     }
+
+    /**
+     * Hiển thị ads  timeout
+     * Sử dụng khi reopen app in splash
+     *
+     * @param context
+     * @param mInterstitialAd
+
+     * @param timeDelay
+     */
+    public void showInterstitialAdByTimes(final Context context, final InterstitialAd mInterstitialAd, final AdCallback callback,long timeDelay) {
+        if (timeDelay > 0) {
+            handler = new Handler();
+            rd = new Runnable() {
+                @Override
+                public void run() {
+                    forceShowInterstitial(context, mInterstitialAd, callback,false);
+                }
+            };
+            handler.postDelayed(rd, timeDelay);
+        }else {
+            forceShowInterstitial(context, mInterstitialAd, callback,false);
+        }
+    }
+
 
     /**
      * Hiển thị ads theo số lần được xác định trước và callback result
@@ -435,6 +471,8 @@ public class Admod {
         loadBanner(mActivity, id, adContainer, containerShimmer);
     }
 
+    boolean bannerLoaded = false;
+
     private void loadBanner(final Activity mActivity, String id, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer) {
         if (Arrays.asList(mActivity.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
             showTestIdAlert(mActivity, BANNER_ADS, id);
@@ -452,6 +490,7 @@ public class Admod {
             adContainer.addView(adView);
             AdSize adSize = getAdSize(mActivity);
             adView.setAdSize(adSize);
+            adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             adView.loadAd(getAdRequest());
             adView.setAdListener(new AdListener() {
                 @Override
@@ -851,11 +890,11 @@ public class Admod {
                 break;
         }
         content += id;
-        Notification notification = new NotificationCompat.Builder(context,"warning_ads")
+        Notification notification = new NotificationCompat.Builder(context, "warning_ads")
                 .setContentTitle("Found test ad id")
                 .setContentText(content)
                 .setSmallIcon(R.drawable.ic_warning)
-               .build();
+                .build();
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notification.flags |= Notification.FLAG_AUTO_CANCEL;

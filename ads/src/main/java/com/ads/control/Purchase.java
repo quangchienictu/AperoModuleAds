@@ -70,6 +70,7 @@ public class Purchase {
                     purchaseListioner.onProductPurchased(productId);
             }
 
+
             @Override
             public void onBillingError(int errorCode, @Nullable Throwable error) {
             }
@@ -85,6 +86,7 @@ public class Purchase {
             }
         });
 
+
         bp.initialize();
         bp.loadOwnedPurchasesFromGoogle();
     }
@@ -99,6 +101,7 @@ public class Purchase {
         }
         if (productId == null)
             return false;
+
         TransactionDetails transactionDetails = bp.getSubscriptionTransactionDetails(productId);
 //        if (transactionDetails != null)
 //            Toast.makeText(context, "TransactionDetails autoRenewing:" + transactionDetails.purchaseInfo.purchaseData.autoRenewing, Toast.LENGTH_SHORT).show();
@@ -129,6 +132,7 @@ public class Purchase {
             initBilling(activity);
         }
         bp.subscribe(activity, productId);
+
     }
 
     public void consumePurchase() {
