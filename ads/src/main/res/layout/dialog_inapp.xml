@@ -66,6 +66,7 @@
                     android:textStyle="bold" />
 
                 <View
+                    android:id="@+id/view_split"
                     android:layout_width="1dp"
                     android:layout_height="50dp"
                     android:layout_margin="10dp"

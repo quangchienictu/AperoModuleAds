@@ -77,7 +77,7 @@
             <Button
                 android:id="@+id/ad_call_to_action"
                 android:layout_width="fill_parent"
-                android:layout_height="@dimen/_35sdp"
+                android:layout_height="wrap_content"
                 android:layout_margin="@dimen/_16sdp"
                 android:background="@drawable/ads_bg_lib"
                 android:gravity="center"
