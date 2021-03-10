@@ -136,29 +136,22 @@ public class Admod {
     }
 
     public AdRequest getAdRequest() {
+        AdRequest.Builder builder = new AdRequest.Builder();
         if (isFan) {
             Bundle extras = new FacebookExtras()
                     .setNativeBanner(true)
                     .build();
-            return new AdRequest.Builder()
-                    .addNetworkExtrasBundle(FacebookAdapter.class, extras)
-                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                    .build();
 
+            builder.addNetworkExtrasBundle(FacebookAdapter.class, extras);
         }
 
         if (isAdcolony) {
             AdColonyBundleBuilder.setShowPrePopup(true);
             AdColonyBundleBuilder.setShowPostPopup(true);
-            return new AdRequest.Builder()
-                    .addNetworkExtrasBundle(AdColonyAdapter.class, AdColonyBundleBuilder.build())
-                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                    .build();
+            builder.addNetworkExtrasBundle(AdColonyAdapter.class, AdColonyBundleBuilder.build());
         }
-
-        return new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();
+        builder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
+        return builder.build();
     }
 
     private void requestInterstitialAds(InterstitialAd mInterstitialAd) {
