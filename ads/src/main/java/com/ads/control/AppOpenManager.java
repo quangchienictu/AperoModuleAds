@@ -260,11 +260,17 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     public void onActivityResumed(Activity activity) {
         currentActivity = activity;
         Log.d(TAG, "onActivityResumed: ");
-        if ( splashActivity != null && !activity.getClass().getName().equals(splashActivity.getName()) && !activity.getClass().getName().equals(AdActivity.class.getName())) {
-            Log.d(TAG, "onActivityResumed: with " + activity.getClass().getName());
-            fetchAd(false);
+        if (splashActivity == null) {
+            if (!activity.getClass().getName().equals(AdActivity.class.getName())) {
+                Log.d(TAG, "onActivityResumed: with " + activity.getClass().getName());
+                fetchAd(false);
+            }
+        } else {
+            if (!activity.getClass().getName().equals(splashActivity.getName()) && !activity.getClass().getName().equals(AdActivity.class.getName())) {
+                Log.d(TAG, "onActivityResumed: with " + activity.getClass().getName());
+                fetchAd(false);
+            }
         }
-//        fetchAd(false);
     }
 
     @Override
