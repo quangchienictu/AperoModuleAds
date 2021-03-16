@@ -195,9 +195,10 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                     }
 
                 };
-
-        if (Arrays.asList(currentActivity.getResources().getStringArray(R.array.list_id_test)).contains(isSplash ? splashAdId : appResumeAdId)) {
-            showTestIdAlert(currentActivity, isSplash, isSplash ? splashAdId : appResumeAdId);
+        if (currentActivity!=null) {
+            if (Arrays.asList(currentActivity.getResources().getStringArray(R.array.list_id_test)).contains(isSplash ? splashAdId : appResumeAdId)) {
+                showTestIdAlert(currentActivity, isSplash, isSplash ? splashAdId : appResumeAdId);
+            }
         }
         AdRequest request = getAdRequest();
         AppOpenAd.load(
@@ -206,7 +207,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     }
 
     private void showTestIdAlert(Context context, boolean isSplash, String id) {
-        Notification notification = new NotificationCompat.Builder(context,"warning_ads")
+        Notification notification = new NotificationCompat.Builder(context, "warning_ads")
                 .setContentTitle("Found test ad id")
                 .setContentText((isSplash ? "Splash Ads: " : "AppResume Ads: " + id))
                 .setSmallIcon(R.drawable.ic_warning)
@@ -306,7 +307,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             if (fullScreenContentCallback != null) {
                 fullScreenContentCallback.onAdDismissedFullScreenContent();
             }
-            
+
             return;
         }
 
@@ -338,7 +339,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         public void onAdShowedFullScreenContent() {
                             Log.d(TAG, "onAdShowedFullScreenContent: isSplash = " + isSplash);
                             isShowingAd = true;
-                            if(isSplash) {
+                            if (isSplash) {
                                 splashAd = null;
                             } else {
                                 appResumeAd = null;
@@ -384,7 +385,8 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                     if (isSplash) {
                         splashAd.show(currentActivity, callback);
                     } else {
-                        appResumeAd.show(currentActivity, callback);
+                        if (appResumeAd != null)
+                            appResumeAd.show(currentActivity, callback);
                     }
                     if (finalDialog != null) {
                         finalDialog.dismiss();
@@ -420,9 +422,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         Log.d(TAG, "onAppOpenAdLoaded: splash");
                         AppOpenManager.this.splashAd = ad;
                         splashLoadTime = new Date().getTime();
-                        if(isTimeout) {
-                            Log.e(TAG, "onAppOpenAdLoaded: splash timeout" );
-                            if(fullScreenContentCallback != null) {
+                        if (isTimeout) {
+                            Log.e(TAG, "onAppOpenAdLoaded: splash timeout");
+                            if (fullScreenContentCallback != null) {
                                 fullScreenContentCallback.onAdDismissedFullScreenContent();
                             }
                             return;
@@ -437,7 +439,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                      */
                     @Override
                     public void onAppOpenAdFailedToLoad(LoadAdError loadAdError) {
-                        Log.e(TAG, "onAppOpenAdFailedToLoad: splash " + loadAdError.getMessage() );
+                        Log.e(TAG, "onAppOpenAdFailedToLoad: splash " + loadAdError.getMessage());
                         if (fullScreenContentCallback != null) {
                             fullScreenContentCallback.onAdDismissedFullScreenContent();
                         }
@@ -449,14 +451,14 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                 myApplication, splashAdId, request,
                 AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT, loadCallback);
 
-        if(splashTimeout > 0 ) {
+        if (splashTimeout > 0) {
             timeoutHandler.sendEmptyMessageDelayed(TIMEOUT_MSG, splashTimeout);
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void onResume() {
-        if(!isAppResumeEnabled) {
+        if (!isAppResumeEnabled) {
             Log.d(TAG, "onResume: app resume is disabled");
             return;
         }
