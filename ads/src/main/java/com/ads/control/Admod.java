@@ -19,6 +19,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -229,8 +230,6 @@ public class Admod {
                 }
                 forceShowInterstitial(context, mInterstitialSplash, adListener, false);
             }
-
-
         });
 
         if (timeOut > 0) {
@@ -247,6 +246,79 @@ public class Admod {
                         mInterstitialSplash.setAdListener(null);
                         adListener.onAdClosed();
                     }
+                }
+            };
+            handler.postDelayed(rd, timeOut);
+        }
+    }
+
+    public void loadInterstitialAds(Context context, String id, long timeOut, AdCallback adListener) {
+        if (Purchase.getInstance().isPurchased(context)) {
+            if (adListener != null) {
+                adListener.onAdClosed();
+            }
+            return;
+        }
+        InterstitialAd interstitialAd = getInterstitalAds(context, id);
+        if (interstitialAd == null) {
+            if (adListener != null) {
+                adListener.onAdFailedToLoad(0);
+            }
+            return;
+        }
+        interstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdFailedToLoad(int i) {
+                super.onAdFailedToLoad(i);
+                if (adListener != null) {
+                    if (handler != null && rd != null) {
+                        handler.removeCallbacks(rd);
+                    }
+                    adListener.onAdFailedToLoad(i);
+                }
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+                if (adListener != null) {
+                    if (handler != null && rd != null) {
+                        handler.removeCallbacks(rd);
+                    }
+                    adListener.onAdFailedToLoad(loadAdError);
+                }
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                if (handler != null && rd != null) {
+                    handler.removeCallbacks(rd);
+                }
+                if (isTimeLimited) {
+                    return;
+                }
+                if (adListener != null) {
+                    if (handler != null && rd != null) {
+                        handler.removeCallbacks(rd);
+                    }
+                    adListener.onInterstitialLoad(interstitialAd);
+                }
+            }
+        });
+
+        if (timeOut > 0) {
+            handler = new Handler();
+            rd = () -> {
+                isTimeLimited = true;
+                if (interstitialAd.isLoaded()) {
+                    interstitialAd.setAdListener(null);
+                    adListener.onInterstitialLoad(interstitialAd);
+                    return;
+                }
+                if (adListener != null) {
+                    interstitialAd.setAdListener(null);
+                    adListener.onAdClosed();
                 }
             };
             handler.postDelayed(rd, timeOut);

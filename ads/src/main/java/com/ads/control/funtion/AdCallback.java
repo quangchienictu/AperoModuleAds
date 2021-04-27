@@ -1,5 +1,6 @@
 package com.ads.control.funtion;
 
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 
@@ -23,6 +24,10 @@ public class AdCallback {
     }
 
     public void onAdLoaded() {
+    }
+
+    public void onInterstitialLoad(InterstitialAd interstitialAd) {
+
     }
 
     public void onAdClicked() {
