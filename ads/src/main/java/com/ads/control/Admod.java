@@ -79,6 +79,7 @@ public class Admod {
 //    private final Map<String, AppOpenAd> appOpenAdMap = new HashMap<>();
 
     InterstitialAd mInterstitialSplash;
+
     public void setFan(boolean fan) {
         isFan = fan;
     }
@@ -292,21 +293,20 @@ public class Admod {
      *
      * @param context
      * @param mInterstitialAd
-
      * @param timeDelay
      */
-    public void showInterstitialAdByTimes(final Context context, final InterstitialAd mInterstitialAd, final AdCallback callback,long timeDelay) {
+    public void showInterstitialAdByTimes(final Context context, final InterstitialAd mInterstitialAd, final AdCallback callback, long timeDelay) {
         if (timeDelay > 0) {
             handler = new Handler();
             rd = new Runnable() {
                 @Override
                 public void run() {
-                    forceShowInterstitial(context, mInterstitialAd, callback,false);
+                    forceShowInterstitial(context, mInterstitialAd, callback, false);
                 }
             };
             handler.postDelayed(rd, timeDelay);
-        }else {
-            forceShowInterstitial(context, mInterstitialAd, callback,false);
+        } else {
+            forceShowInterstitial(context, mInterstitialAd, callback, false);
         }
     }
 
@@ -407,6 +407,8 @@ public class Admod {
         if (currentClicked >= numShowAds && mInterstitialAd.isLoaded()) {
             if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
                 try {
+                    if (dialog != null && dialog.isShowing())
+                        dialog.dismiss();
                     dialog = new PrepareLoadingAdsDialog(context);
                     try {
                         dialog.show();
@@ -474,7 +476,7 @@ public class Admod {
             containerShimmer.setVisibility(View.GONE);
             return;
         }
-        
+
         containerShimmer.setVisibility(View.VISIBLE);
         containerShimmer.startShimmer();
         try {
@@ -496,7 +498,7 @@ public class Admod {
 
                 @Override
                 public void onAdLoaded() {
-                    Log.d(TAG,"Banner adapter class name: " + adView.getResponseInfo().getMediationAdapterClassName());
+                    Log.d(TAG, "Banner adapter class name: " + adView.getResponseInfo().getMediationAdapterClassName());
                     containerShimmer.stopShimmer();
                     containerShimmer.setVisibility(View.GONE);
                     adContainer.setVisibility(View.VISIBLE);
@@ -560,6 +562,7 @@ public class Admod {
             showTestIdAlert(context, NATIVE_ADS, id);
         }
         if (Purchase.getInstance().isPurchased(context)) {
+            callback.onAdFailedToLoad(9);
             return;
         }
         VideoOptions videoOptions = new VideoOptions.Builder()

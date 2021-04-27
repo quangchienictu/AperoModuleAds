@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat;
 
 import com.ads.control.Admod;
 import com.ads.control.Purchase;
+import com.ads.control.dialog.DialogExitApp1;
 import com.ads.control.dialog.InAppDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.PurchaseListioner;
@@ -28,7 +29,7 @@ import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 public class MainActivity extends AppCompatActivity {
       static final String PRODUCT_ID = "android.test.purchased";
     private FrameLayout frAds;
-
+    private UnifiedNativeAd unifiedNativeAd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +88,30 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("PurchaseListioner","ProductPurchased:"+ productId);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadNativeExit();
+    }
+
+    private void loadNativeExit() {
+        if (unifiedNativeAd != null)
+            return;
+        Admod.getInstance().loadUnifiedNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {
+            @Override
+            public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+                MainActivity.this.unifiedNativeAd = unifiedNativeAd;
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        DialogExitApp1 dialogExitApp1 = new DialogExitApp1(this,unifiedNativeAd,1);
+        dialogExitApp1.setCancelable(false);
+        dialogExitApp1.show();
     }
 
     @Override
