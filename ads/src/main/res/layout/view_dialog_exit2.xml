@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Are you sure you want to exit?"
+            android:text="@string/are_you_sure_you_want_to_exit"
             android:textColor="#3C3C3C"
             android:textSize="18sp"
             android:textStyle="bold"
