@@ -533,7 +533,7 @@ public class Admod {
      * @param rootView
      */
     public void loadBannerFragment(final Activity mActivity, String id, final View rootView) {
-        final FrameLayout adContainer = rootView.findViewById(R.id.shimmer_container_banner);
+        final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
         loadBanner(mActivity, id, adContainer, containerShimmer);
     }
