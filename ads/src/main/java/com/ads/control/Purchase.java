@@ -224,6 +224,14 @@ public class Purchase {
         return formatCurrency(skuDetails.priceValue, skuDetails.currency);
     }
 
+    public String getPriceSub(String productId) {
+        SkuDetails skuDetails = bp.getSubscriptionListingDetails(productId);
+        if (skuDetails == null)
+            return "";
+        return formatCurrency(skuDetails.priceValue, skuDetails.currency);
+    }
+
+
     public String getOldPrice() {
         SkuDetails skuDetails = bp.getPurchaseListingDetails(productId);
         if (skuDetails == null)
