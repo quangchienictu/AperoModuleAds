@@ -23,7 +23,7 @@ public class MyApplication extends AdsApplication {
 
     @Override
     public List<String> getListTestDeviceId() {
-        return Collections.singletonList("25D0EDA72688913D9FC256A6EB2E6DEF");
+        return Collections.singletonList("07F6B55DA3A08766A4465F36354C7EF6");
     }
 
     @Override

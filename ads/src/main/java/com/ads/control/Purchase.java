@@ -57,7 +57,6 @@ public class Purchase {
         return instance;
     }
 
-
     private Purchase() {
 
     }
@@ -79,11 +78,12 @@ public class Purchase {
         bp = new BillingProcessor(context, LICENSE_KEY, MERCHANT_ID, new BillingProcessor.IBillingHandler() {
             @Override
             public void onProductPurchased(@NonNull String productId, @Nullable TransactionDetails details) {
-                Log.e(TAG, "ProductPurchased:" + productId);
-                if (purchaseListioner != null)
-                    purchaseListioner.onProductPurchased(productId);
-            }
 
+                Log.d(TAG, "TransactionDetails:" + details.toString());
+                Log.d(TAG, "TransactionDetails:" + details.purchaseInfo.responseData);
+                if (purchaseListioner != null)
+                    purchaseListioner.onProductPurchased(productId, details.purchaseInfo.responseData);
+            }
 
             @Override
             public void onBillingError(int errorCode, @Nullable Throwable error) {
@@ -111,9 +111,11 @@ public class Purchase {
         bp = new BillingProcessor(context, LICENSE_KEY, MERCHANT_ID, new BillingProcessor.IBillingHandler() {
             @Override
             public void onProductPurchased(@NonNull String productId, @Nullable TransactionDetails details) {
-                Log.e(TAG, "ProductPurchased:" + productId);
+                Log.d(TAG, "ProductPurchased:" + productId);
+                Log.d(TAG, "TransactionDetails:" + details.toString());
+                Log.d(TAG, "TransactionDetails:" + details.purchaseInfo.responseData);
                 if (purchaseListioner != null)
-                    purchaseListioner.onProductPurchased(productId);
+                    purchaseListioner.onProductPurchased(productId,details.purchaseInfo.responseData);
             }
 
 
@@ -210,7 +212,7 @@ public class Purchase {
 
 
     public boolean  handleActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-       return bp.handleActivityResult(requestCode, resultCode, data);
+        return bp.handleActivityResult(requestCode, resultCode, data);
     }
 
     public String getPrice() {
@@ -221,6 +223,7 @@ public class Purchase {
         SkuDetails skuDetails = bp.getPurchaseListingDetails(productId);
         if (skuDetails == null)
             return "";
+        Log.e(TAG, "getPrice: "+ skuDetails.priceValue);
         return formatCurrency(skuDetails.priceValue, skuDetails.currency);
     }
 
@@ -230,7 +233,6 @@ public class Purchase {
             return "";
         return formatCurrency(skuDetails.priceValue, skuDetails.currency);
     }
-
 
     public String getOldPrice() {
         SkuDetails skuDetails = bp.getPurchaseListingDetails(productId);
