@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -231,6 +232,21 @@ public class Purchase {
         return formatCurrency(skuDetails.priceValue, skuDetails.currency);
     }
 
+    public String getCurrency(String productId, int typeIAP) {
+        SkuDetails skuDetails = typeIAP == TYPE_IAP.PURCHASE ? bp.getPurchaseListingDetails(productId) : bp.getSubscriptionListingDetails(productId);
+        if (skuDetails == null) {
+            return "";
+        }
+        return skuDetails.currency;
+    }
+
+    public double getPriceWithoutCurrency(String productId, int typeIAP) {
+        SkuDetails skuDetails = typeIAP == TYPE_IAP.PURCHASE ? bp.getPurchaseListingDetails(productId) : bp.getSubscriptionListingDetails(productId);
+        if (skuDetails == null) {
+            return 0;
+        }
+        return skuDetails.priceValue;
+    }
 
     public String getOldPrice() {
         SkuDetails skuDetails = bp.getPurchaseListingDetails(productId);
@@ -254,5 +270,11 @@ public class Purchase {
 
     public double getDiscount() {
         return discount;
+    }
+
+    @IntDef({TYPE_IAP.PURCHASE, TYPE_IAP.SUBSCRIPTION})
+    public @interface TYPE_IAP {
+        int PURCHASE = 1;
+        int SUBSCRIPTION = 2;
     }
 }
