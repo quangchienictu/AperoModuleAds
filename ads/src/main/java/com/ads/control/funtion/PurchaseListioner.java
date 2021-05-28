@@ -1,5 +1,5 @@
 package com.ads.control.funtion;
 
 public interface PurchaseListioner {
-    void onProductPurchased(String productId);
+    void onProductPurchased(String productId, String transactionDetails);
 }

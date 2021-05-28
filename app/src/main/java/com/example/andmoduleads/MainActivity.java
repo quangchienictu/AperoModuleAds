@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         });
         Purchase.getInstance().setPurchaseListioner(new PurchaseListioner() {
             @Override
-            public void onProductPurchased(String productId) {
+            public void onProductPurchased(String productId,String transactionDetails) {
                 Log.e("PurchaseListioner","ProductPurchased:"+ productId);
             }
         });
