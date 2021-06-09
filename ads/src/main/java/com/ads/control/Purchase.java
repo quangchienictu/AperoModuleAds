@@ -69,6 +69,7 @@ public class Purchase {
     public void addSubcriptionId(String id) {
         listSubcriptionId.add(id);
     }
+
     public void addProductId(String id) {
         listProductId.add(id);
     }
@@ -106,7 +107,7 @@ public class Purchase {
         bp.loadOwnedPurchasesFromGoogle();
     }
 
-    public void initBilling(final Context context,String LICENSE_KEY) {
+    public void initBilling(final Context context, String LICENSE_KEY) {
         listSubcriptionId = new ArrayList<>();
         listProductId = new ArrayList<>();
         bp = new BillingProcessor(context, LICENSE_KEY, MERCHANT_ID, new BillingProcessor.IBillingHandler() {
@@ -116,7 +117,7 @@ public class Purchase {
                 Log.d(TAG, "TransactionDetails:" + details.toString());
                 Log.d(TAG, "TransactionDetails:" + details.purchaseInfo.responseData);
                 if (purchaseListioner != null)
-                    purchaseListioner.onProductPurchased(productId,details.purchaseInfo.responseData);
+                    purchaseListioner.onProductPurchased(productId, details.purchaseInfo.responseData);
             }
 
 
@@ -150,15 +151,15 @@ public class Purchase {
         }
 
         for (String id : listSubcriptionId) {
-            if (bp.isSubscribed(id)){
-                Log.d(TAG, "isSubcription:true " );
+            if (bp.isSubscribed(id)) {
+                Log.d(TAG, "isSubcription:true ");
                 return true;
             }
         }
 
         for (String id : listProductId) {
-            if (bp.isPurchased(id)){
-                Log.d(TAG, "isPurchased:true " );
+            if (bp.isPurchased(id)) {
+                Log.d(TAG, "isPurchased:true ");
                 return true;
             }
         }
@@ -212,7 +213,7 @@ public class Purchase {
     }
 
 
-    public boolean  handleActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public boolean handleActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         return bp.handleActivityResult(requestCode, resultCode, data);
     }
 
@@ -224,7 +225,7 @@ public class Purchase {
         SkuDetails skuDetails = bp.getPurchaseListingDetails(productId);
         if (skuDetails == null)
             return "";
-        Log.e(TAG, "getPrice: "+ skuDetails.priceValue);
+        Log.e(TAG, "getPrice: " + skuDetails.priceValue);
         return formatCurrency(skuDetails.priceValue, skuDetails.currency);
     }
 
@@ -233,6 +234,14 @@ public class Purchase {
         if (skuDetails == null)
             return "";
         return formatCurrency(skuDetails.priceValue, skuDetails.currency);
+    }
+
+    public String getIntroductorySubPrice(String productId) {
+        SkuDetails skuDetails = bp.getPurchaseListingDetails(productId);
+        if (skuDetails == null) {
+            return "";
+        }
+        return formatCurrency(skuDetails.introductoryPriceValue, skuDetails.currency);
     }
 
     public String getCurrency(String productId, int typeIAP) {
