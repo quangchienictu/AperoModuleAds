@@ -237,7 +237,7 @@ public class Purchase {
     }
 
     public String getIntroductorySubPrice(String productId) {
-        SkuDetails skuDetails = bp.getPurchaseListingDetails(productId);
+        SkuDetails skuDetails = bp.getSubscriptionListingDetails(productId);
         if (skuDetails == null) {
             return "";
         }
