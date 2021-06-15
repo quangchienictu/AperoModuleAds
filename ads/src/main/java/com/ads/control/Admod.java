@@ -225,6 +225,10 @@ public class Admod {
                 if (handler != null && rd != null) {
                     handler.removeCallbacks(rd);
                 }
+
+                if(adListener != null) {
+                    adListener.onAdLoaded();
+                }
                 if (isTimeLimited) {
                     return;
                 }
