@@ -349,6 +349,68 @@ public class Admod {
         return mInterstitialAd;
     }
 
+    public InterstitialAd getInterstitalAds(Context context, String id, AdCallback adCallback) {
+        if (Arrays.asList(context.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
+            showTestIdAlert(context, INTERS_ADS, id);
+        }
+        if (Purchase.getInstance().isPurchased(context) || AdmodHelper.getNumClickAdsPerDay(context, id) >= maxClickAds) {
+            return null;
+        }
+        final InterstitialAd mInterstitialAd = new InterstitialAd(context);
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                if(adCallback!= null) {
+                    adCallback.onAdLoaded();
+                }
+            }
+
+            @Override
+            public void onAdFailedToLoad(LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+                if(adCallback != null) {
+                    adCallback.onAdFailedToLoad(loadAdError);
+                }
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+                if(adCallback != null) {
+                    adCallback.onAdOpened();
+                }
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdOpened();
+                if(adCallback != null) {
+                    adCallback.onAdClicked();
+                }
+            }
+
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                if(adCallback != null) {
+                    adCallback.onAdClosed();
+                }
+            }
+
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+                if(adCallback != null) {
+                    adCallback.onAdImpression();
+                }
+            }
+        });
+        mInterstitialAd.setAdUnitId(id);
+        requestInterstitialAds(mInterstitialAd);
+        return mInterstitialAd;
+    }
+
 
     /**
      * Hiển thị ads theo số lần được xác định trước và callback result
