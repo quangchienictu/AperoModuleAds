@@ -373,6 +373,19 @@ public class Admod {
             return null;
         }
         final InterstitialAd mInterstitialAd = new InterstitialAd(context);
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                mInterstitialAd.setOnPaidEventListener(adValue -> {
+                    FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                            adValue,
+                            mInterstitialAd.getAdUnitId(),
+                            mInterstitialAd.getResponseInfo()
+                                    .getMediationAdapterClassName());
+                });
+            }
+        });
         mInterstitialAd.setAdUnitId(id);
         requestInterstitialAds(mInterstitialAd);
         return mInterstitialAd;
