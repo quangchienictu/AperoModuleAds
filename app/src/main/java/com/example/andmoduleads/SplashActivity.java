@@ -39,25 +39,6 @@ public class SplashActivity extends AppCompatActivity {
                 startMain();
             }
         });
-
-//        AppOpenManager.getInstance().setFullScreenContentCallback(new FullScreenContentCallback() {
-//            @Override
-//            public void onAdDismissedFullScreenContent() {
-//                super.onAdDismissedFullScreenContent();
-//                startMain();
-//            }
-//
-//            @Override
-//            public void onAdFailedToShowFullScreenContent(AdError adError) {
-//                super.onAdFailedToShowFullScreenContent(adError);
-//                startMain();
-//            }
-//
-//            @Override
-//            public void onAdShowedFullScreenContent() {
-//                super.onAdShowedFullScreenContent();
-//            }
-//        });
     }
 
     private void startMain() {

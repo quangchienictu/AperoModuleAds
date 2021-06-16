@@ -30,6 +30,7 @@ import androidx.lifecycle.ProcessLifecycleOwner;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.AdmodHelper;
+import com.ads.control.util.FirebaseAnalyticsUtil;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.ads.mediation.facebook.FacebookAdapter;
 import com.google.ads.mediation.facebook.FacebookExtras;
@@ -37,10 +38,12 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdValue;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.OnPaidEventListener;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.VideoOptions;
 import com.google.android.gms.ads.formats.MediaView;
@@ -51,6 +54,7 @@ import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdCallback;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.google.firebase.installations.Utils;
 import com.jirbo.adcolony.AdColonyAdapter;
 import com.jirbo.adcolony.AdColonyBundleBuilder;
 
@@ -74,6 +78,7 @@ public class Admod {
     private boolean isFan;
     private boolean isAdcolony;
     private boolean openActivityAfterShowInterAds = false;
+    private Context context;
 //    private AppOpenAd appOpenAd = null;
 //    private static final String SHARED_PREFERENCE_NAME = "ads_shared_preference";
 
@@ -123,6 +128,8 @@ public class Admod {
         MobileAds.initialize(context, initializationStatus -> {
         });
         MobileAds.setRequestConfiguration(new RequestConfiguration.Builder().setTestDeviceIds(testDeviceList).build());
+
+        this.context = context;
     }
 
     public void init(Context context) {
@@ -131,6 +138,8 @@ public class Admod {
         if (BuildConfig.DEBUG) {
             MobileAds.setRequestConfiguration(new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList(getDeviceId((Activity) context))).build());
         }
+
+        this.context = context;
     }
 
     public void setOpenActivityAfterShowInterAds(boolean openActivityAfterShowInterAds) {
@@ -222,6 +231,16 @@ public class Admod {
             @Override
             public void onAdLoaded() {
                 super.onAdLoaded();
+
+                if(mInterstitialSplash != null) {
+                    mInterstitialSplash.setOnPaidEventListener(adValue -> {
+                        FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                                adValue,
+                                mInterstitialSplash.getAdUnitId(),
+                                mInterstitialSplash.getResponseInfo()
+                                        .getMediationAdapterClassName());
+                    });
+                }
                 if (handler != null && rd != null) {
                     handler.removeCallbacks(rd);
                 }
@@ -308,6 +327,16 @@ public class Admod {
                     }
                     adListener.onInterstitialLoad(interstitialAd);
                 }
+
+                if(interstitialAd != null) {
+                    interstitialAd.setOnPaidEventListener(adValue -> {
+                        FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                                adValue,
+                                interstitialAd.getAdUnitId(),
+                                interstitialAd.getResponseInfo()
+                                        .getMediationAdapterClassName());
+                    });
+                }
             }
         });
 
@@ -363,6 +392,15 @@ public class Admod {
                 super.onAdLoaded();
                 if(adCallback!= null) {
                     adCallback.onAdLoaded();
+                }
+                if(mInterstitialAd != null) {
+                    mInterstitialAd.setOnPaidEventListener(adValue -> {
+                        FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                                adValue,
+                                mInterstitialAd.getAdUnitId(),
+                                mInterstitialAd.getResponseInfo()
+                                        .getMediationAdapterClassName());
+                    });
                 }
             }
 
@@ -640,6 +678,15 @@ public class Admod {
                     containerShimmer.stopShimmer();
                     containerShimmer.setVisibility(View.GONE);
                     adContainer.setVisibility(View.VISIBLE);
+                    if(adView != null) {
+                        adView.setOnPaidEventListener(adValue -> {
+                            FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                                    adValue,
+                                    adView.getAdUnitId(),
+                                    adView.getResponseInfo()
+                                            .getMediationAdapterClassName());
+                        });
+                    }
                 }
             });
 
