@@ -62,6 +62,8 @@ Coming soon
 ### Init purchase
 	AppPurchase.getInstance().initBilling(this,listINAPId,listSubsId);
 ### Check purchase status
+	 AppPurchase.getInstance().isPurchased(this,PRODUCT_ID);
+###  purchase
 	 AppPurchase.getInstance().purchase(this,PRODUCT_ID);
 	 AppPurchase.getInstance().subscribe(this,SUBS_ID);
 ### Purchase Listioner
