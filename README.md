@@ -60,13 +60,32 @@ Coming soon
 
 ## Purchasing
 ### Init purchase
-	Purchase.getInstance().initBilling(context, PRODUCT_ID);
+	AppPurchase.getInstance().initBilling(this,listINAPId,listSubsId);
 ### Check purchase status
-	Purchase.getInstance().isPurchased(context)
+	 AppPurchase.getInstance().purchase(this,PRODUCT_ID);
+	 AppPurchase.getInstance().subscribe(this,SUBS_ID);
+### Purchase Listioner
+	         AppPurchase.getInstance().setPurchaseListioner(new PurchaseListioner() {
+                 @Override
+                 public void onProductPurchased(String productId,String transactionDetails) {
+
+                 }
+
+                 @Override
+                 public void displayErrorMessage(String errorMsg) {
+
+                 }
+             });
+
+### Consume purchase
+	  AppPurchase.getInstance().consumePurchase(PRODUCT_ID);
+### Get price
+	  AppPurchase.getInstance().getPrice(PRODUCT_ID)
+	  AppPurchase.getInstance().getPriceSub(SUBS_ID)
 ### Show iap dialog
 	InAppDialog dialog = new InAppDialog(this);
 	dialog.setCallback(() -> {  
-	    Purchase.getInstance().purchase(this); 
+	     AppPurchase.getInstance().purchase(this,PRODUCT_ID);
 	    dialog.dismiss();  
 	});  
 	dialog.show();

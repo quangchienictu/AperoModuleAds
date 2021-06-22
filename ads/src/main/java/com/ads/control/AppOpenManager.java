@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -294,7 +293,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     public void showAdIfAvailable(final boolean isSplash) {
         // Only show ad if there is not already an app open ad currently showing
         // and an ad is available.
-        if (currentActivity != null && Purchase.getInstance().isPurchased(currentActivity)) {
+        if (currentActivity != null && AppPurchase.getInstance().isPurchased(currentActivity)) {
             if (fullScreenContentCallback != null) {
                 fullScreenContentCallback.onAdDismissedFullScreenContent();
             }
@@ -398,7 +397,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
     public void loadAndShowSplashAds(final String adId) {
         isTimeout = false;
-        if (currentActivity != null && Purchase.getInstance().isPurchased(currentActivity)) {
+        if (currentActivity != null && AppPurchase.getInstance().isPurchased(currentActivity)) {
             if (fullScreenContentCallback != null) {
                 fullScreenContentCallback.onAdDismissedFullScreenContent();
             }

@@ -38,7 +38,7 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.gms:play-services-ads:19.6.0'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
-    implementation 'com.anjlab.android.iab.v3:library:1.1.0'
+//    implementation 'com.anjlab.android.iab.v3:library:1.1.0'
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
     implementation 'androidx.lifecycle:lifecycle-process:2.2.0'
     implementation 'com.github.ybq:Android-SpinKit:1.4.0'
@@ -55,4 +55,6 @@ dependencies {
 
     def multidex_version = "2.0.1"
     implementation "androidx.multidex:multidex:$multidex_version"
+    def billing_version = "4.0.0"
+    implementation "com.android.billingclient:billing:$billing_version"
 }

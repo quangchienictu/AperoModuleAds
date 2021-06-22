@@ -2,7 +2,6 @@ package com.example.andmoduleads;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -17,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.ads.control.Admod;
-import com.ads.control.Purchase;
+import com.ads.control.AppPurchase;
 import com.ads.control.dialog.DialogExitApp1;
 import com.ads.control.dialog.InAppDialog;
 import com.ads.control.funtion.AdCallback;
@@ -44,6 +43,18 @@ public class MainActivity extends AppCompatActivity {
                         .inflate(R.layout.custom_native, null);
                 frAds.addView(adView);
                 Admod.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, adView);
+            }
+        });
+        AppPurchase.getInstance().setPurchaseListioner(new PurchaseListioner() {
+            @Override
+            public void onProductPurchased(String productId,String transactionDetails) {
+                Log.e("PurchaseListioner","ProductPurchased:"+ productId);
+                Log.e("PurchaseListioner","transactionDetails:"+ transactionDetails);
+            }
+
+            @Override
+            public void displayErrorMessage(String errorMsg) {
+                Log.e("PurchaseListioner","displayErrorMessage:"+ errorMsg);
             }
         });
 
@@ -73,21 +84,17 @@ public class MainActivity extends AppCompatActivity {
         });
 
         findViewById(R.id.btIap).setOnClickListener(v -> {
-            Purchase.getInstance().consumePurchase(PRODUCT_ID);
+            AppPurchase.getInstance().consumePurchase(PRODUCT_ID);
+            AppPurchase.getInstance().consumePurchase(PRODUCT_ID);
             InAppDialog dialog = new InAppDialog(this);
             dialog.setCallback(() -> {
-                Purchase.getInstance().consumePurchase(PRODUCT_ID);
-                Purchase.getInstance().purchase(this,PRODUCT_ID);
+                    AppPurchase.getInstance().consumePurchase(PRODUCT_ID);
+                AppPurchase.getInstance().purchase(this,PRODUCT_ID);
                 dialog.dismiss();
             });
             dialog.show();
         });
-        Purchase.getInstance().setPurchaseListioner(new PurchaseListioner() {
-            @Override
-            public void onProductPurchased(String productId,String transactionDetails) {
-                Log.e("PurchaseListioner","ProductPurchased:"+ productId);
-            }
-        });
+
     }
 
     @Override
@@ -117,9 +124,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Purchase.getInstance().handleActivityResult(requestCode, resultCode, data);
+//        AppPurchase.getInstance().handleActivityResult(requestCode, resultCode, data);
         Log.e("onActivityResult","ProductPurchased:"+ data.toString());
-        if (Purchase.getInstance().isPurchased(this,PRODUCT_ID)) {
+        if (AppPurchase.getInstance().isPurchased(this,PRODUCT_ID)) {
             findViewById(R.id.btIap).setVisibility(View.GONE);
         }
     }

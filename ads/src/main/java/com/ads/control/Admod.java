@@ -19,7 +19,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -54,7 +53,6 @@ import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdCallback;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
-import com.google.firebase.installations.Utils;
 import com.jirbo.adcolony.AdColonyAdapter;
 import com.jirbo.adcolony.AdColonyBundleBuilder;
 
@@ -192,7 +190,7 @@ public class Admod {
      * @param adListener
      */
     public void loadSplashInterstitalAds(final Context context, String id, long timeOut, final AdCallback adListener) {
-        if (Purchase.getInstance().isPurchased(context)) {
+        if (AppPurchase.getInstance().isPurchased(context)) {
             if (adListener != null) {
                 adListener.onAdClosed();
             }
@@ -276,7 +274,7 @@ public class Admod {
     }
 
     public void loadInterstitialAds(Context context, String id, long timeOut, AdCallback adListener) {
-        if (Purchase.getInstance().isPurchased(context)) {
+        if (AppPurchase.getInstance().isPurchased(context)) {
             if (adListener != null) {
                 adListener.onAdClosed();
             }
@@ -369,7 +367,7 @@ public class Admod {
         if (Arrays.asList(context.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
             showTestIdAlert(context, INTERS_ADS, id);
         }
-        if (Purchase.getInstance().isPurchased(context) || AdmodHelper.getNumClickAdsPerDay(context, id) >= maxClickAds) {
+        if (AppPurchase.getInstance().isPurchased(context) || AdmodHelper.getNumClickAdsPerDay(context, id) >= maxClickAds) {
             return null;
         }
         final InterstitialAd mInterstitialAd = new InterstitialAd(context);
@@ -395,7 +393,7 @@ public class Admod {
         if (Arrays.asList(context.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
             showTestIdAlert(context, INTERS_ADS, id);
         }
-        if (Purchase.getInstance().isPurchased(context) || AdmodHelper.getNumClickAdsPerDay(context, id) >= maxClickAds) {
+        if (AppPurchase.getInstance().isPurchased(context) || AdmodHelper.getNumClickAdsPerDay(context, id) >= maxClickAds) {
             return null;
         }
         final InterstitialAd mInterstitialAd = new InterstitialAd(context);
@@ -512,7 +510,7 @@ public class Admod {
      */
     public void showInterstitialAdByTimes(final Context context, final InterstitialAd mInterstitialAd, final AdCallback callback, final boolean shouldReloadAds) {
         AdmodHelper.setupAdmodData(context);
-        if (Purchase.getInstance().isPurchased(context)) {
+        if (AppPurchase.getInstance().isPurchased(context)) {
             callback.onAdClosed();
             return;
         }
@@ -661,7 +659,7 @@ public class Admod {
         if (Arrays.asList(mActivity.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
             showTestIdAlert(mActivity, BANNER_ADS, id);
         }
-        if (Purchase.getInstance().isPurchased(mActivity)) {
+        if (AppPurchase.getInstance().isPurchased(mActivity)) {
             containerShimmer.setVisibility(View.GONE);
             return;
         }
@@ -759,7 +757,7 @@ public class Admod {
         if (Arrays.asList(context.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
             showTestIdAlert(context, NATIVE_ADS, id);
         }
-        if (Purchase.getInstance().isPurchased(context)) {
+        if (AppPurchase.getInstance().isPurchased(context)) {
             callback.onAdFailedToLoad(9);
             return;
         }
@@ -792,7 +790,7 @@ public class Admod {
         if (Arrays.asList(context.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
             showTestIdAlert(context, NATIVE_ADS, id);
         }
-        if (Purchase.getInstance().isPurchased(context)) {
+        if (AppPurchase.getInstance().isPurchased(context)) {
             containerShimmer.setVisibility(View.GONE);
             return;
         }
@@ -962,11 +960,11 @@ public class Admod {
         if (Arrays.asList(context.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
             showTestIdAlert(context, REWARD_ADS, id);
         }
-        if (Purchase.getInstance().isPurchased(context)) {
+        if (AppPurchase.getInstance().isPurchased(context)) {
             return;
         }
         this.nativeId = id;
-        if (Purchase.getInstance().isPurchased(context)) {
+        if (AppPurchase.getInstance().isPurchased(context)) {
             return;
         }
         rewardedAd = new RewardedAd(context, id);
@@ -996,7 +994,7 @@ public class Admod {
      */
 
     public void loadVideoAds(final Activity context, final RewardedAdCallback adCallback) {
-        if (Purchase.getInstance().isPurchased(context)) {
+        if (AppPurchase.getInstance().isPurchased(context)) {
             adCallback.onUserEarnedReward(null);
             adCallback.onRewardedAdClosed();
             return;
