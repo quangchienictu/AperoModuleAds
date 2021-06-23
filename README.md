@@ -4,7 +4,7 @@
 	maven { url 'https://jitpack.io' }
 
 
-	 implementation 'com.github.AperoVN:AperoModuleAds:1.5.1'
+	 implementation 'com.github.AperoVN:AperoModuleAds:1.6.0'
 ## IntertitialAds
 ### init ads module
     Admod.getInstance().init(this, idTestList);
