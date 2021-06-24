@@ -20,6 +20,7 @@ import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
+import com.ads.control.util.FirebaseAnalyticsUtil;
 import com.google.android.gms.ads.AdActivity;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
@@ -181,6 +182,14 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             AppOpenManager.this.splashAd = ad;
                             AppOpenManager.this.splashLoadTime = (new Date()).getTime();
                         }
+
+                        ad.setOnPaidEventListener(adValue -> {
+                            FirebaseAnalyticsUtil.logPaidAdImpression(myApplication.getApplicationContext(),
+                                    adValue,
+                                    ad.getAdUnitId(),
+                                    ad.getResponseInfo()
+                                            .getMediationAdapterClassName());
+                        });
                     }
 
                     /**
@@ -421,6 +430,14 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         Log.d(TAG, "onAppOpenAdLoaded: splash");
                         AppOpenManager.this.splashAd = ad;
                         splashLoadTime = new Date().getTime();
+                        ad.setOnPaidEventListener(adValue -> {
+                            FirebaseAnalyticsUtil.logPaidAdImpression(myApplication.getApplicationContext(),
+                                    adValue,
+                                    ad.getAdUnitId(),
+                                    ad.getResponseInfo()
+                                            .getMediationAdapterClassName());
+                        });
+
                         if (isTimeout) {
                             Log.e(TAG, "onAppOpenAdLoaded: splash timeout");
                             if (fullScreenContentCallback != null) {
