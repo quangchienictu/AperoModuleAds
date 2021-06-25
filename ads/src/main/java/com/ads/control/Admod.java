@@ -95,6 +95,10 @@ public class Admod {
         isAdcolony = adcolony;
     }
 
+    public void setAppLovin(boolean appLovin) {
+        isAppLovin = appLovin;
+    }
+
     /**
      * Giới hạn số lần click trên 1 admod tren 1 ngay
      *
