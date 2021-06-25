@@ -30,6 +30,8 @@ import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.AdmodHelper;
 import com.ads.control.util.FirebaseAnalyticsUtil;
+import com.applovin.mediation.AppLovinExtras;
+import com.applovin.mediation.ApplovinAdapter;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.ads.mediation.facebook.FacebookAdapter;
 import com.google.ads.mediation.facebook.FacebookExtras;
@@ -75,6 +77,7 @@ public class Admod {
     private boolean isTimeLimited;
     private boolean isFan;
     private boolean isAdcolony;
+    private boolean isAppLovin;
     private boolean openActivityAfterShowInterAds = false;
     private Context context;
 //    private AppOpenAd appOpenAd = null;
@@ -158,6 +161,13 @@ public class Admod {
             AdColonyBundleBuilder.setShowPrePopup(true);
             AdColonyBundleBuilder.setShowPostPopup(true);
             builder.addNetworkExtrasBundle(AdColonyAdapter.class, AdColonyBundleBuilder.build());
+        }
+
+        if (isAppLovin) {
+            Bundle extras = new AppLovinExtras.Builder()
+                    .setMuteAudio(true)
+                    .build();
+            builder.addNetworkExtrasBundle(ApplovinAdapter.class, extras);
         }
         builder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
         return builder.build();
