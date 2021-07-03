@@ -78,6 +78,7 @@ public class AppPurchase {
     PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
         @Override
         public void onPurchasesUpdated(@NonNull BillingResult billingResult, List<Purchase> list) {
+            Log.e(TAG, "onPurchasesUpdated code: "+ billingResult.getResponseCode()  );
             if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null) {
                 for (Purchase purchase : list) {
 
@@ -85,10 +86,11 @@ public class AppPurchase {
                     handlePurchase(purchase);
                 }
             } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
-                // Handle an error caused by a user cancelling the purchase flow.
-
+                if (purchaseListioner!=null)
+                    purchaseListioner.onUserCancelBilling();
+                Log.d(TAG, "onPurchasesUpdated:USER_CANCELED "  );
             } else {
-                // Handle any other error codes.
+                Log.d(TAG, "onPurchasesUpdated:... "  );
             }
         }
     };
