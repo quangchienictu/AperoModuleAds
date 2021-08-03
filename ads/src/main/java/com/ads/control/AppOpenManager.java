@@ -192,6 +192,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         });
                     }
 
+
                     /**
                      * Called when an app open ad has failed to load.
                      *
@@ -201,6 +202,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                     public void onAppOpenAdFailedToLoad(LoadAdError loadAdError) {
                         Log.d(TAG, "onAppOpenAdFailedToLoad: isSplash" + isSplash + " message " + loadAdError.getMessage());
                     }
+
 
                 };
         if (currentActivity!=null) {
@@ -353,6 +355,8 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                 appResumeAd = null;
                             }
                         }
+
+
                     };
 //            if (isSplash) {
 //                splashAd.show(currentActivity, callback);
@@ -380,6 +384,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                 } catch (Exception e) {
                     if (fullScreenContentCallback != null) {
                         fullScreenContentCallback.onAdDismissedFullScreenContent();
+
                     }
                     return;
                 }

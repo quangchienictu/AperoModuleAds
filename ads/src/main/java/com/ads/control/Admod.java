@@ -230,6 +230,15 @@ public class Admod {
             }
 
             @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                if (adListener != null) {
+                    adListener.onAdClicked();
+                    Log.d(TAG, "onAdClicked");
+                }
+            }
+
+            @Override
             public void onAdFailedToLoad(LoadAdError loadAdError) {
                 super.onAdFailedToLoad(loadAdError);
                 if (adListener != null) {
@@ -310,6 +319,14 @@ public class Admod {
                         handler.removeCallbacks(rd);
                     }
                     adListener.onAdFailedToLoad(i);
+                }
+            }
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                if (adListener != null) {
+                    adListener.onAdClicked();
+                    Log.d(TAG, "onAdClicked");
                 }
             }
 
@@ -450,6 +467,7 @@ public class Admod {
                 super.onAdOpened();
                 if(adCallback != null) {
                     adCallback.onAdClicked();
+                    Log.d(TAG, "onAdClicked");
                 }
             }
 
@@ -559,6 +577,7 @@ public class Admod {
                 super.onAdClicked();
                 if (callback != null) {
                     callback.onAdClicked();
+                    Log.d(TAG, "onAdClicked");
                 }
                 AdmodHelper.increaseNumClickAdsPerDay(context, mInterstitialAd.getAdUnitId());
             }
@@ -655,6 +674,18 @@ public class Admod {
     }
 
     /**
+     * Load quảng cáo Banner Trong Activity
+     *
+     * @param mActivity
+     * @param id
+     */
+    public void loadBanner(final Activity mActivity, String id, final AdCallback callback) {
+        final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
+        loadBanner(mActivity, id, adContainer, containerShimmer,callback);
+    }
+
+    /**
      * Load Quảng Cáo Banner Trong Fragment
      *
      * @param mActivity
@@ -665,6 +696,19 @@ public class Admod {
         final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
         loadBanner(mActivity, id, adContainer, containerShimmer);
+    }
+
+    /**
+     * Load Quảng Cáo Banner Trong Fragment
+     *
+     * @param mActivity
+     * @param id
+     * @param rootView
+     */
+    public void loadBannerFragment(final Activity mActivity, String id, final View rootView, final AdCallback callback) {
+        final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
+        loadBanner(mActivity, id, adContainer, containerShimmer,callback);
     }
 
     boolean bannerLoaded = false;
@@ -713,6 +757,68 @@ public class Admod {
                         });
                     }
                 }
+
+            });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadBanner(final Activity mActivity, String id, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer, final AdCallback callback) {
+        if (Arrays.asList(mActivity.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
+            showTestIdAlert(mActivity, BANNER_ADS, id);
+        }
+        if (AppPurchase.getInstance().isPurchased(mActivity)) {
+            containerShimmer.setVisibility(View.GONE);
+            return;
+        }
+
+        containerShimmer.setVisibility(View.VISIBLE);
+        containerShimmer.startShimmer();
+        try {
+            AdView adView = new AdView(mActivity);
+            adView.setAdUnitId(id);
+            adContainer.addView(adView);
+            AdSize adSize = getAdSize(mActivity);
+            adView.setAdSize(adSize);
+            adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+            adView.loadAd(getAdRequest());
+            adView.setAdListener(new AdListener() {
+                @Override
+                public void onAdFailedToLoad(int i) {
+                    super.onAdFailedToLoad(i);
+                    containerShimmer.stopShimmer();
+                    adContainer.setVisibility(View.GONE);
+                    containerShimmer.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAdLoaded() {
+                    Log.d(TAG, "Banner adapter class name: " + adView.getResponseInfo().getMediationAdapterClassName());
+                    containerShimmer.stopShimmer();
+                    containerShimmer.setVisibility(View.GONE);
+                    adContainer.setVisibility(View.VISIBLE);
+                    if(adView != null) {
+                        adView.setOnPaidEventListener(adValue -> {
+                            FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                                    adValue,
+                                    adView.getAdUnitId(),
+                                    adView.getResponseInfo()
+                                            .getMediationAdapterClassName());
+                        });
+                    }
+                }
+                @Override
+                public void onAdClicked() {
+                    super.onAdClicked();
+                    if (callback != null) {
+                        callback.onAdClicked();
+                        Log.d(TAG, "onAdClicked");
+                    }
+                }
+
             });
 
 
@@ -794,6 +900,15 @@ public class Admod {
                     public void onAdFailedToLoad(LoadAdError error) {
                         callback.onAdFailedToLoad(error);
                     }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        if (callback!=null){
+                            callback.onAdClicked();
+                            Log.d(TAG, "onAdClicked");
+                        }
+                    }
                 })
                 .withNativeAdOptions(adOptions)
                 .build();
@@ -843,6 +958,67 @@ public class Admod {
                         containerShimmer.stopShimmer();
                         containerShimmer.setVisibility(View.GONE);
                         frameLayout.setVisibility(View.GONE);
+                    }
+
+                })
+                .withNativeAdOptions(adOptions)
+                .build();
+
+        adLoader.loadAd(getAdRequest());
+    }
+
+    private void loadNative(final Context context, final ShimmerFrameLayout containerShimmer, final FrameLayout frameLayout, final String id, final int layout,final AdCallback callback) {
+        if (Arrays.asList(context.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
+            showTestIdAlert(context, NATIVE_ADS, id);
+        }
+        if (AppPurchase.getInstance().isPurchased(context)) {
+            containerShimmer.setVisibility(View.GONE);
+            return;
+        }
+        frameLayout.removeAllViews();
+        frameLayout.setVisibility(View.GONE);
+        containerShimmer.setVisibility(View.VISIBLE);
+        containerShimmer.startShimmer();
+
+        VideoOptions videoOptions = new VideoOptions.Builder()
+                .setStartMuted(true)
+                .build();
+
+        NativeAdOptions adOptions = new NativeAdOptions.Builder()
+                .setVideoOptions(videoOptions)
+                .build();
+
+
+        AdLoader adLoader = new AdLoader.Builder(context, id)
+                .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
+                    @Override
+                    public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+                        containerShimmer.stopShimmer();
+                        containerShimmer.setVisibility(View.GONE);
+                        frameLayout.setVisibility(View.VISIBLE);
+                        @SuppressLint("InflateParams") UnifiedNativeAdView adView = (UnifiedNativeAdView) LayoutInflater.from(context)
+                                .inflate(layout, null);
+                        populateUnifiedNativeAdView(unifiedNativeAd, adView);
+                        frameLayout.removeAllViews();
+                        frameLayout.addView(adView);
+                    }
+                })
+                .withAdListener(new AdListener() {
+                    @Override
+                    public void onAdFailedToLoad(LoadAdError error) {
+                        Log.e(TAG, "onAdFailedToLoad: " + error.getMessage());
+                        containerShimmer.stopShimmer();
+                        containerShimmer.setVisibility(View.GONE);
+                        frameLayout.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        if (callback!=null){
+                            callback.onAdClicked();
+                            Log.d(TAG, "onAdClicked");
+                        }
                     }
                 })
                 .withNativeAdOptions(adOptions)
@@ -962,6 +1138,7 @@ public class Admod {
     }
 
 
+
     private RewardedAd rewardedAd;
 
     /**
@@ -992,11 +1169,14 @@ public class Admod {
             public void onRewardedAdFailedToLoad(LoadAdError loadAdError) {
                 rewardedAd = null;
             }
+
+
         });
 
     }
 
     public RewardedAd getRewardedAd() {
+
         return rewardedAd;
     }
 
@@ -1026,6 +1206,8 @@ public class Admod {
                         adCallback.onUserEarnedReward(rewardItem);
                     }
                 }
+
+
 
                 @Override
                 public void onRewardedAdClosed() {

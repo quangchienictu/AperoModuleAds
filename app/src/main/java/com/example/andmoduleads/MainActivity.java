@@ -56,6 +56,11 @@ public class MainActivity extends AppCompatActivity {
             public void displayErrorMessage(String errorMsg) {
                 Log.e("PurchaseListioner","displayErrorMessage:"+ errorMsg);
             }
+
+            @Override
+            public void onUserCancelBilling() {
+
+            }
         });
 
         Admod.getInstance().loadBanner(this, getString(R.string.admod_banner_id));
