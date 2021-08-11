@@ -15,6 +15,7 @@ public   class AdjustApero {
     public static final String ID_REVENUE_BANNER = "banner_revenue";
     public static final String ID_REVENUE_NATIVE = "native_revenue";
     public static final String ID_REVENUE_REWARD = "reward_revenue";
+    public static final String ID_REVENUE_RESUME = "resume_revenue";
 
 
 

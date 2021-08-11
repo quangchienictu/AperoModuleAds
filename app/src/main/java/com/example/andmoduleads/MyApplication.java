@@ -49,10 +49,10 @@ public class MyApplication extends AdsMultiDexApplication {
         return true;
     }
 
-    @Override
-    public boolean enableSandbokAdjust() {
-        return true;
-    }
+//    @Override
+//    public boolean enableSandbokAdjust() {
+//        return true;
+//    }
 
     @Override
     public String getAdjustToken() {

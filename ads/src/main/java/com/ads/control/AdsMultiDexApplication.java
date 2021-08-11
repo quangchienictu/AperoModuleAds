@@ -38,7 +38,7 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
 
     private void setupAdjust() {
 
-        String environment = enableSandbokAdjust() ? AdjustConfig.ENVIRONMENT_SANDBOX : AdjustConfig.ENVIRONMENT_PRODUCTION;
+        String environment = BuildConfig.DEBUG ? AdjustConfig.ENVIRONMENT_SANDBOX : AdjustConfig.ENVIRONMENT_PRODUCTION;
 
         AdjustConfig config = new AdjustConfig(this, getAdjustToken(), environment);
 
@@ -101,7 +101,7 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
 
     public abstract boolean enableAdjust();
 
-    public abstract boolean enableSandbokAdjust();
+//    public abstract boolean enableSandbokAdjust();
 
     public abstract String getAdjustToken();
 

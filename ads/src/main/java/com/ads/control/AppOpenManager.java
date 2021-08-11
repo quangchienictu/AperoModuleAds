@@ -177,9 +177,15 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         Log.d(TAG, "onAppOpenAdLoaded: isSplash = " + isSplash);
                         if (!isSplash) {
                             AppOpenManager.this.appResumeAd = ad;
+                            AppOpenManager.this.appResumeAd.setOnPaidEventListener(adValue -> {
+                                AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_RESUME,adValue.getValueMicros(),adValue.getCurrencyCode());
+                            });
                             AppOpenManager.this.appResumeLoadTime = (new Date()).getTime();
                         } else {
                             AppOpenManager.this.splashAd = ad;
+                            AppOpenManager.this.splashAd.setOnPaidEventListener(adValue -> {
+                                AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_SPLASH,adValue.getValueMicros(),adValue.getCurrencyCode());
+                            });
                             AppOpenManager.this.splashLoadTime = (new Date()).getTime();
                         }
 
