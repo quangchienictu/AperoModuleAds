@@ -10,6 +10,13 @@ import com.adjust.sdk.AdjustEvent;
 
 public   class AdjustApero {
 
+    public static final String ID_REVENUE_SPLASH = "splash_revenue";
+    public static final String ID_REVENUE_INTER = "inter_revenue";
+    public static final String ID_REVENUE_BANNER = "banner_revenue";
+    public static final String ID_REVENUE_NATIVE = "native_revenue";
+    public static final String ID_REVENUE_REWARD = "reward_revenue";
+
+
 
     public static void trackAdRevenue(String id) {
         AdjustAdRevenue adjustAdRevenue = new AdjustAdRevenue(id);

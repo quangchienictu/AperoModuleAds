@@ -51,7 +51,7 @@ public class MyApplication extends AdsMultiDexApplication {
 
     @Override
     public boolean enableSandbokAdjust() {
-        return false;
+        return true;
     }
 
     @Override

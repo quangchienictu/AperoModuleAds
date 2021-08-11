@@ -257,6 +257,7 @@ public class Admod {
 
                 if(mInterstitialSplash != null) {
                     mInterstitialSplash.setOnPaidEventListener(adValue -> {
+                        AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_SPLASH,adValue.getValueMicros(),adValue.getCurrencyCode());
                         FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                 adValue,
                                 mInterstitialSplash.getAdUnitId(),
@@ -361,6 +362,8 @@ public class Admod {
 
                 if(interstitialAd != null) {
                     interstitialAd.setOnPaidEventListener(adValue -> {
+
+                        AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_INTER,adValue.getValueMicros(),adValue.getCurrencyCode());
                         FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                 adValue,
                                 interstitialAd.getAdUnitId(),
@@ -409,6 +412,8 @@ public class Admod {
             public void onAdLoaded() {
                 super.onAdLoaded();
                 mInterstitialAd.setOnPaidEventListener(adValue -> {
+
+                    AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_INTER,adValue.getValueMicros(),adValue.getCurrencyCode());
                     FirebaseAnalyticsUtil.logPaidAdImpression(context,
                             adValue,
                             mInterstitialAd.getAdUnitId(),
@@ -439,6 +444,8 @@ public class Admod {
                 }
                 if(mInterstitialAd != null) {
                     mInterstitialAd.setOnPaidEventListener(adValue -> {
+
+                        AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_INTER,adValue.getValueMicros(),adValue.getCurrencyCode());
                         FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                 adValue,
                                 mInterstitialAd.getAdUnitId(),
@@ -751,6 +758,8 @@ public class Admod {
                     adContainer.setVisibility(View.VISIBLE);
                     if(adView != null) {
                         adView.setOnPaidEventListener(adValue -> {
+
+                            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_BANNER,adValue.getValueMicros(),adValue.getCurrencyCode());
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     adView.getAdUnitId(),
@@ -804,6 +813,8 @@ public class Admod {
                     adContainer.setVisibility(View.VISIBLE);
                     if(adView != null) {
                         adView.setOnPaidEventListener(adValue -> {
+
+                            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_BANNER,adValue.getValueMicros(),adValue.getCurrencyCode());
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     adView.getAdUnitId(),
@@ -895,6 +906,9 @@ public class Admod {
                     @Override
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
                         callback.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                        unifiedNativeAd.setOnPaidEventListener(adValue -> {
+                            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_REWARD,adValue.getValueMicros(),adValue.getCurrencyCode());
+                        });
                     }
                 })
                 .withAdListener(new AdListener() {
@@ -948,6 +962,9 @@ public class Admod {
                         frameLayout.setVisibility(View.VISIBLE);
                         @SuppressLint("InflateParams") UnifiedNativeAdView adView = (UnifiedNativeAdView) LayoutInflater.from(context)
                                 .inflate(layout, null);
+                        unifiedNativeAd.setOnPaidEventListener(adValue -> {
+                            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_REWARD,adValue.getValueMicros(),adValue.getCurrencyCode());
+                        });
                         populateUnifiedNativeAdView(unifiedNativeAd, adView);
                         frameLayout.removeAllViews();
                         frameLayout.addView(adView);
@@ -961,6 +978,8 @@ public class Admod {
                         containerShimmer.setVisibility(View.GONE);
                         frameLayout.setVisibility(View.GONE);
                     }
+
+
 
                 })
                 .withNativeAdOptions(adOptions)
@@ -1000,10 +1019,14 @@ public class Admod {
                         frameLayout.setVisibility(View.VISIBLE);
                         @SuppressLint("InflateParams") UnifiedNativeAdView adView = (UnifiedNativeAdView) LayoutInflater.from(context)
                                 .inflate(layout, null);
+                        unifiedNativeAd.setOnPaidEventListener(adValue -> {
+                            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_REWARD,adValue.getValueMicros(),adValue.getCurrencyCode());
+                        });
                         populateUnifiedNativeAdView(unifiedNativeAd, adView);
                         frameLayout.removeAllViews();
                         frameLayout.addView(adView);
                     }
+
                 })
                 .withAdListener(new AdListener() {
                     @Override
@@ -1013,6 +1036,7 @@ public class Admod {
                         containerShimmer.setVisibility(View.GONE);
                         frameLayout.setVisibility(View.GONE);
                     }
+
 
                     @Override
                     public void onAdClicked() {
@@ -1161,6 +1185,9 @@ public class Admod {
             return;
         }
         rewardedAd = new RewardedAd(context, id);
+        rewardedAd.setOnPaidEventListener(adValue -> {
+            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_REWARD,adValue.getValueMicros(),adValue.getCurrencyCode());
+        });
         rewardedAd.loadAd(getAdRequest(), new RewardedAdLoadCallback() {
             @Override
             public void onRewardedAdLoaded() {
@@ -1171,6 +1198,7 @@ public class Admod {
             public void onRewardedAdFailedToLoad(LoadAdError loadAdError) {
                 rewardedAd = null;
             }
+
 
 
         });
