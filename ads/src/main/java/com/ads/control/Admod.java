@@ -26,6 +26,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
+import com.adjust.sdk.AdjustConfig;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.AdmodHelper;
@@ -97,6 +98,7 @@ public class Admod {
 
     public void setAppLovin(boolean appLovin) {
         isAppLovin = appLovin;
+        AdjustApero.trackAdRevenue(AdjustConfig.AD_REVENUE_APPLOVIN_MAX);
     }
 
     /**
