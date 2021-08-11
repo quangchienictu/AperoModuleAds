@@ -9,10 +9,16 @@ import androidx.multidex.MultiDexApplication;
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAttribution;
 import com.adjust.sdk.AdjustConfig;
+import com.adjust.sdk.AdjustEventFailure;
 import com.adjust.sdk.AdjustEventSuccess;
+import com.adjust.sdk.AdjustSessionFailure;
+import com.adjust.sdk.AdjustSessionSuccess;
 import com.adjust.sdk.LogLevel;
 import com.adjust.sdk.OnAttributionChangedListener;
+import com.adjust.sdk.OnEventTrackingFailedListener;
 import com.adjust.sdk.OnEventTrackingSucceededListener;
+import com.adjust.sdk.OnSessionTrackingFailedListener;
+import com.adjust.sdk.OnSessionTrackingSucceededListener;
 
 import java.util.List;
 
@@ -25,16 +31,14 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
         if (enableAdsResume()) {
             AppOpenManager.getInstance().init(this, getOpenAppAdId());
         }
-        if (enableAdjust()){
-            Adjust.setEnabled(true);
+        if (enableAdjust()) {
             setupAdjust();
-        }else {
-            Adjust.setEnabled(false);
         }
     }
 
     private void setupAdjust() {
-        String environment = AdjustConfig.ENVIRONMENT_SANDBOX;
+
+        String environment = enableSandbokAdjust() ? AdjustConfig.ENVIRONMENT_SANDBOX : AdjustConfig.ENVIRONMENT_PRODUCTION;
 
         AdjustConfig config = new AdjustConfig(this, getAdjustToken(), environment);
 
@@ -43,8 +47,8 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
         config.setOnAttributionChangedListener(new OnAttributionChangedListener() {
             @Override
             public void onAttributionChanged(AdjustAttribution attribution) {
-                Log.d("Adjust", "Attribution callback called!");
-                Log.d("example", "Attribution: " + attribution.toString());
+                Log.d("AdjustApero", "Attribution callback called!");
+                Log.d("AdjustApero", "Attribution: " + attribution.toString());
             }
         });
 
@@ -52,11 +56,36 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
         config.setOnEventTrackingSucceededListener(new OnEventTrackingSucceededListener() {
             @Override
             public void onFinishedEventTrackingSucceeded(AdjustEventSuccess eventSuccessResponseData) {
-                Log.d("Adjust", "Event success callback called!");
-                Log.d("example", "Event success data: " + eventSuccessResponseData.toString());
+                Log.d("AdjustApero", "Event success callback called!");
+                Log.d("AdjustApero", "Event success data: " + eventSuccessResponseData.toString());
+            }
+        });
+        // Set event failure tracking delegate.
+        config.setOnEventTrackingFailedListener(new OnEventTrackingFailedListener() {
+            @Override
+            public void onFinishedEventTrackingFailed(AdjustEventFailure eventFailureResponseData) {
+                Log.d("AdjustApero", "Event failure callback called!");
+                Log.d("AdjustApero", "Event failure data: " + eventFailureResponseData.toString());
             }
         });
 
+        // Set session success tracking delegate.
+        config.setOnSessionTrackingSucceededListener(new OnSessionTrackingSucceededListener() {
+            @Override
+            public void onFinishedSessionTrackingSucceeded(AdjustSessionSuccess sessionSuccessResponseData) {
+                Log.d("AdjustApero", "Session success callback called!");
+                Log.d("AdjustApero", "Session success data: " + sessionSuccessResponseData.toString());
+            }
+        });
+
+        // Set session failure tracking delegate.
+        config.setOnSessionTrackingFailedListener(new OnSessionTrackingFailedListener() {
+            @Override
+            public void onFinishedSessionTrackingFailed(AdjustSessionFailure sessionFailureResponseData) {
+                Log.d("AdjustApero", "Session failure callback called!");
+                Log.d("AdjustApero", "Session failure data: " + sessionFailureResponseData.toString());
+            }
+        });
         config.setSendInBackground(true);
         Adjust.onCreate(config);
         registerActivityLifecycleCallbacks(new AdjustLifecycleCallbacks());
@@ -67,9 +96,13 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
     public abstract boolean enableAdsResume();
 
     public abstract List<String> getListTestDeviceId();
+
     public abstract String getOpenAppAdId();
 
     public abstract boolean enableAdjust();
+
+    public abstract boolean enableSandbokAdjust();
+
     public abstract String getAdjustToken();
 
 

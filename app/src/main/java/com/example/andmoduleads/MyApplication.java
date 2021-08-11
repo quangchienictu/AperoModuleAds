@@ -3,6 +3,7 @@ package com.example.andmoduleads;
 import android.util.Log;
 
 import com.ads.control.AdsApplication;
+import com.ads.control.AdsMultiDexApplication;
 import com.ads.control.AppOpenManager;
 import com.ads.control.AppPurchase;
 import com.ads.control.funtion.PurchaseListioner;
@@ -12,12 +13,13 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class MyApplication extends AdsApplication {
+public class MyApplication extends AdsMultiDexApplication {
+
 
     @Override
     public void onCreate() {
         super.onCreate();
-//        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 10000);
+        //        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 10000);
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
         List<String> listINAPId = new ArrayList<>();
         listINAPId.add(MainActivity.PRODUCT_ID);
@@ -40,5 +42,20 @@ public class MyApplication extends AdsApplication {
     @Override
     public String getOpenAppAdId() {
         return AppOpenManager.AD_UNIT_ID_TEST;
+    }
+
+    @Override
+    public boolean enableAdjust() {
+        return true;
+    }
+
+    @Override
+    public boolean enableSandbokAdjust() {
+        return false;
+    }
+
+    @Override
+    public String getAdjustToken() {
+        return "elikb9nnvx8g";
     }
 }

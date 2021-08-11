@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.ads.control.AdjustApero;
 import com.ads.control.Admod;
 import com.ads.control.AppPurchase;
 import com.ads.control.dialog.DialogExitApp1;
@@ -27,6 +28,11 @@ import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 
 public class MainActivity extends AppCompatActivity {
       static final String PRODUCT_ID = "android.test.purchased";
+
+      //adjust
+    private static final String EVENT_TOKEN_SIMPLE = "g3mfiw";
+    private static final String EVENT_TOKEN_REVENUE = "a4fd35";
+
     private FrameLayout frAds;
     private UnifiedNativeAd unifiedNativeAd;
     @Override
@@ -101,6 +107,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+
+    public void onTrackSimpleEventClick(View v) {
+        AdjustApero.onTrackEvent(EVENT_TOKEN_SIMPLE);
+    }
+
+    public void onTrackRevenueEventClick(View v) {
+        AdjustApero.onTrackRevenue(EVENT_TOKEN_REVENUE,1f,"EUR");
+    }
+
 
     @Override
     protected void onResume() {

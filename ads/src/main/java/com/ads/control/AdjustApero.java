@@ -10,9 +10,9 @@ import com.adjust.sdk.AdjustEvent;
 
 public   class AdjustApero {
 
+
     public static void trackAdRevenue(String id) {
         AdjustAdRevenue adjustAdRevenue = new AdjustAdRevenue(id);
-
         Adjust.trackAdRevenue(adjustAdRevenue);
     }
 
@@ -28,7 +28,7 @@ public   class AdjustApero {
         Adjust.trackEvent(event);
     }
 
-    public void onTrackRevenue(String eventName,float revenue,String currency ) {
+    public static void onTrackRevenue(String eventName,float revenue,String currency ) {
         AdjustEvent event = new AdjustEvent(eventName);
         // Add revenue 1 cent of an euro.
         event.setRevenue(revenue, currency);
