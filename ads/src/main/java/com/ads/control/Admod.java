@@ -907,6 +907,7 @@ public class Admod {
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
                         callback.onUnifiedNativeAdLoaded(unifiedNativeAd);
                         unifiedNativeAd.setOnPaidEventListener(adValue -> {
+
                             AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_REWARD,adValue.getValueMicros(),adValue.getCurrencyCode());
                         });
                     }

@@ -10,12 +10,20 @@ import com.adjust.sdk.AdjustEvent;
 
 public   class AdjustApero {
 
-    public static final String ID_REVENUE_SPLASH = "splash_revenue";
-    public static final String ID_REVENUE_INTER = "inter_revenue";
-    public static final String ID_REVENUE_BANNER = "banner_revenue";
-    public static final String ID_REVENUE_NATIVE = "native_revenue";
-    public static final String ID_REVENUE_REWARD = "reward_revenue";
-    public static final String ID_REVENUE_RESUME = "resume_revenue";
+    public static final String KEY_REVENUE_SPLASH = "splash";
+    public static final String KEY_REVENUE_INTER = "inter";
+    public static final String KEY_REVENUE_BANNER = "banner";
+    public static final String KEY_REVENUE_NATIVE = "native";
+    public static final String KEY_REVENUE_REWARD = "reward";
+    public static final String KEY_REVENUE_RESUME = "resume";
+
+
+    public static   String ID_REVENUE_SPLASH = "";
+    public static   String ID_REVENUE_INTER = "";
+    public static   String ID_REVENUE_BANNER = "";
+    public static   String ID_REVENUE_NATIVE = "";
+    public static   String ID_REVENUE_REWARD = "";
+    public static   String ID_REVENUE_RESUME = "";
 
 
 

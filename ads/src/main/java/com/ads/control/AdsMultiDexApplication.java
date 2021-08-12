@@ -21,6 +21,7 @@ import com.adjust.sdk.OnSessionTrackingFailedListener;
 import com.adjust.sdk.OnSessionTrackingSucceededListener;
 
 import java.util.List;
+import java.util.Map;
 
 public abstract class AdsMultiDexApplication extends MultiDexApplication {
 
@@ -32,8 +33,20 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
             AppOpenManager.getInstance().init(this, getOpenAppAdId());
         }
         if (enableAdjust()) {
+            setupIdEvent();
             setupAdjust();
+
         }
+    }
+
+    private void setupIdEvent() {
+        Map<String,String> eventIds =  getListEventDefaultsAdjust();
+        AdjustApero.ID_REVENUE_INTER =eventIds.get(AdjustApero.KEY_REVENUE_INTER);
+        AdjustApero.ID_REVENUE_BANNER = eventIds.get(AdjustApero.KEY_REVENUE_BANNER);
+        AdjustApero.ID_REVENUE_NATIVE = eventIds.get(AdjustApero.KEY_REVENUE_NATIVE);
+        AdjustApero.ID_REVENUE_SPLASH = eventIds.get(AdjustApero.KEY_REVENUE_SPLASH);
+        AdjustApero.ID_REVENUE_RESUME = eventIds.get(AdjustApero.KEY_REVENUE_RESUME);
+        AdjustApero.ID_REVENUE_REWARD = eventIds.get(AdjustApero.KEY_REVENUE_REWARD);
     }
 
     private void setupAdjust() {
@@ -96,6 +109,7 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
     public abstract boolean enableAdsResume();
 
     public abstract List<String> getListTestDeviceId();
+    public abstract Map<String,String> getListEventDefaultsAdjust();
 
     public abstract String getOpenAppAdId();
 
