@@ -26,7 +26,6 @@ public   class AdjustApero {
     public static   String ID_REVENUE_RESUME = "";
 
 
-
     public static void trackAdRevenue(String id) {
         AdjustAdRevenue adjustAdRevenue = new AdjustAdRevenue(id);
         Adjust.trackAdRevenue(adjustAdRevenue);

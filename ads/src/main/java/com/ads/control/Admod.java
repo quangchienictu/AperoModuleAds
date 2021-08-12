@@ -908,7 +908,7 @@ public class Admod {
                         callback.onUnifiedNativeAdLoaded(unifiedNativeAd);
                         unifiedNativeAd.setOnPaidEventListener(adValue -> {
 
-                            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_REWARD,adValue.getValueMicros(),adValue.getCurrencyCode());
+                            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_NATIVE,adValue.getValueMicros(),adValue.getCurrencyCode());
                         });
                     }
                 })
@@ -964,7 +964,7 @@ public class Admod {
                         @SuppressLint("InflateParams") UnifiedNativeAdView adView = (UnifiedNativeAdView) LayoutInflater.from(context)
                                 .inflate(layout, null);
                         unifiedNativeAd.setOnPaidEventListener(adValue -> {
-                            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_REWARD,adValue.getValueMicros(),adValue.getCurrencyCode());
+                            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_NATIVE,adValue.getValueMicros(),adValue.getCurrencyCode());
                         });
                         populateUnifiedNativeAdView(unifiedNativeAd, adView);
                         frameLayout.removeAllViews();
@@ -1021,7 +1021,7 @@ public class Admod {
                         @SuppressLint("InflateParams") UnifiedNativeAdView adView = (UnifiedNativeAdView) LayoutInflater.from(context)
                                 .inflate(layout, null);
                         unifiedNativeAd.setOnPaidEventListener(adValue -> {
-                            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_REWARD,adValue.getValueMicros(),adValue.getCurrencyCode());
+                            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_NATIVE,adValue.getValueMicros(),adValue.getCurrencyCode());
                         });
                         populateUnifiedNativeAdView(unifiedNativeAd, adView);
                         frameLayout.removeAllViews();
