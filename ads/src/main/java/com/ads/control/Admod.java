@@ -257,7 +257,8 @@ public class Admod {
 
                 if(mInterstitialSplash != null) {
                     mInterstitialSplash.setOnPaidEventListener(adValue -> {
-                        AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_SPLASH,adValue.getValueMicros(),adValue.getCurrencyCode());
+                        AdjustApero.pushTrackEventAdmod(mInterstitialSplash.getAdUnitId(),adValue);
+
                         FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                 adValue,
                                 mInterstitialSplash.getAdUnitId(),
@@ -362,8 +363,7 @@ public class Admod {
 
                 if(interstitialAd != null) {
                     interstitialAd.setOnPaidEventListener(adValue -> {
-
-                        AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_INTER,adValue.getValueMicros(),adValue.getCurrencyCode());
+                        AdjustApero.pushTrackEventAdmod(interstitialAd.getAdUnitId(),adValue);
                         FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                 adValue,
                                 interstitialAd.getAdUnitId(),
@@ -412,8 +412,7 @@ public class Admod {
             public void onAdLoaded() {
                 super.onAdLoaded();
                 mInterstitialAd.setOnPaidEventListener(adValue -> {
-
-                    AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_INTER,adValue.getValueMicros(),adValue.getCurrencyCode());
+                    AdjustApero.pushTrackEventAdmod(mInterstitialAd.getAdUnitId(),adValue);
                     FirebaseAnalyticsUtil.logPaidAdImpression(context,
                             adValue,
                             mInterstitialAd.getAdUnitId(),
@@ -444,8 +443,7 @@ public class Admod {
                 }
                 if(mInterstitialAd != null) {
                     mInterstitialAd.setOnPaidEventListener(adValue -> {
-
-                        AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_INTER,adValue.getValueMicros(),adValue.getCurrencyCode());
+                        AdjustApero.pushTrackEventAdmod(mInterstitialAd.getAdUnitId(),adValue);
                         FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                 adValue,
                                 mInterstitialAd.getAdUnitId(),
@@ -758,8 +756,7 @@ public class Admod {
                     adContainer.setVisibility(View.VISIBLE);
                     if(adView != null) {
                         adView.setOnPaidEventListener(adValue -> {
-
-                            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_BANNER,adValue.getValueMicros(),adValue.getCurrencyCode());
+                            AdjustApero.pushTrackEventAdmod(adView.getAdUnitId(),adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     adView.getAdUnitId(),
@@ -813,8 +810,7 @@ public class Admod {
                     adContainer.setVisibility(View.VISIBLE);
                     if(adView != null) {
                         adView.setOnPaidEventListener(adValue -> {
-
-                            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_BANNER,adValue.getValueMicros(),adValue.getCurrencyCode());
+                            AdjustApero.pushTrackEventAdmod(adView.getAdUnitId(),adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     adView.getAdUnitId(),
@@ -907,8 +903,7 @@ public class Admod {
                     public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
                         callback.onUnifiedNativeAdLoaded(unifiedNativeAd);
                         unifiedNativeAd.setOnPaidEventListener(adValue -> {
-
-                            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_NATIVE,adValue.getValueMicros(),adValue.getCurrencyCode());
+                            AdjustApero.pushTrackEventAdmod(id,adValue);
                         });
                     }
                 })
@@ -964,7 +959,7 @@ public class Admod {
                         @SuppressLint("InflateParams") UnifiedNativeAdView adView = (UnifiedNativeAdView) LayoutInflater.from(context)
                                 .inflate(layout, null);
                         unifiedNativeAd.setOnPaidEventListener(adValue -> {
-                            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_NATIVE,adValue.getValueMicros(),adValue.getCurrencyCode());
+                            AdjustApero.pushTrackEventAdmod(id,adValue);
                         });
                         populateUnifiedNativeAdView(unifiedNativeAd, adView);
                         frameLayout.removeAllViews();
@@ -1021,7 +1016,7 @@ public class Admod {
                         @SuppressLint("InflateParams") UnifiedNativeAdView adView = (UnifiedNativeAdView) LayoutInflater.from(context)
                                 .inflate(layout, null);
                         unifiedNativeAd.setOnPaidEventListener(adValue -> {
-                            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_NATIVE,adValue.getValueMicros(),adValue.getCurrencyCode());
+                            AdjustApero.pushTrackEventAdmod(id,adValue);
                         });
                         populateUnifiedNativeAdView(unifiedNativeAd, adView);
                         frameLayout.removeAllViews();
@@ -1187,7 +1182,8 @@ public class Admod {
         }
         rewardedAd = new RewardedAd(context, id);
         rewardedAd.setOnPaidEventListener(adValue -> {
-            AdjustApero.onTrackRevenue(AdjustApero.ID_REVENUE_REWARD,adValue.getValueMicros(),adValue.getCurrencyCode());
+            AdjustApero.pushTrackEventAdmod(rewardedAd.getAdUnitId(),adValue);
+
         });
         rewardedAd.loadAd(getAdRequest(), new RewardedAdLoadCallback() {
             @Override
@@ -1199,9 +1195,6 @@ public class Admod {
             public void onRewardedAdFailedToLoad(LoadAdError loadAdError) {
                 rewardedAd = null;
             }
-
-
-
         });
 
     }

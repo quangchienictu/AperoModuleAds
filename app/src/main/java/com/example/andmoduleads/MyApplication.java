@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class MyApplication extends AdsMultiDexApplication {
+public class MyApplication extends AdsApplication {
 
 
     @Override
@@ -45,12 +45,11 @@ public class MyApplication extends AdsMultiDexApplication {
     @Override
     public Map<String,String> getListEventDefaultsAdjust() {
         Map<String,String> idAdjust = new HashMap<>() ;
-        idAdjust.put(AdjustApero.KEY_REVENUE_SPLASH,"totyui");
-        idAdjust.put(AdjustApero.KEY_REVENUE_BANNER,"m55gsj");
-        idAdjust.put(AdjustApero.KEY_REVENUE_INTER,"trg4vs");
-        idAdjust.put(AdjustApero.KEY_REVENUE_NATIVE,"gztbg3");
-        idAdjust.put(AdjustApero.KEY_REVENUE_RESUME,"om2b6m");
-        idAdjust.put(AdjustApero.KEY_REVENUE_REWARD,"omlfur");
+        idAdjust.put("ca-app-pub-3940256099942544/6300978111","a4fd35");
+        idAdjust.put("ca-app-pub-3940256099942544/2247696110","a4fd35");
+        idAdjust.put("ca-app-pub-4973559944609228/8602914526","a4fd35");
+        idAdjust.put("ca-app-pub-3940256099942544/3419835294","a4fd35");
+
         return idAdjust;
     }
 
@@ -61,16 +60,11 @@ public class MyApplication extends AdsMultiDexApplication {
 
     @Override
     public boolean enableAdjust() {
-        return true;
+        return false;
     }
-
-//    @Override
-//    public boolean enableSandbokAdjust() {
-//        return true;
-//    }
 
     @Override
     public String getAdjustToken() {
-        return "elikb9nnvx8g";
+        return "2fm9gkqubvpc";
     }
 }

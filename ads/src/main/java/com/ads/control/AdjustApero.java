@@ -1,5 +1,6 @@
 package com.ads.control;
 
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -7,23 +8,15 @@ import androidx.annotation.NonNull;
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAdRevenue;
 import com.adjust.sdk.AdjustEvent;
+import com.google.android.gms.ads.AdValue;
 
-public   class AdjustApero {
+import java.util.Map;
 
-    public static final String KEY_REVENUE_SPLASH = "splash";
-    public static final String KEY_REVENUE_INTER = "inter";
-    public static final String KEY_REVENUE_BANNER = "banner";
-    public static final String KEY_REVENUE_NATIVE = "native";
-    public static final String KEY_REVENUE_REWARD = "reward";
-    public static final String KEY_REVENUE_RESUME = "resume";
+public class AdjustApero {
 
 
-    public static   String ID_REVENUE_SPLASH = "";
-    public static   String ID_REVENUE_INTER = "";
-    public static   String ID_REVENUE_BANNER = "";
-    public static   String ID_REVENUE_NATIVE = "";
-    public static   String ID_REVENUE_REWARD = "";
-    public static   String ID_REVENUE_RESUME = "";
+    public static Map<String, String> eventIds;
+    public static boolean enableAdjust = false;
 
 
     public static void trackAdRevenue(String id) {
@@ -43,10 +36,26 @@ public   class AdjustApero {
         Adjust.trackEvent(event);
     }
 
-    public static void onTrackRevenue(String eventName,float revenue,String currency ) {
+    public static void onTrackRevenue(String eventName, float revenue, String currency) {
         AdjustEvent event = new AdjustEvent(eventName);
         // Add revenue 1 cent of an euro.
         event.setRevenue(revenue, currency);
         Adjust.trackEvent(event);
+    }
+
+    public static void pushTrackEventAdmod(String adId, AdValue adValue) {
+        if (AdjustApero.enableAdjust) {
+            String eventId = AdjustApero.eventIds.get(adId);
+            if (eventId == null || eventId.isEmpty()) {
+
+                new android.os.Handler().post(
+                        new Runnable() {
+                            public void run() {
+                                throw new RuntimeException("Adjust event id null at :" + adId);
+                            }
+                        });
+            }
+            AdjustApero.onTrackRevenue(eventId, adValue.getValueMicros(), adValue.getCurrencyCode());
+        }
     }
 }
