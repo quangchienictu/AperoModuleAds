@@ -98,7 +98,7 @@ public class Admod {
 
     public void setAppLovin(boolean appLovin) {
         isAppLovin = appLovin;
-        AdjustApero.trackAdRevenue(AdjustConfig.AD_REVENUE_APPLOVIN_MAX);
+
     }
 
     /**

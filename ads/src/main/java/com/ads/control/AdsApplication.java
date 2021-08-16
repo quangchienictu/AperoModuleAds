@@ -46,13 +46,12 @@ public abstract class AdsApplication extends Application {
 
 
     private void setupIdEvent() {
-        AdjustApero.eventIds =  getListEventDefaultsAdjust();
         AdjustApero.enableAdjust =  true;
     }
     private void setupAdjust() {
 
         String environment = BuildConfig.DEBUG ? AdjustConfig.ENVIRONMENT_SANDBOX : AdjustConfig.ENVIRONMENT_PRODUCTION;
-
+        Log.i("Application", "setupAdjust: "+environment);
         AdjustConfig config = new AdjustConfig(this, getAdjustToken(), environment);
 
         // Change the log level.
@@ -103,15 +102,12 @@ public abstract class AdsApplication extends Application {
         Adjust.onCreate(config);
         registerActivityLifecycleCallbacks(new AdjustLifecycleCallbacks());
 
-        AdjustApero.trackAdRevenue(AdjustConfig.AD_REVENUE_ADMOB);
     }
 
-    public abstract Map<String,String> getListEventDefaultsAdjust();
 
 
     public abstract boolean enableAdjust();
 
-//    public abstract boolean enableSandbokAdjust();
 
     public abstract String getAdjustToken();
 

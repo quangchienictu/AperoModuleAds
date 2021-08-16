@@ -42,16 +42,6 @@ public class MyApplication extends AdsApplication {
         return Collections.singletonList("07F6B55DA3A08766A4465F36354C7EF6");
     }
 
-    @Override
-    public Map<String,String> getListEventDefaultsAdjust() {
-        Map<String,String> idAdjust = new HashMap<>() ;
-        idAdjust.put("ca-app-pub-3940256099942544/6300978111","a4fd35");
-        idAdjust.put("ca-app-pub-3940256099942544/2247696110","a4fd35");
-        idAdjust.put("ca-app-pub-4973559944609228/8602914526","a4fd35");
-        idAdjust.put("ca-app-pub-3940256099942544/3419835294","a4fd35");
-
-        return idAdjust;
-    }
 
     @Override
     public String getOpenAppAdId() {
@@ -60,7 +50,7 @@ public class MyApplication extends AdsApplication {
 
     @Override
     public boolean enableAdjust() {
-        return false;
+        return true;
     }
 
     @Override

@@ -178,24 +178,28 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         if (!isSplash) {
                             AppOpenManager.this.appResumeAd = ad;
                             AppOpenManager.this.appResumeAd.setOnPaidEventListener(adValue -> {
-                                AdjustApero.pushTrackEventAdmod( AppOpenManager.this.appResumeAd.getAdUnitId(),adValue);
+                                AdjustApero.pushTrackEventAdmod( AppOpenManager.this.splashAd.getAdUnitId(),adValue);
+                                FirebaseAnalyticsUtil.logPaidAdImpression(myApplication.getApplicationContext(),
+                                        adValue,
+                                        ad.getAdUnitId(),
+                                        ad.getResponseInfo()
+                                                .getMediationAdapterClassName());
                             });
                             AppOpenManager.this.appResumeLoadTime = (new Date()).getTime();
                         } else {
                             AppOpenManager.this.splashAd = ad;
                             AppOpenManager.this.splashAd.setOnPaidEventListener(adValue -> {
                                 AdjustApero.pushTrackEventAdmod( AppOpenManager.this.splashAd.getAdUnitId(),adValue);
+                                FirebaseAnalyticsUtil.logPaidAdImpression(myApplication.getApplicationContext(),
+                                        adValue,
+                                        ad.getAdUnitId(),
+                                        ad.getResponseInfo()
+                                                .getMediationAdapterClassName());
                             });
                             AppOpenManager.this.splashLoadTime = (new Date()).getTime();
                         }
 
-                        ad.setOnPaidEventListener(adValue -> {
-                            FirebaseAnalyticsUtil.logPaidAdImpression(myApplication.getApplicationContext(),
-                                    adValue,
-                                    ad.getAdUnitId(),
-                                    ad.getResponseInfo()
-                                            .getMediationAdapterClassName());
-                        });
+
                     }
 
 

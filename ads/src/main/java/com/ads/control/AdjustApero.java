@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAdRevenue;
+import com.adjust.sdk.AdjustConfig;
 import com.adjust.sdk.AdjustEvent;
 import com.google.android.gms.ads.AdValue;
 
@@ -15,7 +16,7 @@ import java.util.Map;
 public class AdjustApero {
 
 
-    public static Map<String, String> eventIds;
+
     public static boolean enableAdjust = false;
 
 
@@ -45,17 +46,10 @@ public class AdjustApero {
 
     public static void pushTrackEventAdmod(String adId, AdValue adValue) {
         if (AdjustApero.enableAdjust) {
-            String eventId = AdjustApero.eventIds.get(adId);
-            if (eventId == null || eventId.isEmpty()) {
+            AdjustAdRevenue adRevenue = new AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB);
+            adRevenue.setRevenue(adValue.getValueMicros() / 1000000.0, adValue.getCurrencyCode());
 
-                new android.os.Handler().post(
-                        new Runnable() {
-                            public void run() {
-                                throw new RuntimeException("Adjust event id null at :" + adId);
-                            }
-                        });
-            }
-            AdjustApero.onTrackRevenue(eventId, adValue.getValueMicros(), adValue.getCurrencyCode());
+            Adjust.trackAdRevenue(adRevenue);
         }
     }
 }
