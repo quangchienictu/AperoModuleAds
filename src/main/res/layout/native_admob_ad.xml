@@ -78,7 +78,7 @@
                 android:text="@string/appbar_scrolling_view_behavior"
                 android:textSize="@dimen/_10sdp" />
 
-            <com.google.android.gms.ads.formats.MediaView
+            <com.google.android.gms.ads.nativead.MediaView
                 android:id="@+id/ad_media"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

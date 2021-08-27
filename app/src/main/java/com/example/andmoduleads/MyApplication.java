@@ -39,7 +39,7 @@ public class MyApplication extends AdsApplication {
 
     @Override
     public List<String> getListTestDeviceId() {
-        return Collections.singletonList("07F6B55DA3A08766A4465F36354C7EF6");
+        return Collections.singletonList("0C415A270DF82EA01C765E69924B9327");
     }
 
 
@@ -50,7 +50,7 @@ public class MyApplication extends AdsApplication {
 
     @Override
     public boolean enableAdjust() {
-        return true;
+        return false;
     }
 
     @Override

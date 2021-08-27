@@ -22,19 +22,21 @@ import com.ads.control.dialog.DialogExitApp1;
 import com.ads.control.dialog.InAppDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.PurchaseListioner;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.formats.UnifiedNativeAd;
-import com.google.android.gms.ads.formats.UnifiedNativeAdView;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdView;
 
 public class MainActivity extends AppCompatActivity {
-      static final String PRODUCT_ID = "android.test.purchased";
+    static final String PRODUCT_ID = "android.test.purchased";
 
-      //adjust
+    //adjust
     private static final String EVENT_TOKEN_SIMPLE = "g3mfiw";
     private static final String EVENT_TOKEN_REVENUE = "a4fd35";
 
+
     private FrameLayout frAds;
-    private UnifiedNativeAd unifiedNativeAd;
+    private NativeAd unifiedNativeAd;
+    private InterstitialAd mInterstitialAd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,25 +44,24 @@ public class MainActivity extends AppCompatActivity {
         frAds = findViewById(R.id.fr_ads);
 
 
-        Admod.getInstance().loadUnifiedNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {
+        Admod.getInstance().loadNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {
             @Override
-            public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
-                @SuppressLint("InflateParams") UnifiedNativeAdView adView = (UnifiedNativeAdView) LayoutInflater.from(MainActivity.this)
-                        .inflate(R.layout.custom_native, null);
+            public void onUnifiedNativeAdLoaded(NativeAd unifiedNativeAd) {
+                @SuppressLint("InflateParams") NativeAdView adView = ( NativeAdView) LayoutInflater.from(MainActivity.this).inflate(R.layout.custom_native, null);
                 frAds.addView(adView);
                 Admod.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, adView);
             }
         });
         AppPurchase.getInstance().setPurchaseListioner(new PurchaseListioner() {
             @Override
-            public void onProductPurchased(String productId,String transactionDetails) {
-                Log.e("PurchaseListioner","ProductPurchased:"+ productId);
-                Log.e("PurchaseListioner","transactionDetails:"+ transactionDetails);
+            public void onProductPurchased(String productId, String transactionDetails) {
+                Log.e("PurchaseListioner", "ProductPurchased:" + productId);
+                Log.e("PurchaseListioner", "transactionDetails:" + transactionDetails);
             }
 
             @Override
             public void displayErrorMessage(String errorMsg) {
-                Log.e("PurchaseListioner","displayErrorMessage:"+ errorMsg);
+                Log.e("PurchaseListioner", "displayErrorMessage:" + errorMsg);
             }
 
             @Override
@@ -72,7 +73,8 @@ public class MainActivity extends AppCompatActivity {
         Admod.getInstance().loadBanner(this, getString(R.string.admod_banner_id));
 //        Admod.getInstance().loadNative(this, getString(R.string.admod_native_id));
         Admod.getInstance().setNumToShowAds(3);
-        InterstitialAd mInterstitialAd = Admod.getInstance().getInterstitalAds(this, getString(R.string.admod_interstitial_id));
+        loadAdInterstial();
+
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onAdClosed() {
                     startActivity(new Intent(MainActivity.this, ContentActivity.class));
+                    loadAdInterstial();
                 }
             });
         });
@@ -90,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onAdClosed() {
                     startActivity(new Intent(MainActivity.this, ContentActivity.class));
+                    loadAdInterstial();
                 }
             });
         });
@@ -99,13 +103,26 @@ public class MainActivity extends AppCompatActivity {
             AppPurchase.getInstance().consumePurchase(PRODUCT_ID);
             InAppDialog dialog = new InAppDialog(this);
             dialog.setCallback(() -> {
-                    AppPurchase.getInstance().consumePurchase(PRODUCT_ID);
-                AppPurchase.getInstance().purchase(this,PRODUCT_ID);
+                AppPurchase.getInstance().consumePurchase(PRODUCT_ID);
+                AppPurchase.getInstance().purchase(this, PRODUCT_ID);
                 dialog.dismiss();
             });
             dialog.show();
         });
 
+
+    }
+
+    private void loadAdInterstial() {
+
+        Admod.getInstance().getInterstitalAds(this, getString(R.string.admod_interstitial_id), new AdCallback() {
+
+            @Override
+            public void onInterstitialLoad(InterstitialAd interstitialAd) {
+                super.onInterstitialLoad(interstitialAd);
+                mInterstitialAd = interstitialAd;
+            }
+        });
     }
 
 
@@ -114,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onTrackRevenueEventClick(View v) {
-        AdjustApero.onTrackRevenue(EVENT_TOKEN_REVENUE,1f,"EUR");
+        AdjustApero.onTrackRevenue(EVENT_TOKEN_REVENUE, 1f, "EUR");
     }
 
 
@@ -127,9 +144,9 @@ public class MainActivity extends AppCompatActivity {
     private void loadNativeExit() {
         if (unifiedNativeAd != null)
             return;
-        Admod.getInstance().loadUnifiedNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {
+        Admod.getInstance().loadNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {
             @Override
-            public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+            public void onUnifiedNativeAdLoaded(NativeAd unifiedNativeAd) {
                 MainActivity.this.unifiedNativeAd = unifiedNativeAd;
             }
         });
@@ -137,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        DialogExitApp1 dialogExitApp1 = new DialogExitApp1(this,unifiedNativeAd,1);
+        DialogExitApp1 dialogExitApp1 = new DialogExitApp1(this, unifiedNativeAd, 1);
         dialogExitApp1.setCancelable(false);
         dialogExitApp1.show();
     }
@@ -146,8 +163,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 //        AppPurchase.getInstance().handleActivityResult(requestCode, resultCode, data);
-        Log.e("onActivityResult","ProductPurchased:"+ data.toString());
-        if (AppPurchase.getInstance().isPurchased(this,PRODUCT_ID)) {
+        Log.e("onActivityResult", "ProductPurchased:" + data.toString());
+        if (AppPurchase.getInstance().isPurchased(this, PRODUCT_ID)) {
             findViewById(R.id.btIap).setVisibility(View.GONE);
         }
     }

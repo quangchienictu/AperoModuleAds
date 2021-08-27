@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Lifecycle;
@@ -167,13 +168,16 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
         loadCallback =
                 new AppOpenAd.AppOpenAdLoadCallback() {
+
                     /**
                      * Called when an app open ad has loaded.
                      *
                      * @param ad the loaded app open ad.
                      */
+
+
                     @Override
-                    public void onAppOpenAdLoaded(AppOpenAd ad) {
+                    public void onAdLoaded(AppOpenAd ad) {
                         Log.d(TAG, "onAppOpenAdLoaded: isSplash = " + isSplash);
                         if (!isSplash) {
                             AppOpenManager.this.appResumeAd = ad;
@@ -209,7 +213,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                      * @param loadAdError the error.
                      */
                     @Override
-                    public void onAppOpenAdFailedToLoad(LoadAdError loadAdError) {
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         Log.d(TAG, "onAppOpenAdFailedToLoad: isSplash" + isSplash + " message " + loadAdError.getMessage());
                     }
 
@@ -406,10 +410,14 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                 @Override
                 public void run() {
                     if (isSplash) {
-                        splashAd.show(currentActivity, callback);
+                        splashAd.setFullScreenContentCallback(callback);
+                        splashAd.show(currentActivity);
                     } else {
-                        if (appResumeAd != null)
-                            appResumeAd.show(currentActivity, callback);
+                        if (appResumeAd != null){
+                            appResumeAd.setFullScreenContentCallback(callback);
+                            appResumeAd.show(currentActivity);
+                        }
+
                     }
                     if (finalDialog != null) {
                         finalDialog.dismiss();
@@ -435,21 +443,25 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
         loadCallback =
                 new AppOpenAd.AppOpenAdLoadCallback() {
+
+
+
                     /**
                      * Called when an app open ad has loaded.
                      *
-                     * @param ad the loaded app open ad.
+                     * @param appOpenAd the loaded app open ad.
                      */
+
                     @Override
-                    public void onAppOpenAdLoaded(AppOpenAd ad) {
+                    public void onAdLoaded(@NonNull AppOpenAd appOpenAd) {
                         Log.d(TAG, "onAppOpenAdLoaded: splash");
-                        AppOpenManager.this.splashAd = ad;
+                        AppOpenManager.this.splashAd = appOpenAd;
                         splashLoadTime = new Date().getTime();
-                        ad.setOnPaidEventListener(adValue -> {
+                        appOpenAd.setOnPaidEventListener(adValue -> {
                             FirebaseAnalyticsUtil.logPaidAdImpression(myApplication.getApplicationContext(),
                                     adValue,
-                                    ad.getAdUnitId(),
-                                    ad.getResponseInfo()
+                                    appOpenAd.getAdUnitId(),
+                                    appOpenAd.getResponseInfo()
                                             .getMediationAdapterClassName());
                         });
 
@@ -469,7 +481,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                      * @param loadAdError the error.
                      */
                     @Override
-                    public void onAppOpenAdFailedToLoad(LoadAdError loadAdError) {
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         Log.e(TAG, "onAppOpenAdFailedToLoad: splash " + loadAdError.getMessage());
                         if (fullScreenContentCallback != null) {
                             fullScreenContentCallback.onAdDismissedFullScreenContent();

@@ -11,6 +11,7 @@ import com.ads.control.funtion.AdCallback;
 import com.ads.control.AppPurchase;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,8 +33,10 @@ public class SplashActivity extends AppCompatActivity {
                 startMain();
             }
 
+
+
             @Override
-            public void onAdFailedToLoad(int i) {
+            public void onAdFailedToLoad(LoadAdError i) {
                 startMain();
             }
         });
