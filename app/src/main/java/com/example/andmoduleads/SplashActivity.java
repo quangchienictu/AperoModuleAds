@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.ads.control.Admod;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.AppPurchase;
+import com.ads.control.funtion.BillingListener;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
@@ -25,15 +26,27 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        AppPurchase.getInstance().setBillingListener(new BillingListener() {
+            @Override
+            public void onInitBillingListener(int code) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadSplash();
+                    }
+                });
 
+            }
+        },3000);
+    }
+
+    private void loadSplash(){
         Log.d(TAG, "onCreate: show splash ads");
         Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 0, new AdCallback() {
             @Override
             public void onAdClosed() {
                 startMain();
             }
-
-
 
             @Override
             public void onAdFailedToLoad(LoadAdError i) {

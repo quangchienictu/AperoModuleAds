@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
             public void onProductPurchased(String productId, String transactionDetails) {
                 Log.e("PurchaseListioner", "ProductPurchased:" + productId);
                 Log.e("PurchaseListioner", "transactionDetails:" + transactionDetails);
+                startActivity(new Intent(MainActivity.this,MainActivity.class));
+                finish();
             }
 
             @Override
@@ -100,16 +102,15 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.btIap).setOnClickListener(v -> {
             AppPurchase.getInstance().consumePurchase(PRODUCT_ID);
-            AppPurchase.getInstance().consumePurchase(PRODUCT_ID);
             InAppDialog dialog = new InAppDialog(this);
             dialog.setCallback(() -> {
                 AppPurchase.getInstance().consumePurchase(PRODUCT_ID);
                 AppPurchase.getInstance().purchase(this, PRODUCT_ID);
                 dialog.dismiss();
+
             });
             dialog.show();
         });
-
 
     }
 

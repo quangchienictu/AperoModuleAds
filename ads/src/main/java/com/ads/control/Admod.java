@@ -211,6 +211,7 @@ public class Admod {
      * @param adListener
      */
     public void loadSplashInterstitalAds(final Context context, String id, long timeOut, final AdCallback adListener) {
+        Log.d(TAG, "loadSplashInterstitalAds iap: "+ AppPurchase.getInstance().isPurchased(context));
         if (AppPurchase.getInstance().isPurchased(context)) {
             if (adListener != null) {
                 adListener.onAdClosed();
