@@ -89,6 +89,7 @@ public class AppPurchase {
             public void run() {
                 if (!isInitBillingFinish) {
                     Log.e(TAG, "setBillingListener: timeout " );
+                    isInitBillingFinish = true;
                     billingListener.onInitBillingListener(BillingClient.BillingResponseCode.ERROR);
                 }
             }
@@ -150,10 +151,12 @@ public class AppPurchase {
                 billingClient.querySkuDetailsAsync(params.build(), new SkuDetailsResponseListener() {
                     @Override
                     public void onSkuDetailsResponse(@NonNull BillingResult billingResult, @Nullable List<SkuDetails> list) {
-                        Log.d(TAG, "onSkuINAPDetailsResponse: " + list.size());
-                        skuListINAPFromStore = list;
-                        isListGot = true;
-                        addSkuINAPToMap(list);
+                        if (list!=null) {
+                            Log.d(TAG, "onSkuINAPDetailsResponse: " + list.size());
+                            skuListINAPFromStore = list;
+                            isListGot = true;
+                            addSkuINAPToMap(list);
+                        }
                     }
                 });
 
@@ -161,10 +164,12 @@ public class AppPurchase {
                 billingClient.querySkuDetailsAsync(params.build(), new SkuDetailsResponseListener() {
                     @Override
                     public void onSkuDetailsResponse(@NonNull BillingResult billingResult, @Nullable List<SkuDetails> list) {
-                        Log.d(TAG, "onSkuSubsDetailsResponse: " + list.size());
-                        skuListSubsFromStore = list;
-                        isListGot = true;
-                        addSkuSubsToMap(list);
+                        if (list!=null) {
+                            Log.d(TAG, "onSkuSubsDetailsResponse: " + list.size());
+                            skuListSubsFromStore = list;
+                            isListGot = true;
+                            addSkuSubsToMap(list);
+                        }
                     }
                 });
             } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE || billingResult.getResponseCode() == BillingClient.BillingResponseCode.ERROR) {
