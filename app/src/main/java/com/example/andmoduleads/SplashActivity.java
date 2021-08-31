@@ -37,7 +37,18 @@ public class SplashActivity extends AppCompatActivity {
                 });
 
             }
-        },3000);
+        },5000);
+
+        initBilling();
+    }
+
+    private void initBilling() {
+        List<String> listINAPId = new ArrayList<>();
+        listINAPId.add(MainActivity.PRODUCT_ID);
+        List<String> listSubsId = new ArrayList<>();
+
+        AppPurchase.getInstance().initBilling(getApplication(),listINAPId,listSubsId);
+//        AppPurchase.getInstance().addProductId(MainActivity.PRODUCT_ID);
     }
 
     private void loadSplash(){

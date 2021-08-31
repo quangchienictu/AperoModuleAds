@@ -74,6 +74,19 @@ public class AppPurchase {
      */
     public void setBillingListener(BillingListener billingListener) {
         this.billingListener = billingListener;
+        if (isAvailable){
+            billingListener.onInitBillingListener(0);
+            isInitBillingFinish = true;
+
+        }
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
+    }
+
+    public Boolean getInitBillingFinish() {
+        return isInitBillingFinish;
     }
 
     /**
@@ -84,6 +97,11 @@ public class AppPurchase {
      */
     public void setBillingListener(BillingListener billingListener, int timeout) {
         this.billingListener = billingListener;
+        if (isAvailable){
+            billingListener.onInitBillingListener(0);
+            isInitBillingFinish = true;
+            return;
+        }
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
