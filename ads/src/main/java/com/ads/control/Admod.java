@@ -293,14 +293,34 @@ public class Admod {
 
             @Override
             public void onAdDismissedFullScreenContent() {
-                adListener.onAdClosed();
+                if (adListener != null) {
+                    if (!openActivityAfterShowInterAds) {
+                        adListener.onAdClosed();
+                    }
+
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                }
             }
 
             @Override
             public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
-                adListener.onAdFailedToShow(adError);
+                if (adListener != null) {
+                    if (!openActivityAfterShowInterAds) {
+                        adListener.onAdFailedToShow(adError);
+                    }
+
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                }
+
             }
         });
+        if (openActivityAfterShowInterAds && adListener != null) {
+            adListener.onAdClosed();
+        }
         mInterstitialSplash.show( activity);
 
     }
