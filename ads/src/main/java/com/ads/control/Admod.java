@@ -491,7 +491,6 @@ public class Admod {
             public void onAdDismissedFullScreenContent() {
                 super.onAdDismissedFullScreenContent();
                 // Called when fullscreen content is dismissed.
-
                 if (AppOpenManager.getInstance().isInitialized()) {
                     AppOpenManager.getInstance().enableAppResume();
                 }
@@ -503,23 +502,30 @@ public class Admod {
                     if (dialog != null) {
                         dialog.dismiss();
                     }
-
                 }
             }
 
             @Override
             public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
                 super.onAdFailedToShowFullScreenContent(adError);
+                Log.e(TAG, "onAdFailedToShowFullScreenContent: " +adError.getMessage());
                 // Called when fullscreen content failed to show.
+                if (callback != null) {
+                    if (!openActivityAfterShowInterAds) {
+                        callback.onAdClosed();
+                    }
+
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                }
             }
 
             @Override
             public void onAdShowedFullScreenContent() {
                 super.onAdShowedFullScreenContent();
                 // Called when fullscreen content is shown.
-
             }
-
         });
 
         if (AdmodHelper.getNumClickAdsPerDay(context, mInterstitialAd.getAdUnitId()) < maxClickAds) {

@@ -3,6 +3,7 @@ package com.example.andmoduleads;
 import android.util.Log;
 
 import com.ads.control.AdjustApero;
+import com.ads.control.Admod;
 import com.ads.control.AdsApplication;
 import com.ads.control.AdsMultiDexApplication;
 import com.ads.control.AppOpenManager;
@@ -24,7 +25,7 @@ public class MyApplication extends AdsApplication {
         super.onCreate();
         //        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 10000);
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
-
+        Admod.getInstance().setOpenActivityAfterShowInterAds(true);
     }
 
     @Override
