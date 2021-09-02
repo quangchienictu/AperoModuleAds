@@ -73,7 +73,7 @@ import java.util.Objects;
 public class Admod {
     private static final String TAG = "Admod";
     private static Admod instance;
-    private static int currentClicked = 0;
+    private  int currentClicked = 0;
     private String nativeId;
     private int numShowAds = 3;
 
@@ -131,6 +131,11 @@ public class Admod {
 
     public void setNumToShowAds(int numShowAds) {
         this.numShowAds = numShowAds;
+    }
+
+    public void setNumToShowAds(int numShowAds, int currentClicked) {
+        this.numShowAds = numShowAds;
+        this.currentClicked = currentClicked;
     }
 
     /**

@@ -11,7 +11,6 @@ import android.widget.Toast;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.MutableLiveData;
 
 import com.ads.control.funtion.BillingListener;
 import com.ads.control.funtion.PurchaseListioner;
@@ -63,6 +62,11 @@ public class AppPurchase {
     private boolean isListGot;
     private boolean isConsumePurchase = false;
 
+    //tracking purchase adjust
+    private String idPurchaseCurrent = "";
+    private int typeIap;
+
+
     public void setPurchaseListioner(PurchaseListioner purchaseListioner) {
         this.purchaseListioner = purchaseListioner;
     }
@@ -74,7 +78,7 @@ public class AppPurchase {
      */
     public void setBillingListener(BillingListener billingListener) {
         this.billingListener = billingListener;
-        if (isAvailable){
+        if (isAvailable) {
             billingListener.onInitBillingListener(0);
             isInitBillingFinish = true;
 
@@ -97,7 +101,7 @@ public class AppPurchase {
      */
     public void setBillingListener(BillingListener billingListener, int timeout) {
         this.billingListener = billingListener;
-        if (isAvailable){
+        if (isAvailable) {
             billingListener.onInitBillingListener(0);
             isInitBillingFinish = true;
             return;
@@ -106,7 +110,7 @@ public class AppPurchase {
             @Override
             public void run() {
                 if (!isInitBillingFinish) {
-                    Log.e(TAG, "setBillingListener: timeout " );
+                    Log.e(TAG, "setBillingListener: timeout ");
                     isInitBillingFinish = true;
                     billingListener.onInitBillingListener(BillingClient.BillingResponseCode.ERROR);
                 }
@@ -169,7 +173,7 @@ public class AppPurchase {
                 billingClient.querySkuDetailsAsync(params.build(), new SkuDetailsResponseListener() {
                     @Override
                     public void onSkuDetailsResponse(@NonNull BillingResult billingResult, @Nullable List<SkuDetails> list) {
-                        if (list!=null) {
+                        if (list != null) {
                             Log.d(TAG, "onSkuINAPDetailsResponse: " + list.size());
                             skuListINAPFromStore = list;
                             isListGot = true;
@@ -182,7 +186,7 @@ public class AppPurchase {
                 billingClient.querySkuDetailsAsync(params.build(), new SkuDetailsResponseListener() {
                     @Override
                     public void onSkuDetailsResponse(@NonNull BillingResult billingResult, @Nullable List<SkuDetails> list) {
-                        if (list!=null) {
+                        if (list != null) {
                             Log.d(TAG, "onSkuSubsDetailsResponse: " + list.size());
                             skuListSubsFromStore = list;
                             isListGot = true;
@@ -317,6 +321,7 @@ public class AppPurchase {
             Toast.makeText(activity, "Product id must not be empty!", Toast.LENGTH_SHORT).show();
             return;
         }
+
         purchase(activity, productId);
     }
 
@@ -337,6 +342,8 @@ public class AppPurchase {
             return "Product ID invalid";
         }
 
+        idPurchaseCurrent = productId;
+        typeIap = TYPE_IAP.PURCHASE;
         BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
                 .setSkuDetails(skuDetails)
                 .build();
@@ -402,6 +409,8 @@ public class AppPurchase {
         }
         SkuDetails skuDetails = skuDetailsSubsMap.get(SubsId);
 
+        idPurchaseCurrent = SubsId;
+        typeIap = TYPE_IAP.SUBSCRIPTION;
         if (skuDetails == null) {
             return "SubsId invalid";
         }
@@ -504,6 +513,12 @@ public class AppPurchase {
     }
 
     private void handlePurchase(Purchase purchase) {
+
+        //tracking adjust
+        double price = getPriceWithoutCurrency(idPurchaseCurrent, typeIap);
+        String currentcy = getCurrency(idPurchaseCurrent, typeIap);
+        AdjustApero.onTrackRevenuePurchase((float) price, currentcy);
+
         if (purchaseListioner != null)
             purchaseListioner.onProductPurchased(purchase.getOrderId(), purchase.getOriginalJson());
         if (isConsumePurchase) {

@@ -16,9 +16,12 @@ import java.util.Map;
 public class AdjustApero {
 
 
-
     public static boolean enableAdjust = false;
+    private static String eventNamePurchase = "";
 
+    public static void setEventNamePurchase(String eventNamePurchase) {
+        AdjustApero.eventNamePurchase = eventNamePurchase;
+    }
 
     public static void trackAdRevenue(String id) {
         AdjustAdRevenue adjustAdRevenue = new AdjustAdRevenue(id);
@@ -40,8 +43,14 @@ public class AdjustApero {
     public static void onTrackRevenue(String eventName, float revenue, String currency) {
         AdjustEvent event = new AdjustEvent(eventName);
         // Add revenue 1 cent of an euro.
-        event.setRevenue(revenue, currency);
+        event.setRevenue(revenue/ 1000000.0, currency);
         Adjust.trackEvent(event);
+    }
+
+    public static void onTrackRevenuePurchase(float revenue, String currency) {
+        if (AdjustApero.enableAdjust) {
+            onTrackRevenue(eventNamePurchase, revenue, currency);
+        }
     }
 
     public static void pushTrackEventAdmod(String adId, AdValue adValue) {

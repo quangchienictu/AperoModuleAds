@@ -26,6 +26,8 @@ public class MyApplication extends AdsApplication {
         //        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 10000);
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
         Admod.getInstance().setOpenActivityAfterShowInterAds(false);
+        AdjustApero.setEventNamePurchase("gzel1k");
+//        Admod.getInstance().setNumToShowAds(3,3);
     }
 
     @Override
@@ -51,6 +53,6 @@ public class MyApplication extends AdsApplication {
 
     @Override
     public String getAdjustToken() {
-        return "2fm9gkqubvpc";
+        return "cc4jvudppczk";
     }
 }
