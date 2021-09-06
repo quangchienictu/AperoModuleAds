@@ -323,10 +323,38 @@ public class Admod {
 
             }
         });
-        if (openActivityAfterShowInterAds && adListener != null) {
-            adListener.onAdClosed();
+
+        if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+            try {
+                if (dialog != null && dialog.isShowing())
+                    dialog.dismiss();
+                dialog = new PrepareLoadingAdsDialog(activity);
+                try {
+                    dialog.show();
+                } catch (Exception e) {
+                    adListener.onAdClosed();
+                    return;
+                }
+            } catch (Exception e) {
+                dialog = null;
+                e.printStackTrace();
+            }
+            new Handler().postDelayed(() -> {
+                if (AppOpenManager.getInstance().isInitialized()) {
+                    AppOpenManager.getInstance().disableAppResume();
+                }
+
+                if (openActivityAfterShowInterAds && adListener != null) {
+                    adListener.onAdClosed();
+                }
+
+                mInterstitialSplash.show( activity);
+
+            }, 800);
+
         }
-        mInterstitialSplash.show( activity);
+
+
 
     }
 
@@ -527,7 +555,9 @@ public class Admod {
                     if (dialog != null) {
                         dialog.dismiss();
                     }
+
                 }
+
             }
 
             @Override
