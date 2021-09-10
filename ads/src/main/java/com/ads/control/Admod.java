@@ -306,13 +306,7 @@ public class Admod {
                     if (dialog != null) {
                         dialog.dismiss();
                     }
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (dialog != null && dialog.isShowing())
-                                dialog.dismiss();
-                        }
-                    },1000);
+
                 }
             }
 
@@ -353,6 +347,13 @@ public class Admod {
 
                 if (openActivityAfterShowInterAds && adListener != null) {
                     adListener.onAdClosed();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (dialog != null && dialog.isShowing())
+                                dialog.dismiss();
+                        }
+                    },1000);
                 }
 
                 mInterstitialSplash.show( activity);
