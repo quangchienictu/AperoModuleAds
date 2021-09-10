@@ -306,6 +306,13 @@ public class Admod {
                     if (dialog != null) {
                         dialog.dismiss();
                     }
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (dialog != null && dialog.isShowing())
+                                dialog.dismiss();
+                        }
+                    },1000);
                 }
             }
 
