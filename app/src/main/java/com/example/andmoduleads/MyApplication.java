@@ -25,7 +25,7 @@ public class MyApplication extends AdsApplication {
         super.onCreate();
         //        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 10000);
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
-        Admod.getInstance().setOpenActivityAfterShowInterAds(false);
+        Admod.getInstance().setOpenActivityAfterShowInterAds(true);
         AdjustApero.setEventNamePurchase("gzel1k");
 //        Admod.getInstance().setNumToShowAds(3,3);
     }

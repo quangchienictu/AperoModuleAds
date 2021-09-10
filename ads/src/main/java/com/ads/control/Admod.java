@@ -557,7 +557,7 @@ public class Admod {
                     }
 
                 }
-
+                Log.e(TAG, "onAdDismissedFullScreenContent" );
             }
 
             @Override
@@ -648,6 +648,13 @@ public class Admod {
 
                     if (openActivityAfterShowInterAds && callback != null) {
                         callback.onAdClosed();
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (dialog != null && dialog.isShowing())
+                                    dialog.dismiss();
+                            }
+                        },1000);
                     }
 
                     mInterstitialAd.show((Activity) context);
