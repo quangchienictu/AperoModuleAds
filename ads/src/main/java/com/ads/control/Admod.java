@@ -369,10 +369,11 @@ public class Admod {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if (dialog != null && dialog.isShowing())
+
+                            if (dialog != null && dialog.isShowing()&&!activity.isDestroyed() )
                                 dialog.dismiss();
                         }
-                    }, 1000);
+                    }, 1500);
                 }
 
                 mInterstitialSplash.show(activity);
@@ -677,10 +678,10 @@ public class Admod {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if (dialog != null && dialog.isShowing())
+                                if (dialog != null && dialog.isShowing() &&!((Activity) context).isDestroyed() )
                                     dialog.dismiss();
                             }
-                        }, 1000);
+                        }, 1500);
                     }
 
                     mInterstitialAd.show((Activity) context);
