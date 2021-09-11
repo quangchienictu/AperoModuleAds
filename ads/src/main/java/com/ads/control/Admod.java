@@ -73,7 +73,7 @@ import java.util.Objects;
 public class Admod {
     private static final String TAG = "Admod";
     private static Admod instance;
-    private  int currentClicked = 0;
+    private int currentClicked = 0;
     private String nativeId;
     private int numShowAds = 3;
 
@@ -85,6 +85,7 @@ public class Admod {
     private boolean isFan;
     private boolean isAdcolony;
     private boolean isAppLovin;
+    boolean checkTimeDelay = false;
     private boolean openActivityAfterShowInterAds = false;
     private Context context;
 //    private AppOpenAd appOpenAd = null;
@@ -213,16 +214,30 @@ public class Admod {
      * @param context
      * @param id
      * @param timeOut    : thời gian chờ ads, timeout <= 0 tương đương với việc bỏ timeout
+     * @param timeDelay  : thời gian chờ show ad từ lúc load ads
      * @param adListener
      */
-    public void loadSplashInterstitalAds(final Context context, String id, long timeOut, final AdCallback adListener) {
-        Log.d(TAG, "loadSplashInterstitalAds iap: "+ AppPurchase.getInstance().isPurchased(context));
+    public void loadSplashInterstitalAds(final Context context, String id, long timeOut, long timeDelay, final AdCallback adListener) {
+        checkTimeDelay = false;
         if (AppPurchase.getInstance().isPurchased(context)) {
             if (adListener != null) {
                 adListener.onAdClosed();
             }
             return;
         }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //check delay show ad splash
+                if (mInterstitialSplash != null) {
+                    Log.d(TAG, "loadSplashInterstitalAds:show ad on delay ");
+                    onShowSplash((Activity) context, adListener);
+                    return;
+                }
+                Log.d(TAG, "loadSplashInterstitalAds: delay validate");
+                checkTimeDelay = true;
+            }
+        }, timeDelay);
 
         getInterstitalAds(context, id, new AdCallback() {
             @Override
@@ -230,7 +245,10 @@ public class Admod {
                 super.onInterstitialLoad(interstitialAd);
                 if (interstitialAd != null) {
                     mInterstitialSplash = interstitialAd;
-                    onShowSplash((Activity) context,adListener);
+                    if (checkTimeDelay) {
+                        onShowSplash((Activity) context, adListener);
+                        Log.d(TAG, "loadSplashInterstitalAds:show ad on loaded ");
+                    }
                 }
             }
 
@@ -253,21 +271,20 @@ public class Admod {
                 public void run() {
                     isTimeLimited = true;
                     if (mInterstitialSplash != null) {
-                        onShowSplash((Activity) context,adListener);
+                        Log.d(TAG, "loadSplashInterstitalAds:show ad on timeout ");
+                        onShowSplash((Activity) context, adListener);
                         return;
                     }
                     if (adListener != null) {
-
                         adListener.onAdClosed();
                     }
                 }
             };
             handler.postDelayed(rd, timeOut);
         }
-
     }
 
-    private void onShowSplash(Activity activity,AdCallback adListener) {
+    private void onShowSplash(Activity activity, AdCallback adListener) {
 
         if (mInterstitialSplash != null) {
             mInterstitialSplash.setOnPaidEventListener(adValue -> {
@@ -298,6 +315,7 @@ public class Admod {
 
             @Override
             public void onAdDismissedFullScreenContent() {
+
                 if (adListener != null) {
                     if (!openActivityAfterShowInterAds) {
                         adListener.onAdClosed();
@@ -312,6 +330,7 @@ public class Admod {
 
             @Override
             public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                mInterstitialSplash = null;
                 if (adListener != null) {
                     if (!openActivityAfterShowInterAds) {
                         adListener.onAdFailedToShow(adError);
@@ -353,15 +372,14 @@ public class Admod {
                             if (dialog != null && dialog.isShowing())
                                 dialog.dismiss();
                         }
-                    },1000);
+                    }, 1000);
                 }
 
-                mInterstitialSplash.show( activity);
+                mInterstitialSplash.show(activity);
 
             }, 800);
 
         }
-
 
 
     }
@@ -565,13 +583,13 @@ public class Admod {
                     }
 
                 }
-                Log.e(TAG, "onAdDismissedFullScreenContent" );
+                Log.e(TAG, "onAdDismissedFullScreenContent");
             }
 
             @Override
             public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
                 super.onAdFailedToShowFullScreenContent(adError);
-                Log.e(TAG, "onAdFailedToShowFullScreenContent: " +adError.getMessage());
+                Log.e(TAG, "onAdFailedToShowFullScreenContent: " + adError.getMessage());
                 // Called when fullscreen content failed to show.
                 if (callback != null) {
                     if (!openActivityAfterShowInterAds) {
@@ -607,7 +625,7 @@ public class Admod {
      * @param mInterstitialAd
      * @param callback
      */
-    public void forceShowInterstitial(Context context,   InterstitialAd mInterstitialAd, final AdCallback callback) {
+    public void forceShowInterstitial(Context context, InterstitialAd mInterstitialAd, final AdCallback callback) {
         forceShowInterstitial(context, mInterstitialAd, callback, true);
 
     }
@@ -662,7 +680,7 @@ public class Admod {
                                 if (dialog != null && dialog.isShowing())
                                     dialog.dismiss();
                             }
-                        },1000);
+                        }, 1000);
                     }
 
                     mInterstitialAd.show((Activity) context);
@@ -900,7 +918,7 @@ public class Admod {
             showTestIdAlert(context, NATIVE_ADS, id);
         }
         if (AppPurchase.getInstance().isPurchased(context)) {
-            callback.onAdClosed( );
+            callback.onAdClosed();
             return;
         }
         VideoOptions videoOptions = new VideoOptions.Builder()
@@ -924,7 +942,7 @@ public class Admod {
                 .withAdListener(new AdListener() {
                     @Override
                     public void onAdFailedToLoad(LoadAdError error) {
-                        Log.e(TAG, "NativeAd onAdFailedToLoad: " +error.getMessage() );
+                        Log.e(TAG, "NativeAd onAdFailedToLoad: " + error.getMessage());
                         callback.onAdFailedToLoad(error);
                     }
 
