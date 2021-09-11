@@ -155,6 +155,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (unifiedNativeAd==null)
+            return;
         DialogExitApp1 dialogExitApp1 = new DialogExitApp1(this, unifiedNativeAd, 1);
         dialogExitApp1.setCancelable(false);
         dialogExitApp1.show();
