@@ -82,6 +82,7 @@ public class Admod {
     private Runnable rd;
     private PrepareLoadingAdsDialog dialog;
     private boolean isTimeLimited;
+    private boolean isShowLoadingSplash;
     private boolean isFan;
     private boolean isAdcolony;
     private boolean isAppLovin;
@@ -219,6 +220,8 @@ public class Admod {
      */
     public void loadSplashInterstitalAds(final Context context, String id, long timeOut, long timeDelay, final AdCallback adListener) {
         checkTimeDelay = false;
+        if (isShowLoadingSplash)
+            return;
         if (AppPurchase.getInstance().isPurchased(context)) {
             if (adListener != null) {
                 adListener.onAdClosed();
@@ -285,7 +288,7 @@ public class Admod {
     }
 
     private void onShowSplash(Activity activity, AdCallback adListener) {
-
+        isShowLoadingSplash = true;
         if (mInterstitialSplash != null) {
             mInterstitialSplash.setOnPaidEventListener(adValue -> {
                 AdjustApero.pushTrackEventAdmod(mInterstitialSplash.getAdUnitId(), adValue);
@@ -310,6 +313,7 @@ public class Admod {
         mInterstitialSplash.setFullScreenContentCallback(new FullScreenContentCallback() {
             @Override
             public void onAdShowedFullScreenContent() {
+                isShowLoadingSplash = false;
                 mInterstitialSplash = null;
             }
 
@@ -331,6 +335,7 @@ public class Admod {
             @Override
             public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
                 mInterstitialSplash = null;
+                isShowLoadingSplash = false;
                 if (adListener != null) {
                     if (!openActivityAfterShowInterAds) {
                         adListener.onAdFailedToShow(adError);
@@ -377,7 +382,7 @@ public class Admod {
                 }
 
                 mInterstitialSplash.show(activity);
-
+                isShowLoadingSplash = false;
             }, 800);
 
         }
