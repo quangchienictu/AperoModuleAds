@@ -222,6 +222,7 @@ public class Admod {
         checkTimeDelay = false;
         if (isShowLoadingSplash)
             return;
+        isShowLoadingSplash = true;
         if (AppPurchase.getInstance().isPurchased(context)) {
             if (adListener != null) {
                 adListener.onAdClosed();

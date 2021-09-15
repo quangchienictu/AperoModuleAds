@@ -91,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
             });
         });
         findViewById(R.id.btForceShowAds).setOnClickListener(v -> {
+
+
             Admod.getInstance().forceShowInterstitial(this, mInterstitialAd, new AdCallback() {
                 @Override
                 public void onAdClosed() {
