@@ -78,9 +78,9 @@ public class MainActivity extends AppCompatActivity {
         loadAdInterstial();
 
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-        }
+//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+//        }
         findViewById(R.id.btShowAds).setOnClickListener(v -> {
             Admod.getInstance().showInterstitialAdByTimes(this, mInterstitialAd, new AdCallback() {
                 @Override

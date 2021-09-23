@@ -6,7 +6,7 @@
     android:background="@color/gntGreen"
     tools:context=".fragment.BlankFragment">
 
-    <include layout="@layout/layout_native_control"/>
+    <include layout="@layout/layout_native_control" />
     <Button
         android:id="@+id/btnNextFragment"
         android:layout_width="wrap_content"

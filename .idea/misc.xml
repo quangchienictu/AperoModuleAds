@@ -3,22 +3,15 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Thanh Lam PC/Documents/Egame/AperoModuleAds/ads/src/main/res/drawable/ads_icon2.xml" value="0.5518518518518518" />
-        <entry key="..\:/Users/Thanh Lam PC/Documents/Egame/AperoModuleAds/ads/src/main/res/layout/layout_native_control.xml" value="0.5541666666666667" />
-        <entry key="..\:/Users/Thanh Lam PC/Documents/Egame/AperoModuleAds/ads/src/main/res/layout/layout_small_native_control.xml" value="0.5541666666666667" />
-        <entry key="..\:/Users/Thanh Lam PC/Documents/Egame/AperoModuleAds/ads/src/main/res/layout/load_fb_banner.xml" value="0.5541666666666667" />
-        <entry key="..\:/Users/Thanh Lam PC/Documents/Egame/AperoModuleAds/ads/src/main/res/layout/load_fb_native.xml" value="0.3098958333333333" />
-        <entry key="..\:/Users/Thanh Lam PC/Documents/Egame/AperoModuleAds/ads/src/main/res/layout/load_fb_small_native.xml" value="0.5541666666666667" />
-        <entry key="..\:/Users/Thanh Lam PC/Documents/Egame/AperoModuleAds/ads/src/main/res/layout/native_admob_ad.xml" value="0.5541666666666667" />
-        <entry key="..\:/Users/Thanh Lam PC/Documents/Egame/AperoModuleAds/ads/src/main/res/layout/native_exit1.xml" value="0.5541666666666667" />
-        <entry key="..\:/Users/Thanh Lam PC/Documents/Egame/AperoModuleAds/ads/src/main/res/layout/native_exit3.xml" value="0.5541666666666667" />
-        <entry key="..\:/Users/Thanh Lam PC/Documents/Egame/AperoModuleAds/ads/src/main/res/layout/small_native_admod_ad.xml" value="0.5541666666666667" />
-        <entry key="..\:/Users/Thanh Lam PC/Documents/Egame/AperoModuleAds/ads/src/main/res/layout/view_dialog_exit3.xml" value="0.5541666666666667" />
-        <entry key="..\:/Users/Thanh Lam PC/Documents/Egame/AperoModuleAds/app/src/main/res/layout/activity_content.xml" value="0.3307291666666667" />
-        <entry key="..\:/Users/Thanh Lam PC/Documents/Egame/AperoModuleAds/app/src/main/res/layout/activity_main.xml" value="0.5541666666666667" />
-        <entry key="..\:/Users/Thanh Lam PC/Documents/Egame/AperoModuleAds/app/src/main/res/layout/custom_native.xml" value="0.3307291666666667" />
-        <entry key="..\:/Users/Thanh Lam PC/Documents/Egame/AperoModuleAds/app/src/main/res/layout/fragment_blank.xml" value="0.47780797101449274" />
-        <entry key="..\:/Users/Thanh Lam PC/Documents/Egame/AperoModuleAds/app/src/main/res/layout/fragment_blank2.xml" value="0.47780797101449274" />
+        <entry key="ads/src/main/res/layout/layout_native_control.xml" value="0.28396739130434784" />
+        <entry key="ads/src/main/res/layout/layout_small_native_control.xml" value="0.28396739130434784" />
+        <entry key="ads/src/main/res/layout/load_fb_native.xml" value="0.28396739130434784" />
+        <entry key="ads/src/main/res/layout/load_fb_small_native.xml" value="0.28396739130434784" />
+        <entry key="ads/src/main/res/layout/native_admob_ad.xml" value="0.28396739130434784" />
+        <entry key="ads/src/main/res/layout/native_exit1.xml" value="0.28396739130434784" />
+        <entry key="ads/src/main/res/layout/small_native_admod_ad.xml" value="0.18840579710144928" />
+        <entry key="ads/src/main/res/layout/view_dialog_exit1.xml" value="0.18840579710144928" />
+        <entry key="app/src/main/res/layout/fragment_blank.xml" value="0.28396739130434784" />
       </map>
     </option>
   </component>

@@ -47,7 +47,7 @@ public class BlankFragment extends Fragment {
             public void onInterstitialLoad(InterstitialAd interstitialAd) {
                 super.onInterstitialLoad(interstitialAd);
                 mInterstitialAd = interstitialAd;
-                Toast.makeText(getContext(), "ad loaded", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "ad loaded", Toast.LENGTH_SHORT).show();
                 button.setEnabled(true);
             }
         });

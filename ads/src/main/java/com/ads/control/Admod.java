@@ -12,13 +12,16 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -320,7 +323,9 @@ public class Admod {
 
             @Override
             public void onAdDismissedFullScreenContent() {
-
+                if (AppOpenManager.getInstance().isInitialized()) {
+                    AppOpenManager.getInstance().enableAppResume();
+                }
                 if (adListener != null) {
                     if (!openActivityAfterShowInterAds) {
                         adListener.onAdClosed();
@@ -1097,6 +1102,26 @@ public class Admod {
 
         adView.setMediaView(adView.findViewById(R.id.ad_media));
 
+        if (adView.getMediaView()!=null){
+            adView.getMediaView().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (context!=null&&BuildConfig.DEBUG) {
+                        float sizeMin = TypedValue.applyDimension(
+                                TypedValue.COMPLEX_UNIT_DIP,
+                                120,
+                                context.getResources().getDisplayMetrics()
+                        );
+                        Log.e(TAG, "Native sizeMin: " +sizeMin);
+                        Log.e(TAG, "Native w/h media : " + adView.getMediaView().getWidth() + "/" + adView.getMediaView().getHeight());
+                       if (adView.getMediaView().getWidth()<sizeMin||adView.getMediaView().getHeight()<sizeMin){
+                           Toast.makeText(context, "Size media native not valid", Toast.LENGTH_SHORT).show();
+                       }
+                    }
+                }
+            },1000);
+
+        }
         // Set other ad assets.
         adView.setHeadlineView(adView.findViewById(R.id.ad_headline));
         adView.setBodyView(adView.findViewById(R.id.ad_body));

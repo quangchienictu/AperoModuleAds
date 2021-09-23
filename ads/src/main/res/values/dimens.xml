@@ -1,6 +1,6 @@
 <resources>
 
-    <dimen name="height_native_ads">280dip</dimen>
+    <dimen name="height_native_ads">320dip</dimen>
     <dimen name="height_native_small_ads">130dip</dimen>
     <dimen name="height_full_ads">300dip</dimen>
 
