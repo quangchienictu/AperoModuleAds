@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.ads.control.Admod;
+import com.ads.control.DialogExitListener;
 import com.ads.control.R;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
@@ -28,7 +29,7 @@ public class DialogExitApp1 extends Dialog {
 
     private TextView btnExit;
     private TextView btnCancel;
-
+    DialogExitListener dialogExitListener;
     int type;
     public DialogExitApp1(Context context, NativeAd nativeAd,int type) {
         super(context,android.R.style.Theme_Translucent_NoTitleBar);
@@ -43,6 +44,11 @@ public class DialogExitApp1 extends Dialog {
         this.nativeAd = nativeAd;
         this.type = type;
         this.adView =adView;
+    }
+
+
+    public void setDialogExitListener(DialogExitListener dialogExitListener) {
+        this.dialogExitListener = dialogExitListener;
     }
 
     @Override
@@ -81,7 +87,21 @@ public class DialogExitApp1 extends Dialog {
         frameLayout.addView(adView);
         Admod.getInstance().populateUnifiedNativeAdView(nativeAd, adView);
 
-        btnExit.setOnClickListener(v -> ((Activity) context).onBackPressed());
-        btnCancel.setOnClickListener(v -> dismiss());
+        btnExit.setOnClickListener(v ->{
+            dismiss();
+            if (dialogExitListener!=null){
+                dialogExitListener.onExit(true);
+            }else {
+                ((Activity) context).finish();
+            }
+        } );
+        btnCancel.setOnClickListener(v -> {
+            if (dialogExitListener!=null){
+                dialogExitListener.onExit(false);
+            }
+            dismiss();
+        });
     }
 }
+
+

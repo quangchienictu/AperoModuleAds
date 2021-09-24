@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat;
 import com.ads.control.AdjustApero;
 import com.ads.control.Admod;
 import com.ads.control.AppPurchase;
+import com.ads.control.DialogExitListener;
 import com.ads.control.dialog.DialogExitApp1;
 import com.ads.control.dialog.InAppDialog;
 import com.ads.control.funtion.AdCallback;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout frAds;
     private NativeAd unifiedNativeAd;
     private InterstitialAd mInterstitialAd;
+
+    private boolean isShowDialogExit = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,9 +162,17 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (unifiedNativeAd==null)
             return;
+
         DialogExitApp1 dialogExitApp1 = new DialogExitApp1(this, unifiedNativeAd, 1);
+        dialogExitApp1.setDialogExitListener(new DialogExitListener(){
+            @Override
+            public void onExit(boolean exit) {
+                    MainActivity.super.onBackPressed();
+            }
+        });
         dialogExitApp1.setCancelable(false);
         dialogExitApp1.show();
+
     }
 
     @Override
