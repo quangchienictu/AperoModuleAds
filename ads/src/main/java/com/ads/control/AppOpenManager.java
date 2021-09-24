@@ -107,6 +107,11 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         return isInitialized;
     }
 
+
+    public void setInitialized(boolean initialized) {
+        isInitialized = initialized;
+    }
+
     /**
      * Check app open ads is showing
      *

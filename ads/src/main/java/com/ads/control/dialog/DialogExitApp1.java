@@ -81,7 +81,7 @@ public class DialogExitApp1 extends Dialog {
         frameLayout.addView(adView);
         Admod.getInstance().populateUnifiedNativeAdView(nativeAd, adView);
 
-        btnExit.setOnClickListener(v -> ((Activity) context).finish());
+        btnExit.setOnClickListener(v -> ((Activity) context).onBackPressed());
         btnCancel.setOnClickListener(v -> dismiss());
     }
 }

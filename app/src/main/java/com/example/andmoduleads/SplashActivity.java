@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ads.control.Admod;
+import com.ads.control.AppOpenManager;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.AppPurchase;
 import com.ads.control.funtion.BillingListener;
@@ -49,6 +50,7 @@ public class SplashActivity extends AppCompatActivity {
 
         AppPurchase.getInstance().initBilling(getApplication(),listINAPId,listSubsId);
 //        AppPurchase.getInstance().addProductId(MainActivity.PRODUCT_ID);
+
     }
 
     private void loadSplash(){
