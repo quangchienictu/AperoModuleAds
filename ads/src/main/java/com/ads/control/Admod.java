@@ -16,7 +16,6 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -29,7 +28,6 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
-import com.adjust.sdk.AdjustConfig;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.AdmodHelper;
@@ -45,18 +43,14 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdValue;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.OnPaidEventListener;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.VideoOptions;
-import com.google.android.gms.ads.nativead.MediaView;
 import com.google.android.gms.ads.formats.NativeAdOptions;
-import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
@@ -1236,7 +1230,7 @@ public class Admod {
      * @param context
      * @param id
      */
-    public void initVideoAds(Context context, String id) {
+    public void initRewardAds(Context context, String id) {
         if (Arrays.asList(context.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
             showTestIdAlert(context, REWARD_ADS, id);
         }
@@ -1247,15 +1241,14 @@ public class Admod {
         if (AppPurchase.getInstance().isPurchased(context)) {
             return;
         }
-
-        rewardedAd.setOnPaidEventListener(adValue -> {
-            AdjustApero.pushTrackEventAdmod(rewardedAd.getAdUnitId(), adValue);
-
-        });
         RewardedAd.load(context, id, getAdRequest(), new RewardedAdLoadCallback() {
             @Override
             public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
                 Admod.this.rewardedAd = rewardedAd;
+                Admod.this.rewardedAd.setOnPaidEventListener(adValue -> {
+                    AdjustApero.pushTrackEventAdmod(rewardedAd.getAdUnitId(), adValue);
+
+                });
             }
 
             @Override
@@ -1264,7 +1257,6 @@ public class Admod {
                 Log.e(TAG, "RewardedAd onAdFailedToLoad: " + loadAdError.getMessage());
             }
         });
-
     }
 
     public RewardedAd getRewardedAd() {
@@ -1286,7 +1278,7 @@ public class Admod {
             return;
         }
         if (rewardedAd == null) {
-            initVideoAds(context, nativeId);
+            initRewardAds(context, nativeId);
             adCallback.onRewardedAdFailedToShow(0);
             return;
         } else {
@@ -1295,7 +1287,7 @@ public class Admod {
                 public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
                     if (adCallback != null) {
                         adCallback.onUserEarnedReward(rewardItem);
-                        initVideoAds(context, nativeId);
+                        initRewardAds(context, nativeId);
                     }
                 }
 

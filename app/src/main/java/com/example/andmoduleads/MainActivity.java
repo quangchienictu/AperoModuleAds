@@ -1,9 +1,7 @@
 package com.example.andmoduleads;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,7 +11,6 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.ads.control.AdjustApero;
 import com.ads.control.Admod;
@@ -23,9 +20,11 @@ import com.ads.control.dialog.DialogExitApp1;
 import com.ads.control.dialog.InAppDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.PurchaseListioner;
+import com.ads.control.funtion.RewardCallback;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
+import com.google.android.gms.ads.rewarded.RewardItem;
 
 public class MainActivity extends AppCompatActivity {
     static final String PRODUCT_ID = "android.test.purchased";
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         frAds = findViewById(R.id.fr_ads);
-
+        Admod.getInstance().initRewardAds(this,getString(R.string.admod_app_reward_id));
 
         Admod.getInstance().loadNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {
             @Override
@@ -55,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 Admod.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, adView);
             }
         });
+
         AppPurchase.getInstance().setPurchaseListioner(new PurchaseListioner() {
             @Override
             public void onProductPurchased(String productId, String transactionDetails) {
@@ -101,6 +101,27 @@ public class MainActivity extends AppCompatActivity {
                 public void onAdClosed() {
                     startActivity(new Intent(MainActivity.this, ContentActivity.class));
                     loadAdInterstial();
+                }
+            });
+        });
+
+        findViewById(R.id.btnShowReward).setOnClickListener(v -> {
+
+
+            Admod.getInstance().showRewardAds(this, new RewardCallback() {
+                @Override
+                public void onUserEarnedReward(RewardItem var1) {
+
+                }
+
+                @Override
+                public void onRewardedAdClosed() {
+
+                }
+
+                @Override
+                public void onRewardedAdFailedToShow(int codeError) {
+
                 }
             });
         });

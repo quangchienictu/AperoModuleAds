@@ -23,6 +23,8 @@
 -keep class com.google.android.gms.** { *; }
 -keep class com.google.firebase.** { *; }
 
+#================================= ADJUST
+
 -keep class com.adjust.sdk.** { *; }
 -keep class com.google.android.gms.common.ConnectionResult {
     int SUCCESS;
@@ -35,3 +37,6 @@
     boolean isLimitAdTrackingEnabled();
 }
 -keep public class com.android.installreferrer.** { *; }
+
+
+

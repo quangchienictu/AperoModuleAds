@@ -26,15 +26,24 @@
         android:layout_centerHorizontal="true"
         android:text="Click 1 lần hiện full" />
 
+    <Button
+        android:id="@+id/btnShowReward"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btForceShowAds"
+        android:layout_centerHorizontal="true"
+        android:text="Show reward" />
+
 
     <Button
 
         android:id="@+id/btIap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btForceShowAds"
+        android:layout_below="@+id/btnShowReward"
         android:layout_centerHorizontal="true"
         android:text="IAP test" />
+
     <Button
 
         android:id="@+id/btnAdjustEvent"
