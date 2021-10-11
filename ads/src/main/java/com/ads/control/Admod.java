@@ -704,6 +704,17 @@ public class Admod {
     }
 
     /**
+     * Load quảng cáo Banner Trong Activity set Inline adaptive banners
+     *
+     * @param mActivity
+     * @param id
+     */
+    public void loadBanner(final Activity mActivity, String id,Boolean useInlineAdaptive) {
+        final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
+        loadBanner(mActivity, id, adContainer, containerShimmer,true);
+    }
+    /**
      * Load quảng cáo Banner Trong Activity
      *
      * @param mActivity
@@ -712,7 +723,7 @@ public class Admod {
     public void loadBanner(final Activity mActivity, String id) {
         final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer);
+        loadBanner(mActivity, id, adContainer, containerShimmer,false);
     }
 
     /**
@@ -724,7 +735,20 @@ public class Admod {
     public void loadBanner(final Activity mActivity, String id, final AdCallback callback) {
         final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer, callback);
+        loadBanner(mActivity, id, adContainer, containerShimmer, callback,false);
+    }
+
+
+    /**
+     * Load quảng cáo Banner Trong Activity set Inline adaptive banners
+     *
+     * @param mActivity
+     * @param id
+     */
+    public void loadBanner(final Activity mActivity, String id, final AdCallback callback,Boolean useInlineAdaptive) {
+        final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
+        loadBanner(mActivity, id, adContainer, containerShimmer, callback,useInlineAdaptive);
     }
 
     /**
@@ -737,7 +761,19 @@ public class Admod {
     public void loadBannerFragment(final Activity mActivity, String id, final View rootView) {
         final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer);
+        loadBanner(mActivity, id, adContainer, containerShimmer,false);
+    }
+    /**
+     * Load Quảng Cáo Banner Trong Fragment set Inline adaptive banners
+     *
+     * @param mActivity
+     * @param id
+     * @param rootView
+     */
+    public void loadBannerFragment(final Activity mActivity, String id, final View rootView,Boolean useInlineAdaptive) {
+        final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
+        loadBanner(mActivity, id, adContainer, containerShimmer,useInlineAdaptive);
     }
 
     /**
@@ -750,12 +786,25 @@ public class Admod {
     public void loadBannerFragment(final Activity mActivity, String id, final View rootView, final AdCallback callback) {
         final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer, callback);
+        loadBanner(mActivity, id, adContainer, containerShimmer, callback,false);
+    }
+    /**
+     * Load Quảng Cáo Banner Trong Fragment set Inline adaptive banners
+     *
+     * @param mActivity
+     * @param id
+     * @param rootView
+     * @param callback
+     */
+    public void loadBannerFragment(final Activity mActivity, String id, final View rootView, final AdCallback callback,Boolean useInlineAdaptive) {
+        final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
+        loadBanner(mActivity, id, adContainer, containerShimmer, callback,useInlineAdaptive);
     }
 
     boolean bannerLoaded = false;
 
-    private void loadBanner(final Activity mActivity, String id, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer) {
+    private void loadBanner(final Activity mActivity, String id, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer,Boolean useInlineAdaptive) {
         if (Arrays.asList(mActivity.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
             showTestIdAlert(mActivity, BANNER_ADS, id);
         }
@@ -770,7 +819,7 @@ public class Admod {
             AdView adView = new AdView(mActivity);
             adView.setAdUnitId(id);
             adContainer.addView(adView);
-            AdSize adSize = getAdSize(mActivity);
+            AdSize adSize = getAdSize(mActivity,useInlineAdaptive);
             adView.setAdSize(adSize);
             adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             adView.loadAd(getAdRequest());
@@ -810,7 +859,7 @@ public class Admod {
         }
     }
 
-    private void loadBanner(final Activity mActivity, String id, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer, final AdCallback callback) {
+    private void loadBanner(final Activity mActivity, String id, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer, final AdCallback callback,Boolean useInlineAdaptive) {
         if (Arrays.asList(mActivity.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
             showTestIdAlert(mActivity, BANNER_ADS, id);
         }
@@ -825,7 +874,7 @@ public class Admod {
             AdView adView = new AdView(mActivity);
             adView.setAdUnitId(id);
             adContainer.addView(adView);
-            AdSize adSize = getAdSize(mActivity);
+            AdSize adSize = getAdSize(mActivity,useInlineAdaptive);
             adView.setAdSize(adSize);
             adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             adView.loadAd(getAdRequest());
@@ -873,7 +922,8 @@ public class Admod {
         }
     }
 
-    private AdSize getAdSize(Activity mActivity) {
+    private AdSize getAdSize(Activity mActivity,Boolean useInlineAdaptive) {
+
         // Step 2 - Determine the screen width (less decorations) to use for the ad width.
         Display display = mActivity.getWindowManager().getDefaultDisplay();
         DisplayMetrics outMetrics = new DisplayMetrics();
@@ -885,6 +935,9 @@ public class Admod {
         int adWidth = (int) (widthPixels / density);
 
         // Step 3 - Get adaptive ad size and return for setting on the ad view.
+        if (useInlineAdaptive){
+            return AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(mActivity, adWidth);
+        }
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mActivity, adWidth);
 
     }
@@ -1358,6 +1411,9 @@ public class Admod {
             notificationManager.createNotificationChannel(channel);
         }
         notificationManager.notify(typeAds, notification);
+        if (!BuildConfig.DEBUG){
+             throw new RuntimeException("Found test ad id on release");
+        }
     }
 
     public final static int SPLASH_ADS = 0;

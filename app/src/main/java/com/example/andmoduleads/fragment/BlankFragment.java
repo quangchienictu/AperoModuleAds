@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.ads.control.Admod;
 import com.ads.control.funtion.AdCallback;
@@ -56,7 +55,7 @@ public class BlankFragment extends Fragment {
             Admod.getInstance().forceShowInterstitial(getActivity(), mInterstitialAd, new AdCallback() {
                 @Override
                 public void onAdClosed() {
-                    ((ContentActivity)getActivity()).showFragment(new BlankFragment2(),"BlankFragment2");
+                    ((ContentActivity)getActivity()).showFragment(new InlineBannerFragment(),"BlankFragment2");
                 }
             });
         });

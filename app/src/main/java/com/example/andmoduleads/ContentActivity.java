@@ -4,18 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.Toast;
 
-import com.ads.control.Admod;
-import com.ads.control.funtion.AdCallback;
 import com.example.andmoduleads.fragment.BlankFragment;
-import com.example.andmoduleads.fragment.BlankFragment2;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.example.andmoduleads.fragment.InlineBannerFragment;
 
-import java.lang.reflect.Constructor;
 import java.util.List;
 
 public class ContentActivity extends AppCompatActivity {
@@ -28,6 +21,7 @@ public class ContentActivity extends AppCompatActivity {
 
 
         showFragment(new BlankFragment(),"BlankFragment");
+//        showFragment(new InlineBannerFragment(),"InlineBannerFragment");
     }
 
 
