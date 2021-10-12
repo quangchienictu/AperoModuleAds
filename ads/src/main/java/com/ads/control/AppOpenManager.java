@@ -251,9 +251,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             notificationManager.createNotificationChannel(channel);
         }
         notificationManager.notify(isSplash ? Admod.SPLASH_ADS : Admod.RESUME_ADS, notification);
-        if (!BuildConfig.DEBUG){
-            throw new RuntimeException("Found test ad id on release");
-        }
+//        if (!BuildConfig.DEBUG){
+//            throw new RuntimeException("Found test ad id on release");
+//        }
     }
 
     /**

@@ -1411,12 +1411,12 @@ public class Admod {
             notificationManager.createNotificationChannel(channel);
         }
         notificationManager.notify(typeAds, notification);
-//        String build_type = BuildConfig.BUILD_TYPE;
-//        Log.e(TAG, "Found test ad id on : "+build_type );
-//
-//        if (build_type.equals("release")){
-//             throw new RuntimeException("Found test ad id on release");
-//        }
+        String build_type = BuildConfig.BUILD_TYPE;
+        Log.e(TAG, "Found test ad id on : "+build_type );
+
+        if (build_type.equals("release")){
+             throw new RuntimeException("Found test ad id on release");
+        }
     }
 
     public final static int SPLASH_ADS = 0;
