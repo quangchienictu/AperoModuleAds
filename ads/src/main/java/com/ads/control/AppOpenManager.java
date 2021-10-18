@@ -187,7 +187,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         if (!isSplash) {
                             AppOpenManager.this.appResumeAd = ad;
                             AppOpenManager.this.appResumeAd.setOnPaidEventListener(adValue -> {
-                                AdjustApero.pushTrackEventAdmod( AppOpenManager.this.splashAd.getAdUnitId(),adValue);
+                                AdjustApero.pushTrackEventAdmod( adValue);
                                 FirebaseAnalyticsUtil.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         ad.getAdUnitId(),
@@ -198,7 +198,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         } else {
                             AppOpenManager.this.splashAd = ad;
                             AppOpenManager.this.splashAd.setOnPaidEventListener(adValue -> {
-                                AdjustApero.pushTrackEventAdmod( AppOpenManager.this.splashAd.getAdUnitId(),adValue);
+                                AdjustApero.pushTrackEventAdmod(adValue);
                                 FirebaseAnalyticsUtil.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         ad.getAdUnitId(),

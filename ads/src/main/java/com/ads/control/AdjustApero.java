@@ -53,7 +53,7 @@ public class AdjustApero {
         }
     }
 
-    public static void pushTrackEventAdmod(String adId, AdValue adValue) {
+    public static void pushTrackEventAdmod(  AdValue adValue) {
         if (AdjustApero.enableAdjust) {
             AdjustAdRevenue adRevenue = new AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB);
             adRevenue.setRevenue(adValue.getValueMicros() / 1000000.0, adValue.getCurrencyCode());

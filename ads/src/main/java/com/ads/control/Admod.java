@@ -289,8 +289,7 @@ public class Admod {
         isShowLoadingSplash = true;
         if (mInterstitialSplash != null) {
             mInterstitialSplash.setOnPaidEventListener(adValue -> {
-                AdjustApero.pushTrackEventAdmod(mInterstitialSplash.getAdUnitId(), adValue);
-
+                AdjustApero.pushTrackEventAdmod( adValue);
                 FirebaseAnalyticsUtil.logPaidAdImpression(context,
                         adValue,
                         mInterstitialSplash.getAdUnitId(),
@@ -424,7 +423,7 @@ public class Admod {
 
                 if (interstitialAd != null) {
                     interstitialAd.setOnPaidEventListener(adValue -> {
-                        AdjustApero.pushTrackEventAdmod(interstitialAd.getAdUnitId(), adValue);
+                        AdjustApero.pushTrackEventAdmod( adValue);
                         FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                 adValue,
                                 interstitialAd.getAdUnitId(),
@@ -488,7 +487,7 @@ public class Admod {
 
                         //tracking adjust
                         interstitialAd.setOnPaidEventListener(adValue -> {
-                            AdjustApero.pushTrackEventAdmod(interstitialAd.getAdUnitId(), adValue);
+                            AdjustApero.pushTrackEventAdmod( adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     interstitialAd.getAdUnitId(),
@@ -841,7 +840,7 @@ public class Admod {
                     adContainer.setVisibility(View.VISIBLE);
                     if (adView != null) {
                         adView.setOnPaidEventListener(adValue -> {
-                            AdjustApero.pushTrackEventAdmod(adView.getAdUnitId(), adValue);
+                            AdjustApero.pushTrackEventAdmod( adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     adView.getAdUnitId(),
@@ -895,7 +894,7 @@ public class Admod {
                     adContainer.setVisibility(View.VISIBLE);
                     if (adView != null) {
                         adView.setOnPaidEventListener(adValue -> {
-                            AdjustApero.pushTrackEventAdmod(adView.getAdUnitId(), adValue);
+                            AdjustApero.pushTrackEventAdmod(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     adView.getAdUnitId(),
@@ -994,7 +993,11 @@ public class Admod {
                     public void onNativeAdLoaded(@NonNull NativeAd nativeAd) {
                         callback.onUnifiedNativeAdLoaded(nativeAd);
                         nativeAd.setOnPaidEventListener(adValue -> {
-                            AdjustApero.pushTrackEventAdmod(id, adValue);
+                            AdjustApero.pushTrackEventAdmod(  adValue);
+                            FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                                    adValue,
+                                    "",
+                                    "native");
                         });
                     }
                 })
@@ -1052,7 +1055,11 @@ public class Admod {
                         @SuppressLint("InflateParams") NativeAdView adView = (NativeAdView) LayoutInflater.from(context)
                                 .inflate(layout, null);
                         nativeAd.setOnPaidEventListener(adValue -> {
-                            AdjustApero.pushTrackEventAdmod(id, adValue);
+                            AdjustApero.pushTrackEventAdmod(  adValue);
+                            FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                                    adValue,
+                                    "",
+                                    "native");
                         });
                         populateUnifiedNativeAdView(nativeAd, adView);
                         frameLayout.removeAllViews();
@@ -1111,7 +1118,11 @@ public class Admod {
                         @SuppressLint("InflateParams") NativeAdView adView = (NativeAdView) LayoutInflater.from(context)
                                 .inflate(layout, null);
                         nativeAd.setOnPaidEventListener(adValue -> {
-                            AdjustApero.pushTrackEventAdmod(id, adValue);
+                            AdjustApero.pushTrackEventAdmod(adValue);
+                            FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                                    adValue,
+                                    "",
+                                    "native");
                         });
                         populateUnifiedNativeAdView(nativeAd, adView);
                         frameLayout.removeAllViews();
@@ -1299,8 +1310,11 @@ public class Admod {
             public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
                 Admod.this.rewardedAd = rewardedAd;
                 Admod.this.rewardedAd.setOnPaidEventListener(adValue -> {
-                    AdjustApero.pushTrackEventAdmod(rewardedAd.getAdUnitId(), adValue);
-
+                    AdjustApero.pushTrackEventAdmod( adValue);
+                    FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                            adValue,
+                            "",
+                            "native");
                 });
             }
 
