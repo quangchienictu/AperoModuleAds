@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ads.control.AdjustApero;
 import com.ads.control.Admod;
+import com.ads.control.AppOpenManager;
 import com.ads.control.AppPurchase;
 import com.ads.control.DialogExitListener;
 import com.ads.control.dialog.DialogExitApp1;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         frAds = findViewById(R.id.fr_ads);
         Admod.getInstance().initRewardAds(this,getString(R.string.admod_app_reward_id));
-
+        AppOpenManager.getInstance().enableAppResume();
         Admod.getInstance().loadNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {
             @Override
             public void onUnifiedNativeAdLoaded(NativeAd unifiedNativeAd) {
