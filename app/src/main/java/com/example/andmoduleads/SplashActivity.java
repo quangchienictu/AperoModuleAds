@@ -36,7 +36,6 @@ public class SplashActivity extends AppCompatActivity {
                         loadSplash();
                     }
                 });
-
             }
         },5000);
 

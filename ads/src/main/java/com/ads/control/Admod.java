@@ -1326,6 +1326,45 @@ public class Admod {
         });
     }
 
+    /**
+     * Khởi tạo quảng cáo reward
+     *
+     * @param context
+     * @param id
+     */
+    public void initRewardAds(Context context, String id, AdCallback callback) {
+        if (Arrays.asList(context.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
+            showTestIdAlert(context, REWARD_ADS, id);
+        }
+        if (AppPurchase.getInstance().isPurchased(context)) {
+            return;
+        }
+        this.nativeId = id;
+        if (AppPurchase.getInstance().isPurchased(context)) {
+            return;
+        }
+        RewardedAd.load(context, id, getAdRequest(), new RewardedAdLoadCallback() {
+            @Override
+            public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
+                callback.onAdLoaded();
+                Admod.this.rewardedAd = rewardedAd;
+                Admod.this.rewardedAd.setOnPaidEventListener(adValue -> {
+                    AdjustApero.pushTrackEventAdmod( adValue);
+                    FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                            adValue,
+                            "",
+                            "native");
+                });
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                callback.onAdFailedToLoad(loadAdError);
+                Log.e(TAG, "RewardedAd onAdFailedToLoad: " + loadAdError.getMessage());
+            }
+        });
+    }
+
     public RewardedAd getRewardedAd() {
 
         return rewardedAd;
