@@ -289,7 +289,7 @@ public class Admod {
         isShowLoadingSplash = true;
         if (mInterstitialSplash != null) {
             mInterstitialSplash.setOnPaidEventListener(adValue -> {
-                AdjustApero.pushTrackEventAdmod( adValue);
+                AdjustApero.pushTrackEventAdmod(adValue);
                 FirebaseAnalyticsUtil.logPaidAdImpression(context,
                         adValue,
                         mInterstitialSplash.getAdUnitId(),
@@ -374,7 +374,7 @@ public class Admod {
                         @Override
                         public void run() {
 
-                            if (dialog != null && dialog.isShowing()&&!activity.isDestroyed() )
+                            if (dialog != null && dialog.isShowing() && !activity.isDestroyed())
                                 dialog.dismiss();
                         }
                     }, 1500);
@@ -423,7 +423,7 @@ public class Admod {
 
                 if (interstitialAd != null) {
                     interstitialAd.setOnPaidEventListener(adValue -> {
-                        AdjustApero.pushTrackEventAdmod( adValue);
+                        AdjustApero.pushTrackEventAdmod(adValue);
                         FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                 adValue,
                                 interstitialAd.getAdUnitId(),
@@ -487,7 +487,7 @@ public class Admod {
 
                         //tracking adjust
                         interstitialAd.setOnPaidEventListener(adValue -> {
-                            AdjustApero.pushTrackEventAdmod( adValue);
+                            AdjustApero.pushTrackEventAdmod(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     interstitialAd.getAdUnitId(),
@@ -682,7 +682,7 @@ public class Admod {
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if (dialog != null && dialog.isShowing() &&!((Activity) context).isDestroyed() )
+                                if (dialog != null && dialog.isShowing() && !((Activity) context).isDestroyed())
                                     dialog.dismiss();
                             }
                         }, 1500);
@@ -708,11 +708,12 @@ public class Admod {
      * @param mActivity
      * @param id
      */
-    public void loadBanner(final Activity mActivity, String id,Boolean useInlineAdaptive) {
+    public void loadBanner(final Activity mActivity, String id, Boolean useInlineAdaptive) {
         final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer,true);
+        loadBanner(mActivity, id, adContainer, containerShimmer, true);
     }
+
     /**
      * Load quảng cáo Banner Trong Activity
      *
@@ -722,7 +723,7 @@ public class Admod {
     public void loadBanner(final Activity mActivity, String id) {
         final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer,false);
+        loadBanner(mActivity, id, adContainer, containerShimmer, false);
     }
 
     /**
@@ -734,7 +735,7 @@ public class Admod {
     public void loadBanner(final Activity mActivity, String id, final AdCallback callback) {
         final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer, callback,false);
+        loadBanner(mActivity, id, adContainer, containerShimmer, callback, false);
     }
 
 
@@ -744,10 +745,10 @@ public class Admod {
      * @param mActivity
      * @param id
      */
-    public void loadBanner(final Activity mActivity, String id, final AdCallback callback,Boolean useInlineAdaptive) {
+    public void loadBanner(final Activity mActivity, String id, final AdCallback callback, Boolean useInlineAdaptive) {
         final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer, callback,useInlineAdaptive);
+        loadBanner(mActivity, id, adContainer, containerShimmer, callback, useInlineAdaptive);
     }
 
     /**
@@ -760,8 +761,9 @@ public class Admod {
     public void loadBannerFragment(final Activity mActivity, String id, final View rootView) {
         final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer,false);
+        loadBanner(mActivity, id, adContainer, containerShimmer, false);
     }
+
     /**
      * Load Quảng Cáo Banner Trong Fragment set Inline adaptive banners
      *
@@ -769,10 +771,10 @@ public class Admod {
      * @param id
      * @param rootView
      */
-    public void loadBannerFragment(final Activity mActivity, String id, final View rootView,Boolean useInlineAdaptive) {
+    public void loadBannerFragment(final Activity mActivity, String id, final View rootView, Boolean useInlineAdaptive) {
         final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer,useInlineAdaptive);
+        loadBanner(mActivity, id, adContainer, containerShimmer, useInlineAdaptive);
     }
 
     /**
@@ -785,8 +787,9 @@ public class Admod {
     public void loadBannerFragment(final Activity mActivity, String id, final View rootView, final AdCallback callback) {
         final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer, callback,false);
+        loadBanner(mActivity, id, adContainer, containerShimmer, callback, false);
     }
+
     /**
      * Load Quảng Cáo Banner Trong Fragment set Inline adaptive banners
      *
@@ -795,15 +798,15 @@ public class Admod {
      * @param rootView
      * @param callback
      */
-    public void loadBannerFragment(final Activity mActivity, String id, final View rootView, final AdCallback callback,Boolean useInlineAdaptive) {
+    public void loadBannerFragment(final Activity mActivity, String id, final View rootView, final AdCallback callback, Boolean useInlineAdaptive) {
         final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer, callback,useInlineAdaptive);
+        loadBanner(mActivity, id, adContainer, containerShimmer, callback, useInlineAdaptive);
     }
 
     boolean bannerLoaded = false;
 
-    private void loadBanner(final Activity mActivity, String id, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer,Boolean useInlineAdaptive) {
+    private void loadBanner(final Activity mActivity, String id, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer, Boolean useInlineAdaptive) {
         if (Arrays.asList(mActivity.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
             showTestIdAlert(mActivity, BANNER_ADS, id);
         }
@@ -818,7 +821,7 @@ public class Admod {
             AdView adView = new AdView(mActivity);
             adView.setAdUnitId(id);
             adContainer.addView(adView);
-            AdSize adSize = getAdSize(mActivity,useInlineAdaptive);
+            AdSize adSize = getAdSize(mActivity, useInlineAdaptive);
             adView.setAdSize(adSize);
             adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             adView.loadAd(getAdRequest());
@@ -840,7 +843,7 @@ public class Admod {
                     adContainer.setVisibility(View.VISIBLE);
                     if (adView != null) {
                         adView.setOnPaidEventListener(adValue -> {
-                            AdjustApero.pushTrackEventAdmod( adValue);
+                            AdjustApero.pushTrackEventAdmod(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     adView.getAdUnitId(),
@@ -858,7 +861,7 @@ public class Admod {
         }
     }
 
-    private void loadBanner(final Activity mActivity, String id, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer, final AdCallback callback,Boolean useInlineAdaptive) {
+    private void loadBanner(final Activity mActivity, String id, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer, final AdCallback callback, Boolean useInlineAdaptive) {
         if (Arrays.asList(mActivity.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
             showTestIdAlert(mActivity, BANNER_ADS, id);
         }
@@ -873,7 +876,7 @@ public class Admod {
             AdView adView = new AdView(mActivity);
             adView.setAdUnitId(id);
             adContainer.addView(adView);
-            AdSize adSize = getAdSize(mActivity,useInlineAdaptive);
+            AdSize adSize = getAdSize(mActivity, useInlineAdaptive);
             adView.setAdSize(adSize);
             adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             adView.loadAd(getAdRequest());
@@ -921,7 +924,7 @@ public class Admod {
         }
     }
 
-    private AdSize getAdSize(Activity mActivity,Boolean useInlineAdaptive) {
+    private AdSize getAdSize(Activity mActivity, Boolean useInlineAdaptive) {
 
         // Step 2 - Determine the screen width (less decorations) to use for the ad width.
         Display display = mActivity.getWindowManager().getDefaultDisplay();
@@ -934,7 +937,7 @@ public class Admod {
         int adWidth = (int) (widthPixels / density);
 
         // Step 3 - Get adaptive ad size and return for setting on the ad view.
-        if (useInlineAdaptive){
+        if (useInlineAdaptive) {
             return AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(mActivity, adWidth);
         }
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mActivity, adWidth);
@@ -993,7 +996,7 @@ public class Admod {
                     public void onNativeAdLoaded(@NonNull NativeAd nativeAd) {
                         callback.onUnifiedNativeAdLoaded(nativeAd);
                         nativeAd.setOnPaidEventListener(adValue -> {
-                            AdjustApero.pushTrackEventAdmod(  adValue);
+                            AdjustApero.pushTrackEventAdmod(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     "",
@@ -1055,7 +1058,7 @@ public class Admod {
                         @SuppressLint("InflateParams") NativeAdView adView = (NativeAdView) LayoutInflater.from(context)
                                 .inflate(layout, null);
                         nativeAd.setOnPaidEventListener(adValue -> {
-                            AdjustApero.pushTrackEventAdmod(  adValue);
+                            AdjustApero.pushTrackEventAdmod(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     "",
@@ -1160,24 +1163,24 @@ public class Admod {
 
         adView.setMediaView(adView.findViewById(R.id.ad_media));
 
-        if (adView.getMediaView()!=null){
+        if (adView.getMediaView() != null) {
             adView.getMediaView().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (context!=null&&BuildConfig.DEBUG) {
+                    if (context != null && BuildConfig.DEBUG) {
                         float sizeMin = TypedValue.applyDimension(
                                 TypedValue.COMPLEX_UNIT_DIP,
                                 120,
                                 context.getResources().getDisplayMetrics()
                         );
-                        Log.e(TAG, "Native sizeMin: " +sizeMin);
+                        Log.e(TAG, "Native sizeMin: " + sizeMin);
                         Log.e(TAG, "Native w/h media : " + adView.getMediaView().getWidth() + "/" + adView.getMediaView().getHeight());
-                       if (adView.getMediaView().getWidth()<sizeMin||adView.getMediaView().getHeight()<sizeMin){
-                           Toast.makeText(context, "Size media native not valid", Toast.LENGTH_SHORT).show();
-                       }
+                        if (adView.getMediaView().getWidth() < sizeMin || adView.getMediaView().getHeight() < sizeMin) {
+                            Toast.makeText(context, "Size media native not valid", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
-            },1000);
+            }, 1000);
 
         }
         // Set other ad assets.
@@ -1310,7 +1313,7 @@ public class Admod {
             public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
                 Admod.this.rewardedAd = rewardedAd;
                 Admod.this.rewardedAd.setOnPaidEventListener(adValue -> {
-                    AdjustApero.pushTrackEventAdmod( adValue);
+                    AdjustApero.pushTrackEventAdmod(adValue);
                     FirebaseAnalyticsUtil.logPaidAdImpression(context,
                             adValue,
                             "",
@@ -1349,11 +1352,34 @@ public class Admod {
                 callback.onAdLoaded();
                 Admod.this.rewardedAd = rewardedAd;
                 Admod.this.rewardedAd.setOnPaidEventListener(adValue -> {
-                    AdjustApero.pushTrackEventAdmod( adValue);
+                    AdjustApero.pushTrackEventAdmod(adValue);
                     FirebaseAnalyticsUtil.logPaidAdImpression(context,
                             adValue,
                             "",
                             "native");
+                });
+                Admod.this.rewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        super.onAdDismissedFullScreenContent();
+
+                        if (callback != null)
+                            callback.onAdClosed();
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        if (callback != null)
+                            callback.onAdClicked();
+                    }
+
+                    @Override
+                    public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                        super.onAdFailedToShowFullScreenContent(adError);
+                        if (callback != null)
+                            callback.onAdFailedToShow(adError);
+                    }
                 });
             }
 
@@ -1385,9 +1411,12 @@ public class Admod {
         }
         if (rewardedAd == null) {
             initRewardAds(context, nativeId);
+
             adCallback.onRewardedAdFailedToShow(0);
             return;
         } else {
+
+
             rewardedAd.show(context, new OnUserEarnedRewardListener() {
                 @Override
                 public void onUserEarnedReward(@NonNull RewardItem rewardItem) {

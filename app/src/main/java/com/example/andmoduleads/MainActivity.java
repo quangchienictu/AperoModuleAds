@@ -45,7 +45,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         frAds = findViewById(R.id.fr_ads);
-        Admod.getInstance().initRewardAds(this,getString(R.string.admod_app_reward_id));
+        Admod.getInstance().initRewardAds(this,getString(R.string.admod_app_reward_id), new AdCallback(){
+            @Override
+            public void onAdClosed() {
+                Log.e("TAG", "onAdDismissedFullScreenContent: rewardedAd ");
+            }
+        });
         AppOpenManager.getInstance().enableAppResume();
         Admod.getInstance().loadNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {
             @Override
