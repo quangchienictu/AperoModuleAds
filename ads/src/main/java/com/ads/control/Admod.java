@@ -1358,29 +1358,7 @@ public class Admod {
                             "",
                             "native");
                 });
-                Admod.this.rewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                    @Override
-                    public void onAdDismissedFullScreenContent() {
-                        super.onAdDismissedFullScreenContent();
 
-                        if (callback != null)
-                            callback.onAdClosed();
-                    }
-
-                    @Override
-                    public void onAdClicked() {
-                        super.onAdClicked();
-                        if (callback != null)
-                            callback.onAdClicked();
-                    }
-
-                    @Override
-                    public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
-                        super.onAdFailedToShowFullScreenContent(adError);
-                        if (callback != null)
-                            callback.onAdFailedToShow(adError);
-                    }
-                });
             }
 
             @Override
@@ -1415,8 +1393,21 @@ public class Admod {
             adCallback.onRewardedAdFailedToShow(0);
             return;
         } else {
+            Admod.this.rewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    super.onAdDismissedFullScreenContent();
+                    if (adCallback != null)
+                        adCallback.onRewardedAdClosed();
+                }
 
-
+                @Override
+                public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                    super.onAdFailedToShowFullScreenContent(adError);
+                    if (adCallback != null)
+                        adCallback.onRewardedAdFailedToShow(adError.getCode());
+                }
+            });
             rewardedAd.show(context, new OnUserEarnedRewardListener() {
                 @Override
                 public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
