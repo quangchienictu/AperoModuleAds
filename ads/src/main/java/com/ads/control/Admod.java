@@ -61,6 +61,10 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.jirbo.adcolony.AdColonyAdapter;
 import com.jirbo.adcolony.AdColonyBundleBuilder;
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -79,6 +83,7 @@ public class Admod {
     private Runnable rd;
     private PrepareLoadingAdsDialog dialog;
     private boolean isTimeLimited;
+    //kiểm tra trạng thái ad splash, ko cho load, show khi đang show loading ads splash
     private boolean isShowLoadingSplash;
     private boolean isFan;
     private boolean isAdcolony;
@@ -215,7 +220,7 @@ public class Admod {
      * @param timeDelay  : thời gian chờ show ad từ lúc load ads
      * @param adListener
      */
-    public void loadSplashInterstitalAds(final Context context, String id, long timeOut, long timeDelay, final AdCallback adListener) {
+    public void loadSplashInterstitalAds(final Context context, String id, long timeOut, long timeDelay, AdCallback adListener) {
         checkTimeDelay = false;
         if (isShowLoadingSplash)
             return;
@@ -231,11 +236,11 @@ public class Admod {
             public void run() {
                 //check delay show ad splash
                 if (mInterstitialSplash != null) {
-                    Log.d(TAG, "loadSplashInterstitalAds:show ad on delay ");
+                    Log.i(TAG, "loadSplashInterstitalAds:show ad on delay ");
                     onShowSplash((Activity) context, adListener);
                     return;
                 }
-                Log.d(TAG, "loadSplashInterstitalAds: delay validate");
+                Log.i(TAG, "loadSplashInterstitalAds: delay validate");
                 checkTimeDelay = true;
             }
         }, timeDelay);
@@ -248,7 +253,7 @@ public class Admod {
                     mInterstitialSplash = interstitialAd;
                     if (checkTimeDelay) {
                         onShowSplash((Activity) context, adListener);
-                        Log.d(TAG, "loadSplashInterstitalAds:show ad on loaded ");
+                        Log.i(TAG, "loadSplashInterstitalAds:show ad on loaded ");
                     }
                 }
             }
@@ -260,6 +265,8 @@ public class Admod {
                     if (handler != null && rd != null) {
                         handler.removeCallbacks(rd);
                     }
+                    if (i != null)
+                        Log.i(TAG, "loadSplashInterstitalAds: load fail " + i.getMessage());
                     adListener.onAdFailedToLoad(i);
                 }
             }
@@ -272,7 +279,7 @@ public class Admod {
                 public void run() {
                     isTimeLimited = true;
                     if (mInterstitialSplash != null) {
-                        Log.d(TAG, "loadSplashInterstitalAds:show ad on timeout ");
+                        Log.i(TAG, "loadSplashInterstitalAds:show ad on timeout ");
                         onShowSplash((Activity) context, adListener);
                         return;
                     }
@@ -287,8 +294,12 @@ public class Admod {
 
     private void onShowSplash(Activity activity, AdCallback adListener) {
         isShowLoadingSplash = true;
+
+
+
         if (mInterstitialSplash != null) {
             mInterstitialSplash.setOnPaidEventListener(adValue -> {
+                Log.d(TAG, "OnPaidEvent splash:" + adValue.getValueMicros());
                 AdjustApero.pushTrackEventAdmod(adValue);
                 FirebaseAnalyticsUtil.logPaidAdImpression(context,
                         adValue,
@@ -311,7 +322,7 @@ public class Admod {
             @Override
             public void onAdShowedFullScreenContent() {
                 isShowLoadingSplash = false;
-                mInterstitialSplash = null;
+
             }
 
             @Override
@@ -327,8 +338,8 @@ public class Admod {
                     if (dialog != null) {
                         dialog.dismiss();
                     }
-
                 }
+                mInterstitialSplash = null;
             }
 
             @Override
@@ -424,6 +435,7 @@ public class Admod {
                 if (interstitialAd != null) {
                     interstitialAd.setOnPaidEventListener(adValue -> {
                         AdjustApero.pushTrackEventAdmod(adValue);
+                        Log.d(TAG, "OnPaidEvent loadInterstitialAds:" + adValue.getValueMicros());
                         FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                 adValue,
                                 interstitialAd.getAdUnitId(),
@@ -487,6 +499,8 @@ public class Admod {
 
                         //tracking adjust
                         interstitialAd.setOnPaidEventListener(adValue -> {
+
+                            Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                             AdjustApero.pushTrackEventAdmod(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,

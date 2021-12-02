@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
         frAds = findViewById(R.id.fr_ads);
         Admod.getInstance().initRewardAds(this,getString(R.string.admod_app_reward_id));
         AppOpenManager.getInstance().enableAppResume();
+        Admod.getInstance().setNumToShowAds(4,3);
+//        Admod.getInstance().setNumToShowAds(3);
         Admod.getInstance().loadNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {
             @Override
             public void onUnifiedNativeAdLoaded(NativeAd unifiedNativeAd) {
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         Admod.getInstance().loadBanner(this, getString(R.string.admod_banner_id));
 //        Admod.getInstance().loadNative(this, getString(R.string.admod_native_id));
-        Admod.getInstance().setNumToShowAds(3);
+
         loadAdInterstial();
 
 
@@ -108,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.btnShowReward).setOnClickListener(v -> {
 
-
             Admod.getInstance().showRewardAds(this, new RewardCallback() {
                 @Override
                 public void onUserEarnedReward(RewardItem var1) {
@@ -117,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onRewardedAdClosed() {
+                    startActivity(new Intent(MainActivity.this, ContentActivity.class));
                     Log.e("TAG", "onRewardedAdClosed ");
                 }
 
