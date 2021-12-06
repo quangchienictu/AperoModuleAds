@@ -68,6 +68,7 @@ import java.io.FileInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -82,13 +83,13 @@ public class Admod {
     private Handler handler;
     private Runnable rd;
     private PrepareLoadingAdsDialog dialog;
-    private boolean isTimeLimited;
-    //kiểm tra trạng thái ad splash, ko cho load, show khi đang show loading ads splash
-    private boolean isShowLoadingSplash;
+    private boolean isTimeLimited; // xử lý timeout show ads
+
+    private boolean isShowLoadingSplash;  //kiểm tra trạng thái ad splash, ko cho load, show khi đang show loading ads splash
     private boolean isFan;
     private boolean isAdcolony;
     private boolean isAppLovin;
-    boolean checkTimeDelay = false;
+    boolean checkTimeDelay = false; //xử lý delay time show ads
     private boolean openActivityAfterShowInterAds = false;
     private Context context;
 //    private AppOpenAd appOpenAd = null;
@@ -222,6 +223,8 @@ public class Admod {
      */
     public void loadSplashInterstitalAds(final Context context, String id, long timeOut, long timeDelay, AdCallback adListener) {
         checkTimeDelay = false;
+        isTimeLimited = false;
+        Log.i(TAG, "loadSplashInterstitalAds  start time loading:" + Calendar.getInstance().getTimeInMillis() + "    ShowLoadingSplash:"+isShowLoadingSplash);
         if (isShowLoadingSplash)
             return;
         isShowLoadingSplash = true;
@@ -245,10 +248,34 @@ public class Admod {
             }
         }, timeDelay);
 
+        if (timeOut > 0) {
+            handler = new Handler();
+            rd = new Runnable() {
+                @Override
+                public void run() {
+                    Log.e(TAG, "loadSplashInterstitalAds: on timeout");
+                    isTimeLimited = true;
+                    if (mInterstitialSplash != null) {
+                        Log.i(TAG, "loadSplashInterstitalAds:show ad on timeout ");
+                        onShowSplash((Activity) context, adListener);
+                        return;
+                    }
+                    if (adListener != null) {
+                        adListener.onAdClosed();
+                        isShowLoadingSplash = false;
+                    }
+                }
+            };
+            handler.postDelayed(rd, timeOut);
+        }
+
         getInterstitalAds(context, id, new AdCallback() {
             @Override
             public void onInterstitialLoad(InterstitialAd interstitialAd) {
                 super.onInterstitialLoad(interstitialAd);
+                Log.e(TAG, "loadSplashInterstitalAds  end time loading success:" + Calendar.getInstance().getTimeInMillis() +"     time limit:"+isTimeLimited);
+                if (isTimeLimited)
+                    return;
                 if (interstitialAd != null) {
                     mInterstitialSplash = interstitialAd;
                     if (checkTimeDelay) {
@@ -261,40 +288,25 @@ public class Admod {
             @Override
             public void onAdFailedToLoad(LoadAdError i) {
                 super.onAdFailedToLoad(i);
+                Log.e(TAG, "loadSplashInterstitalAds  end time loading error:" + Calendar.getInstance().getTimeInMillis() +"     time limit:"+isTimeLimited);
+                if (isTimeLimited)
+                    return;
                 if (adListener != null) {
                     if (handler != null && rd != null) {
                         handler.removeCallbacks(rd);
                     }
                     if (i != null)
-                        Log.i(TAG, "loadSplashInterstitalAds: load fail " + i.getMessage());
+                        Log.e(TAG, "loadSplashInterstitalAds: load fail " + i.getMessage());
                     adListener.onAdFailedToLoad(i);
                 }
             }
         });
 
-        if (timeOut > 0) {
-            handler = new Handler();
-            rd = new Runnable() {
-                @Override
-                public void run() {
-                    isTimeLimited = true;
-                    if (mInterstitialSplash != null) {
-                        Log.i(TAG, "loadSplashInterstitalAds:show ad on timeout ");
-                        onShowSplash((Activity) context, adListener);
-                        return;
-                    }
-                    if (adListener != null) {
-                        adListener.onAdClosed();
-                    }
-                }
-            };
-            handler.postDelayed(rd, timeOut);
-        }
+
     }
 
     private void onShowSplash(Activity activity, AdCallback adListener) {
         isShowLoadingSplash = true;
-
 
 
         if (mInterstitialSplash != null) {
@@ -396,11 +408,10 @@ public class Admod {
             }, 800);
 
         }
-
-
     }
 
     public void loadInterstitialAds(Context context, String id, long timeOut, AdCallback adListener) {
+        isTimeLimited = false;
         if (AppPurchase.getInstance().isPurchased(context)) {
             if (adListener != null) {
                 adListener.onAdClosed();
@@ -447,6 +458,7 @@ public class Admod {
 
             @Override
             public void onAdFailedToLoad(LoadAdError i) {
+
                 if (adListener != null) {
                     if (handler != null && rd != null) {
                         handler.removeCallbacks(rd);
@@ -495,7 +507,8 @@ public class Admod {
                 new InterstitialAdLoadCallback() {
                     @Override
                     public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                        adCallback.onInterstitialLoad(interstitialAd);
+                        if (adCallback != null)
+                            adCallback.onInterstitialLoad(interstitialAd);
 
                         //tracking adjust
                         interstitialAd.setOnPaidEventListener(adValue -> {
@@ -515,7 +528,8 @@ public class Admod {
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         // Handle the error
                         Log.i(TAG, loadAdError.getMessage());
-                        adCallback.onAdFailedToLoad(loadAdError);
+                        if (adCallback != null)
+                            adCallback.onAdFailedToLoad(loadAdError);
                     }
 
                 });
