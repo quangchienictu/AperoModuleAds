@@ -85,7 +85,7 @@ public class Admod {
     private PrepareLoadingAdsDialog dialog;
     private boolean isTimeLimited; // xử lý timeout show ads
 
-    private boolean isShowLoadingSplash;  //kiểm tra trạng thái ad splash, ko cho load, show khi đang show loading ads splash
+    private boolean isShowLoadingSplash = false;  //kiểm tra trạng thái ad splash, ko cho load, show khi đang show loading ads splash
     private boolean isFan;
     private boolean isAdcolony;
     private boolean isAppLovin;
@@ -126,6 +126,7 @@ public class Admod {
     public static Admod getInstance() {
         if (instance == null) {
             instance = new Admod();
+            instance.isShowLoadingSplash = false;
         }
         return instance;
     }
@@ -225,9 +226,7 @@ public class Admod {
         checkTimeDelay = false;
         isTimeLimited = false;
         Log.i(TAG, "loadSplashInterstitalAds  start time loading:" + Calendar.getInstance().getTimeInMillis() + "    ShowLoadingSplash:"+isShowLoadingSplash);
-        if (isShowLoadingSplash)
-            return;
-        isShowLoadingSplash = true;
+
         if (AppPurchase.getInstance().isPurchased(context)) {
             if (adListener != null) {
                 adListener.onAdClosed();
@@ -268,7 +267,9 @@ public class Admod {
             };
             handler.postDelayed(rd, timeOut);
         }
-
+        if (isShowLoadingSplash)
+            return;
+        isShowLoadingSplash = true;
         getInterstitalAds(context, id, new AdCallback() {
             @Override
             public void onInterstitialLoad(InterstitialAd interstitialAd) {
@@ -301,7 +302,6 @@ public class Admod {
                 }
             }
         });
-
 
     }
 
