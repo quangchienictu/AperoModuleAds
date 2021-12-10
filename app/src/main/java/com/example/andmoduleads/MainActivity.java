@@ -45,8 +45,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         frAds = findViewById(R.id.fr_ads);
+
         Admod.getInstance().initRewardAds(this,getString(R.string.admod_app_reward_id));
-        AppOpenManager.getInstance().enableAppResume();
+
         Admod.getInstance().setNumToShowAds(4,3);
 //        Admod.getInstance().setNumToShowAds(3);
         Admod.getInstance().loadNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {

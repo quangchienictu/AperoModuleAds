@@ -15,7 +15,10 @@
         <entry key="ads/src/main/res/layout/native_exit1.xml" value="0.28396739130434784" />
         <entry key="ads/src/main/res/layout/small_native_admod_ad.xml" value="0.18840579710144928" />
         <entry key="ads/src/main/res/layout/view_dialog_exit1.xml" value="0.18840579710144928" />
+        <entry key="app/src/main/res/layout/activity_iron_source_splash.xml" value="0.2463768115942029" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.2463768115942029" />
+        <entry key="app/src/main/res/layout/activity_test_isactivity.xml" value="0.2463768115942029" />
         <entry key="app/src/main/res/layout/fragment_blank.xml" value="0.28396739130434784" />
         <entry key="app/src/main/res/layout/fragment_blank2.xml" value="0.32019927536231885" />
       </map>

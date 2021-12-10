@@ -13,12 +13,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AndModuleAds">
-        <activity android:name=".ContentActivity"></activity>
-        <activity android:name=".MainActivity"></activity>
+        <activity
+            android:name=".iron_source.TestISActivity"
+            android:exported="false" />
+        <activity
+            android:name=".iron_source.IronSourceSplashActivity"
+           >
+
+
+
+        </activity>
+        <activity android:name=".ContentActivity" />
+        <activity android:name=".MainActivity" />
         <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

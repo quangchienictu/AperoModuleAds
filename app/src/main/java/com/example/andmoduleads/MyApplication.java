@@ -1,6 +1,10 @@
 package com.example.andmoduleads;
 
+import android.app.ActivityManager;
+import android.content.Context;
+import android.os.Build;
 import android.util.Log;
+import android.webkit.WebView;
 
 import com.ads.control.AdjustApero;
 import com.ads.control.Admod;
@@ -22,7 +26,8 @@ public class MyApplication extends AdsApplication {
 
     @Override
     public void onCreate() {
-        super.onCreate();
+
+            super.onCreate();
         //        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 10000);
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
         Admod.getInstance().setOpenActivityAfterShowInterAds(true);
@@ -39,6 +44,7 @@ public class MyApplication extends AdsApplication {
     public List<String> getListTestDeviceId() {
         return Collections.singletonList("07F6B55DA3A08766A4465F36354C7EF6");
     }
+
 
 
     @Override

@@ -1,9 +1,13 @@
 package com.ads.control;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Application;
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.webkit.WebView;
 
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAttribution;
@@ -27,6 +31,7 @@ public abstract class AdsApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         Admod.getInstance().init(this, getListTestDeviceId());
         if(enableAdsResume()) {
             AppOpenManager.getInstance().init(this, getOpenAppAdId());
@@ -37,6 +42,7 @@ public abstract class AdsApplication extends Application {
 
         }
     }
+
 
     public abstract boolean enableAdsResume();
 
