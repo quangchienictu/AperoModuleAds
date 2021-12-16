@@ -14,12 +14,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndModuleAds">
         <activity
-            android:name=".iron_source.TestISActivity"
+            android:name=".iron_source.Test2Activity"
             android:exported="false" />
         <activity
-            android:name=".iron_source.IronSourceSplashActivity"
-           >
-
+            android:name=".iron_source.TestISActivity"
+            android:exported="false" />
+        <activity android:name=".iron_source.IronSourceSplashActivity">
 
 
         </activity>
@@ -28,6 +28,7 @@
         <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

@@ -10,7 +10,7 @@ import com.example.andmoduleads.R;
 import com.google.android.gms.ads.LoadAdError;
 
 public class IronSourceSplashActivity extends BaseActivity {
-    private static String IRON_SOURCE_APP_KEY = "85460dcd";
+    public static String IRON_SOURCE_APP_KEY = "85460dcd";
     String TAG = "IronSourceSplashActivity";
     private AdCallback adListener = new AdCallback() {
         @Override

@@ -48,9 +48,19 @@ public class AppIronSource {
         IntegrationHelper.validateIntegration(activity);
         String userId = IronSource.getAdvertiserId(activity);
         IronSource.setUserId(userId);
-        IronSource.init(activity, app_key);
+        IronSource.init(activity, app_key );
         IronSource.setAdaptersDebug(isDebug);
     }
+
+    public void initBanner(Activity activity, String app_key, boolean isDebug) {
+        IntegrationHelper.validateIntegration(activity);
+        String userId = IronSource.getAdvertiserId(activity);
+        IronSource.setUserId(userId);
+        IronSource.init(activity, app_key, IronSource.AD_UNIT.BANNER);
+        IronSource.setAdaptersDebug(isDebug);
+    }
+
+
 
     public void setOpenActivityAfterShowInterAds(boolean openActivityAfterShowInterAds) {
         this.openActivityAfterShowInterAds = openActivityAfterShowInterAds;
@@ -62,6 +72,15 @@ public class AppIronSource {
 
     public void onPause(Activity activity) {
         IronSource.onPause(activity);
+    }
+
+    public void destroyBanner(){
+        if (mIronSourceBannerLayout==null)
+            return;
+
+        Log.i(TAG, "destroyBanner");
+        IronSource.destroyBanner(mIronSourceBannerLayout);
+        mIronSourceBannerLayout = null;
     }
 
 

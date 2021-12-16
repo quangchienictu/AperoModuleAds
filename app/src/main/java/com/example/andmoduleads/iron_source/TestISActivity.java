@@ -1,7 +1,10 @@
 package com.example.andmoduleads.iron_source;
 
+import static com.example.andmoduleads.iron_source.IronSourceSplashActivity.IRON_SOURCE_APP_KEY;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Toast;
@@ -18,12 +21,14 @@ public class TestISActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_isactivity);
+
+//        AppIronSource.getInstance().initBanner(this,IRON_SOURCE_APP_KEY,true);
+
         btnLoadAds = findViewById(R.id.btnLoadAds);
         btForceShowAds = findViewById(R.id.btForceShowAds);
 
 
 //        btForceShowAds.setEnabled(false);
-        AppIronSource.getInstance().loadBanner(this);
         btnLoadAds.setOnClickListener(v -> {
             if (AppIronSource.getInstance().isInterstitialReady()){
                 Toast.makeText(this, "Ad is loaded", Toast.LENGTH_SHORT).show();
@@ -36,6 +41,13 @@ public class TestISActivity extends BaseActivity {
                         Toast.makeText(TestISActivity.this, "Ad  loaded", Toast.LENGTH_SHORT).show();
                         btForceShowAds.setEnabled(true);
                     }
+
+                    @Override
+                    public void onAdClosed() {
+                        super.onAdClosed();
+                        AppIronSource.getInstance().destroyBanner();// destroy banner nếu xử dụng banner trong 1 activity khác
+                        startActivity(new Intent(TestISActivity.this,Test2Activity.class));
+                    }
                 });
             }
         });
@@ -46,5 +58,17 @@ public class TestISActivity extends BaseActivity {
             else
                 Toast.makeText(this, "Ad not loaded", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        AppIronSource.getInstance().loadBanner(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 }
