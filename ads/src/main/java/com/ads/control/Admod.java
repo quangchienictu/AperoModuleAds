@@ -2,6 +2,8 @@ package com.ads.control;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -16,6 +18,7 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -146,6 +149,13 @@ public class Admod {
      * @param context
      */
     public void init(Context context, List<String> testDeviceList) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            String processName = Application.getProcessName();
+            String packageName = context.getPackageName();
+            if (!packageName.equals(processName)) {
+                WebView.setDataDirectorySuffix(processName);
+            }
+        }
         MobileAds.initialize(context, initializationStatus -> {
         });
         MobileAds.setRequestConfiguration(new RequestConfiguration.Builder().setTestDeviceIds(testDeviceList).build());
@@ -154,6 +164,14 @@ public class Admod {
     }
 
     public void init(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            String processName = Application.getProcessName();
+            String packageName = context.getPackageName();
+            if (!packageName.equals(processName)) {
+                WebView.setDataDirectorySuffix(processName);
+            }
+        }
+
         MobileAds.initialize(context, initializationStatus -> {
         });
         if (BuildConfig.DEBUG) {
@@ -161,6 +179,18 @@ public class Admod {
         }
 
         this.context = context;
+    }
+
+
+    private String getProcessName(Context context) {
+        if (context == null) return null;
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
+            if (processInfo.pid == android.os.Process.myPid()) {
+                return processInfo.processName;
+            }
+        }
+        return null;
     }
 
     public void setOpenActivityAfterShowInterAds(boolean openActivityAfterShowInterAds) {
@@ -221,7 +251,7 @@ public class Admod {
     public void loadSplashInterstitalAds(final Context context, String id, long timeOut, long timeDelay, AdCallback adListener) {
         isTimeDelay = false;
         isTimeout = false;
-        Log.i(TAG, "loadSplashInterstitalAds  start time loading:" + Calendar.getInstance().getTimeInMillis() + "    ShowLoadingSplash:"+isShowLoadingSplash);
+        Log.i(TAG, "loadSplashInterstitalAds  start time loading:" + Calendar.getInstance().getTimeInMillis() + "    ShowLoadingSplash:" + isShowLoadingSplash);
 
         if (AppPurchase.getInstance().isPurchased(context)) {
             if (adListener != null) {
@@ -271,7 +301,7 @@ public class Admod {
             @Override
             public void onInterstitialLoad(InterstitialAd interstitialAd) {
                 super.onInterstitialLoad(interstitialAd);
-                Log.e(TAG, "loadSplashInterstitalAds  end time loading success:" + Calendar.getInstance().getTimeInMillis() +"     time limit:"+ isTimeout);
+                Log.e(TAG, "loadSplashInterstitalAds  end time loading success:" + Calendar.getInstance().getTimeInMillis() + "     time limit:" + isTimeout);
                 if (isTimeout)
                     return;
                 if (interstitialAd != null) {
@@ -286,7 +316,7 @@ public class Admod {
             @Override
             public void onAdFailedToLoad(LoadAdError i) {
                 super.onAdFailedToLoad(i);
-                Log.e(TAG, "loadSplashInterstitalAds  end time loading error:" + Calendar.getInstance().getTimeInMillis() +"     time limit:"+ isTimeout);
+                Log.e(TAG, "loadSplashInterstitalAds  end time loading error:" + Calendar.getInstance().getTimeInMillis() + "     time limit:" + isTimeout);
                 if (isTimeout)
                     return;
                 if (adListener != null) {
