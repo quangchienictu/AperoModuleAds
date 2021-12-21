@@ -48,7 +48,7 @@ public class AppIronSource {
         IntegrationHelper.validateIntegration(activity);
         String userId = IronSource.getAdvertiserId(activity);
         IronSource.setUserId(userId);
-        IronSource.init(activity, app_key );
+        IronSource.init(activity, app_key);
         IronSource.setAdaptersDebug(isDebug);
     }
 
@@ -59,7 +59,6 @@ public class AppIronSource {
         IronSource.init(activity, app_key, IronSource.AD_UNIT.BANNER);
         IronSource.setAdaptersDebug(isDebug);
     }
-
 
 
     public void setOpenActivityAfterShowInterAds(boolean openActivityAfterShowInterAds) {
@@ -74,8 +73,8 @@ public class AppIronSource {
         IronSource.onPause(activity);
     }
 
-    public void destroyBanner(){
-        if (mIronSourceBannerLayout==null)
+    public void destroyBanner() {
+        if (mIronSourceBannerLayout == null)
             return;
 
         Log.i(TAG, "destroyBanner");
@@ -213,7 +212,7 @@ public class AppIronSource {
                 if (handlerTimeout != null && rdTimeout != null) {
                     handlerTimeout.removeCallbacks(rdTimeout);
                 }
-                Log.e(TAG, "onInterstitialAdLoadFailed: "+ironSourceError.getErrorMessage());
+                Log.e(TAG, "onInterstitialAdLoadFailed: " + ironSourceError.getErrorMessage());
                 adListener.onAdFailedToLoad(null);
 
             }
@@ -338,11 +337,16 @@ public class AppIronSource {
                 @Override
                 public void onInterstitialAdClosed() {
                     Log.d(TAG, "onInterstitialAdClosed: ");
+                    try {
+                        if (dialog != null && !((Activity) context).isDestroyed())
+                            dialog.dismiss();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                     if (!openActivityAfterShowInterAds) {
                         adListener.onAdClosed();
                     }
-                    if (dialog != null)
-                        dialog.dismiss();
                 }
 
                 @Override
