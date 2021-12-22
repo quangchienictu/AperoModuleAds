@@ -56,7 +56,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     private long splashLoadTime = 0;
     private int splashTimeout = 0;
 
-    private boolean isInitialized = false;
+    private boolean isInitialized = false;// bật  - tắt ad resume  trong app
     private boolean isAppResumeEnabled = true;
 
     private final List<Class> disabledAppOpenList;
@@ -295,12 +295,12 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         Log.d(TAG, "onActivityResumed: ");
         if (splashActivity == null) {
             if (!activity.getClass().getName().equals(AdActivity.class.getName())) {
-                Log.d(TAG, "onActivityResumed: with " + activity.getClass().getName());
+                Log.d(TAG, "onActivityResumed 1: with " + activity.getClass().getName());
                 fetchAd(false);
             }
         } else {
             if (!activity.getClass().getName().equals(splashActivity.getName()) && !activity.getClass().getName().equals(AdActivity.class.getName())) {
-                Log.d(TAG, "onActivityResumed: with " + activity.getClass().getName());
+                Log.d(TAG, "onActivityResumed 2: with " + activity.getClass().getName());
                 fetchAd(false);
             }
         }

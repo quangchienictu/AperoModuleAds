@@ -227,6 +227,9 @@ public class AppIronSource {
             public void onInterstitialAdClosed() {
                 Log.i(TAG, "onInterstitialAdClosed: ");
                 adListener.onAdClosed();
+                if (AppOpenManager.getInstance().isInitialized()) {
+                    AppOpenManager.getInstance().enableAppResume();
+                }
             }
 
             @Override
@@ -237,6 +240,9 @@ public class AppIronSource {
             @Override
             public void onInterstitialAdShowFailed(IronSourceError ironSourceError) {
                 Log.i(TAG, "onInterstitialAdShowFailed: ");
+                if (AppOpenManager.getInstance().isInitialized()) {
+                    AppOpenManager.getInstance().enableAppResume();
+                }
             }
 
             @Override
@@ -279,6 +285,9 @@ public class AppIronSource {
             public void onInterstitialAdClosed() {
                 Log.d(TAG, "onInterstitialAdClosed: ");
                 adListener.onAdClosed();
+                if (AppOpenManager.getInstance().isInitialized()) {
+                    AppOpenManager.getInstance().enableAppResume();
+                }
             }
 
             @Override
@@ -340,6 +349,9 @@ public class AppIronSource {
                     try {
                         if (dialog != null && !((Activity) context).isDestroyed())
                             dialog.dismiss();
+                        if (AppOpenManager.getInstance().isInitialized()) {
+                            AppOpenManager.getInstance().enableAppResume();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -357,6 +369,9 @@ public class AppIronSource {
                 @Override
                 public void onInterstitialAdShowFailed(IronSourceError ironSourceError) {
                     Log.d(TAG, "onInterstitialAdShowFailed: ");
+                    if (AppOpenManager.getInstance().isInitialized()) {
+                        AppOpenManager.getInstance().enableAppResume();
+                    }
                 }
 
                 @Override
