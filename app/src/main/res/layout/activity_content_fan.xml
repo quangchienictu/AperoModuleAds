@@ -6,17 +6,35 @@
     android:layout_height="match_parent"
     android:background="#91FF93"
     tools:context=".fan.ContentFanActivity">
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
         <TextView
             android:layout_width="wrap_content"
-            android:text="Ads Native FAN"
+            android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:text="Ads Native banner available"
             android:textColor="@color/black"
-            android:textSize="18sp"
-            android:layout_height="wrap_content"/>
+            android:textSize="18sp" />
+
+        <FrameLayout
+            android:id="@+id/frAds"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="Ads Native FAN"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
         <include layout="@layout/layout_native_fan" />
 
 

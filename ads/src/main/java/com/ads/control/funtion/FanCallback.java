@@ -2,6 +2,7 @@ package com.ads.control.funtion;
 
 import com.facebook.ads.AdError;
 import com.facebook.ads.NativeAd;
+import com.facebook.ads.NativeBannerAd;
 
 public class FanCallback {
     public FanCallback() {
@@ -30,6 +31,9 @@ public class FanCallback {
     }
 
     public void onNativeAdLoaded(NativeAd nativeAd) {
+    }
+
+    public void onNativeBannerAdLoaded(NativeBannerAd nativeAd) {
     }
 
 }

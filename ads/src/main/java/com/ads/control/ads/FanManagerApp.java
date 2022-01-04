@@ -185,6 +185,8 @@ public class FanManagerApp {
         return interstitialAd;
     }
 
+
+
     public InterstitialAd getInterstitialAds(Context context, String id, FanCallback callback) {
         if (AppPurchase.getInstance().isPurchased(context) || AdmodHelper.getNumClickAdsPerDay(context, id) >= maxClickAds) {
             return null;
@@ -526,6 +528,52 @@ public class FanManagerApp {
                 adView, nativeAdMedia, nativeAdIcon, clickableViews);
     }
 
+    public void getNativeBannerAds(Context context, String id, final FanCallback callback) {
+        if (AppPurchase.getInstance().isPurchased(context))
+            return;
+
+        NativeBannerAd nativeBannerAd = new NativeBannerAd(context, id);
+        NativeAdListener nativeAdListener = new NativeAdListener() {
+            @Override
+            public void onMediaDownloaded(Ad ad) {
+                // Native ad finished downloading all assets
+                Log.e(TAG, "NativeBanner ad finished downloading all assets.");
+            }
+
+            @Override
+            public void onError(Ad ad, AdError adError) {
+                // Native ad failed to load
+                Log.e(TAG, "NativeBanner ad failed to load: " + adError.getErrorMessage());
+                if (callback != null) {
+                    callback.onAdFailedToLoad(adError);
+                }
+            }
+
+            @Override
+            public void onAdLoaded(Ad ad) {
+                // Native ad is loaded and ready to be displayed
+                Log.d(TAG, "NativeBanner ad is loaded and ready to be displayed!");
+                if (callback != null) {
+                    callback.onNativeBannerAdLoaded(nativeBannerAd);
+                }
+            }
+
+            @Override
+            public void onAdClicked(Ad ad) {
+                // Native ad clicked
+                Log.d(TAG, "NativeBanner ad clicked!");
+            }
+
+            @Override
+            public void onLoggingImpression(Ad ad) {
+                // Native ad impression
+                Log.d(TAG, "NativeBanner ad impression logged!");
+            }
+        };
+
+        nativeBannerAd.loadAd(nativeBannerAd.buildLoadAdConfig().withAdListener(nativeAdListener).build());
+    }
+
     public void loadNativeBannerAds(Activity activity, String id) {
         final FrameLayout frameLayout = activity.findViewById(R.id.fl_adplaceholder);
         final ShimmerFrameLayout containerShimmer = activity.findViewById(R.id.shimmer_container_native);
@@ -572,6 +620,7 @@ public class FanManagerApp {
                 if (nativeBannerAd != ad) {
                     return;
                 }
+
                 populateNativeBannerAdView(nativeBannerAd, adView);
                 frameLayout.removeAllViews();
                 frameLayout.addView(adView);
@@ -594,6 +643,9 @@ public class FanManagerApp {
     }
 
     public void populateNativeBannerAdView(NativeBannerAd nativeBannerAd, NativeAdLayout adView) {
+        if (nativeBannerAd == null || adView == null)
+            return;
+
         // Unregister last ad
         nativeBannerAd.unregisterView();
 

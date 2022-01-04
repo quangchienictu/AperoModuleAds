@@ -13,6 +13,7 @@ import com.ads.control.funtion.FanCallback;
 import com.example.andmoduleads.MyApplication;
 import com.example.andmoduleads.R;
 import com.facebook.ads.AdError;
+import com.facebook.ads.NativeBannerAd;
 
 public class MainFanActivity extends AppCompatActivity {
 
@@ -34,7 +35,12 @@ public class MainFanActivity extends AppCompatActivity {
         FanManagerApp.getInstance().loadNativeBannerAds(this, getString(R.string.fan_native_banner_id));
         FanManagerApp.getInstance().loadBanner(this, getString(R.string.fan_banner_id));
 
-
+        FanManagerApp.getInstance().getNativeBannerAds(this,getString(R.string.fan_native_banner_id),new FanCallback(){
+            @Override
+            public void onNativeBannerAdLoaded(NativeBannerAd nativeAd) {
+                MyApplication.getApplication().getStorageCommon().setNativeBannerAd(nativeAd);
+            }
+        });
     }
 
     @Override

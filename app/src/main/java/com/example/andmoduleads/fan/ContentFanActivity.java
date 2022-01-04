@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.widget.FrameLayout;
 
 import com.ads.control.ads.FanManagerApp;
 import com.ads.control.funtion.FanCallback;
@@ -17,8 +18,14 @@ public class ContentFanActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content_fan);
-      FanManagerApp.getInstance().loadNative(this,getString(R.string.fan_native_id));
+        FanManagerApp.getInstance().loadNative(this, getString(R.string.fan_native_id));
+        NativeAdLayout adView = (NativeAdLayout) LayoutInflater.from(this)
+                .inflate(R.layout.fb_native_ad_small, null);
 
+        FanManagerApp.getInstance().populateNativeBannerAdView(MyApplication.getApplication().getStorageCommon().getNativeBannerAd(), adView);
+
+        FrameLayout frameLayout = findViewById(R.id.frAds);
+        frameLayout.addView(adView);
 
 
         FanManagerApp.getInstance().forceShowInterstitial(
