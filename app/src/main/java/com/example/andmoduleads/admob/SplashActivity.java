@@ -1,4 +1,4 @@
-package com.example.andmoduleads;
+package com.example.andmoduleads.admob;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,13 +6,12 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.ads.control.Admod;
-import com.ads.control.AppOpenManager;
+import com.ads.control.ads.Admod;
 import com.ads.control.funtion.AdCallback;
-import com.ads.control.AppPurchase;
+import com.ads.control.billing.AppPurchase;
 import com.ads.control.funtion.BillingListener;
-import com.google.android.gms.ads.AdError;
-import com.google.android.gms.ads.FullScreenContentCallback;
+import com.example.andmoduleads.R;
+import com.example.andmoduleads.admob.MainActivity;
 import com.google.android.gms.ads.LoadAdError;
 
 import java.util.ArrayList;

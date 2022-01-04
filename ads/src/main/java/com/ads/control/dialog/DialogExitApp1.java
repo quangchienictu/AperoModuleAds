@@ -1,6 +1,5 @@
 package com.ads.control.dialog;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -10,13 +9,9 @@ import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
-import com.ads.control.Admod;
-import com.ads.control.DialogExitListener;
+import com.ads.control.ads.Admod;
+import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.R;
-import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
 

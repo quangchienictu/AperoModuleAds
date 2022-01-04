@@ -11,9 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.ads.control.Admod;
+import com.ads.control.ads.Admod;
 import com.ads.control.funtion.AdCallback;
-import com.example.andmoduleads.ContentActivity;
+import com.example.andmoduleads.admob.ContentActivity;
 import com.example.andmoduleads.R;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 

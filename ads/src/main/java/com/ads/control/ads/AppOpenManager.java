@@ -1,4 +1,4 @@
-package com.ads.control;
+package com.ads.control.ads;
 
 import android.app.Activity;
 import android.app.Application;
@@ -20,7 +20,10 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
+import com.ads.control.R;
+import com.ads.control.billing.AppPurchase;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
+import com.ads.control.util.AdjustApero;
 import com.ads.control.util.FirebaseAnalyticsUtil;
 import com.google.android.gms.ads.AdActivity;
 import com.google.android.gms.ads.AdError;

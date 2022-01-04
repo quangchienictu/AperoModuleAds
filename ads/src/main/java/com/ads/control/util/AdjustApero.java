@@ -1,17 +1,10 @@
-package com.ads.control;
-
-import android.util.Log;
-import android.view.View;
-
-import androidx.annotation.NonNull;
+package com.ads.control.util;
 
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAdRevenue;
 import com.adjust.sdk.AdjustConfig;
 import com.adjust.sdk.AdjustEvent;
 import com.google.android.gms.ads.AdValue;
-
-import java.util.Map;
 
 public class AdjustApero {
 

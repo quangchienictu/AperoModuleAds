@@ -1,38 +1,38 @@
 package com.example.andmoduleads;
 
-import android.app.ActivityManager;
-import android.content.Context;
-import android.os.Build;
-import android.util.Log;
-import android.webkit.WebView;
+import com.ads.control.util.AdjustApero;
+import com.ads.control.ads.Admod;
+import com.ads.control.ads.application.AdsApplication;
+import com.ads.control.ads.AppOpenManager;
+import com.example.andmoduleads.admob.SplashActivity;
 
-import com.ads.control.AdjustApero;
-import com.ads.control.Admod;
-import com.ads.control.AdsApplication;
-import com.ads.control.AdsMultiDexApplication;
-import com.ads.control.AppOpenManager;
-import com.ads.control.AppPurchase;
-import com.ads.control.funtion.PurchaseListioner;
-
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class MyApplication extends AdsApplication {
 
+    protected StorageCommon storageCommon;
+    private static MyApplication context;
+    public static MyApplication getApplication() {
+        return context;
+    }
 
+    public StorageCommon getStorageCommon() {
+        return storageCommon;
+    }
     @Override
     public void onCreate() {
 
             super.onCreate();
+        context =this;
         //        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 10000);
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
         Admod.getInstance().setOpenActivityAfterShowInterAds(true);
         AdjustApero.setEventNamePurchase("gzel1k");
 //        Admod.getInstance().setNumToShowAds(3,3);
+        storageCommon = new StorageCommon();
+
     }
 
     @Override
@@ -42,7 +42,8 @@ public class MyApplication extends AdsApplication {
 
     @Override
     public List<String> getListTestDeviceId() {
-        return Collections.singletonList("07F6B55DA3A08766A4465F36354C7EF6");
+        // thêm device test ( trong log, bắt buộc với FAN)
+        return Collections.singletonList("c75c6b77-92c5-4a63-b581-fa8bcbebbcf2");
     }
 
 

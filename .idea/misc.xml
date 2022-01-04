@@ -3,21 +3,30 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="ads/src/main/res/drawable/shape_bg_native.xml" value="0.29444444444444445" />
+        <entry key="ads/src/main/res/layout/fb_native_ad.xml" value="0.2617753623188406" />
+        <entry key="ads/src/main/res/layout/fb_native_ad_small.xml" value="0.2617753623188406" />
         <entry key="ads/src/main/res/layout/layout_banner_control.xml" value="0.32019927536231885" />
         <entry key="ads/src/main/res/layout/layout_inline_banner_control.xml" value="0.32019927536231885" />
         <entry key="ads/src/main/res/layout/layout_native_control.xml" value="0.28396739130434784" />
+        <entry key="ads/src/main/res/layout/layout_native_fan.xml" value="0.3374094202898551" />
         <entry key="ads/src/main/res/layout/layout_small_native_control.xml" value="0.28396739130434784" />
         <entry key="ads/src/main/res/layout/load_fb_banner.xml" value="0.32019927536231885" />
         <entry key="ads/src/main/res/layout/load_fb_inline_banner.xml" value="0.32019927536231885" />
         <entry key="ads/src/main/res/layout/load_fb_native.xml" value="0.28396739130434784" />
         <entry key="ads/src/main/res/layout/load_fb_small_native.xml" value="0.28396739130434784" />
+        <entry key="ads/src/main/res/layout/load_native_fan.xml" value="0.3374094202898551" />
         <entry key="ads/src/main/res/layout/native_admob_ad.xml" value="0.28396739130434784" />
         <entry key="ads/src/main/res/layout/native_exit1.xml" value="0.28396739130434784" />
         <entry key="ads/src/main/res/layout/small_native_admod_ad.xml" value="0.18840579710144928" />
         <entry key="ads/src/main/res/layout/view_dialog_exit1.xml" value="0.18840579710144928" />
+        <entry key="app/src/main/res/layout/activity_content.xml" value="0.1646403242147923" />
+        <entry key="app/src/main/res/layout/activity_content_fan.xml" value="0.3374094202898551" />
         <entry key="app/src/main/res/layout/activity_iron_source_splash.xml" value="0.2463768115942029" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_main_fan.xml" value="0.2617753623188406" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.2463768115942029" />
+        <entry key="app/src/main/res/layout/activity_splash_fan.xml" value="0.2617753623188406" />
         <entry key="app/src/main/res/layout/activity_test2.xml" value="0.31521739130434784" />
         <entry key="app/src/main/res/layout/activity_test_isactivity.xml" value="0.2463768115942029" />
         <entry key="app/src/main/res/layout/fragment_blank.xml" value="0.28396739130434784" />

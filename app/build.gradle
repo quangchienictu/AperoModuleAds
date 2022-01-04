@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
 }
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 30
@@ -60,5 +61,10 @@ dependencies {
     //mediation  iron source -  unity
     implementation 'com.ironsource.adapters:unityadsadapter:4.3.16'
     implementation 'com.unity3d.ads:unity-ads:3.7.5'
+    implementation "androidx.core:core-ktx:1.6.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+}
+repositories {
+    mavenCentral()
 }

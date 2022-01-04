@@ -2,7 +2,7 @@ package com.example.andmoduleads.iron_source;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.ads.control.AppIronSource;
+import com.ads.control.ads.AppIronSource;
 
 public class BaseActivity  extends AppCompatActivity {
 

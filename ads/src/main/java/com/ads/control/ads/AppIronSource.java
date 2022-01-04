@@ -1,4 +1,4 @@
-package com.ads.control;
+package com.ads.control.ads;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,6 +10,8 @@ import android.widget.FrameLayout;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
+import com.ads.control.billing.AppPurchase;
+import com.ads.control.R;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -214,7 +216,6 @@ public class AppIronSource {
                 }
                 Log.e(TAG, "onInterstitialAdLoadFailed: " + ironSourceError.getErrorMessage());
                 adListener.onAdFailedToLoad(null);
-
             }
 
             @Override
@@ -272,7 +273,7 @@ public class AppIronSource {
             @Override
             public void onInterstitialAdLoadFailed(IronSourceError ironSourceError) {
                 adListener.onAdFailedToLoad(null);
-                Log.d(TAG, "onInterstitialAdLoadFailed: ");
+                Log.d(TAG, "onInterstitialAdLoadFailed: " + ironSourceError.getErrorMessage());
             }
 
             @Override
@@ -334,7 +335,7 @@ public class AppIronSource {
                 @Override
                 public void onInterstitialAdLoadFailed(IronSourceError ironSourceError) {
                     adListener.onAdFailedToLoad(null);
-                    Log.d(TAG, "onInterstitialAdLoadFailed: ");
+                    Log.d(TAG, "onInterstitialAdLoadFailed: " + ironSourceError.getErrorMessage());
                 }
 
                 @Override

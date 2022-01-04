@@ -7,4 +7,13 @@
     <string name="admod_app_open_ad_id">ca-app-pub-3940256099942544/3419835294</string>
     <string name="admod_app_reward_id">ca-app-pub-3940256099942544/5224354917</string>
     <!-- TODO: Remove or change this placeholder text -->
+
+
+    <!-- FAN ID -->
+    <string name="fan_interstitial_id">1088964791852832_1088965305186114</string>
+    <string name="fan_native_id">1088964791852832_1088965385186106</string>
+    <string name="fan_banner_id">1088964791852832_1088965248519453</string>
+    <string name="fan_native_banner_id">1088964791852832_1088965481852763</string>
+    <string name="fan_reward_id">1088964791852832_1088965625186082</string>
+    <string name="facebook_app_id">1088964791852832</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.andmoduleads;
+package com.example.andmoduleads.admob;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -12,23 +12,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.ads.control.AdjustApero;
-import com.ads.control.Admod;
-import com.ads.control.AppOpenManager;
-import com.ads.control.AppPurchase;
-import com.ads.control.DialogExitListener;
+import com.ads.control.util.AdjustApero;
+import com.ads.control.ads.Admod;
+import com.ads.control.billing.AppPurchase;
+import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.dialog.DialogExitApp1;
 import com.ads.control.dialog.InAppDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.PurchaseListioner;
 import com.ads.control.funtion.RewardCallback;
+import com.example.andmoduleads.R;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.android.gms.ads.rewarded.RewardItem;
 
 public class MainActivity extends AppCompatActivity {
-    static final String PRODUCT_ID = "android.test.purchased";
+    public static final String PRODUCT_ID = "android.test.purchased";
 
     //adjust
     private static final String EVENT_TOKEN_SIMPLE = "g3mfiw";
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         frAds = findViewById(R.id.fr_ads);
 
         Admod.getInstance().initRewardAds(this,getString(R.string.admod_app_reward_id));
+
 
         Admod.getInstance().setNumToShowAds(4,3);
 //        Admod.getInstance().setNumToShowAds(3);

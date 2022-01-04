@@ -1,4 +1,4 @@
-package com.ads.control;
+package com.ads.control.funtion;
 
 public interface DialogExitListener {
     void onExit(boolean exit);

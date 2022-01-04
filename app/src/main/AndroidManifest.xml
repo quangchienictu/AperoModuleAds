@@ -14,28 +14,35 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndModuleAds">
         <activity
-            android:name=".iron_source.Test2Activity"
+            android:name=".fan.ContentFanActivity"
             android:exported="false" />
         <activity
-            android:name=".iron_source.TestISActivity"
+            android:name=".fan.MainFanActivity"
             android:exported="false" />
-        <activity android:name=".iron_source.IronSourceSplashActivity">
-
+        <activity android:name=".fan.SplashFanActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ContentActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".SplashActivity">
-
-        </activity>
+        <activity
+            android:name=".iron_source.Test2Activity"
+            android:exported="false" />
+        <activity
+            android:name=".iron_source.TestISActivity"
+            android:exported="false" />
+        <activity android:name=".iron_source.IronSourceSplashActivity"></activity>
+        <activity android:name=".admob.ContentActivity" />
+        <activity android:name=".admob.MainActivity" />
+        <activity android:name=".admob.SplashActivity" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admod_app_id" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
     </application>
 
 </manifest>

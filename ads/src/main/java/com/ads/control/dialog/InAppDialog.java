@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.ads.control.AppPurchase;
+import com.ads.control.billing.AppPurchase;
 import com.ads.control.R;
 
 

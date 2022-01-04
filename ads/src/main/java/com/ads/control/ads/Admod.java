@@ -1,4 +1,4 @@
-package com.ads.control;
+package com.ads.control.ads;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -31,6 +31,10 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
+import com.ads.control.util.AdjustApero;
+import com.ads.control.billing.AppPurchase;
+import com.ads.control.BuildConfig;
+import com.ads.control.R;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.AdmodHelper;

@@ -1,13 +1,9 @@
-package com.ads.control;
+package com.ads.control.ads.application;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.Application;
-import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.webkit.WebView;
 
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAttribution;
@@ -22,9 +18,14 @@ import com.adjust.sdk.OnEventTrackingFailedListener;
 import com.adjust.sdk.OnEventTrackingSucceededListener;
 import com.adjust.sdk.OnSessionTrackingFailedListener;
 import com.adjust.sdk.OnSessionTrackingSucceededListener;
+import com.ads.control.ads.FanManagerApp;
+import com.ads.control.util.AdjustApero;
+import com.ads.control.ads.AppOpenManager;
+import com.ads.control.BuildConfig;
+import com.ads.control.ads.Admod;
+import com.facebook.ads.AudienceNetworkAds;
 
 import java.util.List;
-import java.util.Map;
 
 public abstract class AdsApplication extends Application {
 
@@ -33,13 +34,14 @@ public abstract class AdsApplication extends Application {
         super.onCreate();
 
         Admod.getInstance().init(this, getListTestDeviceId());
+        AudienceNetworkAds.initialize(this);
+        FanManagerApp.getInstance().init(this, getListTestDeviceId());
         if(enableAdsResume()) {
             AppOpenManager.getInstance().init(this, getOpenAppAdId());
         }
         if (enableAdjust()) {
             setupIdEvent();
             setupAdjust();
-
         }
     }
 

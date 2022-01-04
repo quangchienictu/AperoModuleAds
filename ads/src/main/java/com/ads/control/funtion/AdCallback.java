@@ -1,5 +1,7 @@
 package com.ads.control.funtion;
 
+import androidx.annotation.Nullable;
+
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
@@ -14,9 +16,9 @@ public class AdCallback {
 
 
 
-    public void onAdFailedToLoad(LoadAdError i) {
+    public void onAdFailedToLoad(@Nullable  LoadAdError i) {
     }
-    public void onAdFailedToShow(AdError adError) {
+    public void onAdFailedToShow(@Nullable AdError adError) {
     }
 
     public void onAdLeftApplication() {

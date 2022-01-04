@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.ads.control.Admod;
+import com.ads.control.ads.Admod;
 import com.example.andmoduleads.R;
 
 /**
