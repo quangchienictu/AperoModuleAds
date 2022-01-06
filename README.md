@@ -19,9 +19,9 @@ Import Module
 
 # <a id="example-admob"></a>Setup Admob
 ## <a id="set_up_ads"></a>Setup id ads
-* Config 2 variant trong gradle test và release
-* appTest: Sử dụng id admob test  trong quá trình dev,
-* appRelease: Sử dụng id thật, dùng để build release (build file .aab)
+* Config variant test and release in gradle
+* test: using id admob test while dev
+* release: using exactly id admob,  build release (build file .aab)
 ~~~    
       productFlavors {
       test {
@@ -39,8 +39,8 @@ Import Module
 AndroidManiafest.xml
 ~~~
   <meta-data
-  android:name="com.google.android.gms.ads.APPLICATION_ID"
-  android:value="@string/admob_app_id" />
+  	android:name="com.google.android.gms.ads.APPLICATION_ID"
+  	android:value="@string/admob_app_id" />
 ~~~
 ## <a id="init_ads"></a>Init Ads
 Create class Application
@@ -56,12 +56,11 @@ android:name=".App"
 ~~~
 Setup mediation
 ~~~
-{code:java|title=App}
 override fun onCreate() {
-super.onCreate()
-Admod.getInstance().setFan(false)
-Admod.getInstance().setAppLovin(false)
-Admod.getInstance().setColony(false)
+    super.onCreate()
+    Admod.getInstance().setFan(false)
+    Admod.getInstance().setAppLovin(false)
+    Admod.getInstance().setColony(false)
 }
 ~~~
 ## <a id="ads_formats"></a>Ads formats
@@ -69,54 +68,53 @@ Admod.getInstance().setColony(false)
 SplashActivity
 ~~~ 
   var adCallback: AdCallback = object : AdCallback() {
-  override fun onAdFailedToLoad(i: LoadAdError?) {
-  startMain()
-  }
-  override fun onAdFailedToShow(adError: AdError?) {
-  startMain()
-  }
-  override fun onAdClosed() {
-  super.onAdClosed()
-  startMain()
-  }
+	override fun onAdFailedToLoad(i: LoadAdError?) {
+	   startMain()
+	}
+	override fun onAdFailedToShow(adError: AdError?) {
+	   startMain()
+	}
+	override fun onAdClosed() {
+	   super.onAdClosed()
+	   startMain()
+	}
   }
 ~~~
 ~~~
   Admod.getInstance()
-  .loadSplashInterstitalAds(
-  this,
-  BuildConfig.ad_interstitial_splash,
-  timeout,
-  timeDelay,
-  adCallback
+      .loadSplashInterstitalAds(
+  	this,
+  	BuildConfig.ad_interstitial_splash,
+  	timeout,
+  	timeDelay,
+  	adCallback
   )
 ~~~
 ### Interstitial
 Load ad interstital before show
 ~~~
   private fun loadInterCreate() {
-  Admod.getInstance().getInterstitalAds(
-  context,
-  ID_AD_INTERSTITAL,
-  object : AdCallback() {
-  override fun onInterstitialLoad(interstitialAd: InterstitialAd) {
-  this.createInterstitial =
-  interstitialAd
-  }
-  })
+  	Admod.getInstance().getInterstitalAds(
+  		context,
+  		ID_AD_INTERSTITAL,
+  		object : AdCallback() {
+  			override fun onInterstitialLoad(interstitialAd: InterstitialAd) {
+  				this.createInterstitial = interstitialAd
+  		}
+  	})
   }
 ~~~
 ~~~
   Admod.getInstance()
-  .forceShowInterstitial(
-  context,
-  App.getInstance().storageCommon!!.createInterstitial,
-  object : AdCallback() {
-  override fun onAdClosed() {
-  startActivity(intent)
-  //reloead ad interstitital
-  loadInterCreate()
-  }
+  	.forceShowInterstitial(
+  		context,
+  		App.getInstance().storageCommon!!.createInterstitial,
+  		object : AdCallback() {
+  			override fun onAdClosed() {
+  				startActivity(intent)
+  				//reloead ad interstitital
+  				loadInterCreate()
+  		}
   })
 ~~~
 ### Ad Banner
@@ -140,25 +138,28 @@ load ad banner
 Load ad native before show
 ~~~
   Admod.getInstance()
-  .loadNativeAd(context, ID_AD_NATIVE, object : AdCallback() {
-  override fun onUnifiedNativeAdLoaded(unifiedNativeAd: NativeAd) {
-  this.unifiedNativeAd = unifiedNativeAd
-  }
+  	.loadNativeAd(context, ID_AD_NATIVE, object : AdCallback() {
+  		override fun onUnifiedNativeAdLoaded(unifiedNativeAd: NativeAd) {
+  			this.unifiedNativeAd = unifiedNativeAd
+  		}
   })
 ~~~
 show ad native
 ~~~
   val adView = LayoutInflater.from(context)
-  .inflate(R.layout.custom_native_home, null) as NativeAdView
+  	.inflate(R.layout.custom_native_home, null) as NativeAdView
   Admod.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, adView)
+  frAds.removeAllViews()
+  frAds.addView(adView)
 ~~~
 auto load and show native contains loading
+
+activity_main.xml
 ~~~
-  {code:java|title=activity_main.xml|borderStyle=solid}
   <include layout="@layout/layout_native_control" />
 ~~~
+MainActivity
 ~~~
-  {code:java|title=MainActivity|borderStyle=solid}
   Admod.getInstance().loadNative(activity,ID_AD_NATIVE)
 ~~~
 
@@ -168,29 +169,30 @@ Init and show reward
   Admod.getInstance().initRewardAds(this,ID_AD_REWARD);
 
 Admod.getInstance().showRewardAds(this, new RewardCallback() {
-@Override
-public void onUserEarnedReward(RewardItem var1) {
+	@Override
+	public void onUserEarnedReward(RewardItem var1) {
 
                 }
-                @Override
-                public void onRewardedAdClosed() {
+        @Override
+        public void onRewardedAdClosed() {
                 }
-                @Override
-                public void onRewardedAdFailedToShow(int codeError) {
+        @Override
+        public void onRewardedAdFailedToShow(int codeError) {
 
-                }
-            });
+        }
+});
 ~~~
 ### Ad resume
 App
 ~~~ 
   override fun onCreate() {
-  super.onCreate()
-  AppOpenManager.getInstance().enableAppResume()
+  	super.onCreate()
+  	AppOpenManager.getInstance().enableAppResume()
   }
+	
   override fun enableAdsResume(): Boolean = true
   override fun getOpenAppAdId(): String {
-  return ID_AD_RESUME
+  	return ID_AD_RESUME
   }
 ~~~
 
