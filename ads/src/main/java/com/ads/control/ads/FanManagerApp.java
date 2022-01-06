@@ -30,6 +30,7 @@ import com.facebook.ads.AdOptionsView;
 import com.facebook.ads.AdSettings;
 import com.facebook.ads.AdSize;
 import com.facebook.ads.AdView;
+import com.facebook.ads.AudienceNetworkAds;
 import com.facebook.ads.InterstitialAd;
 import com.facebook.ads.InterstitialAdListener;
 import com.facebook.ads.MediaView;
@@ -78,12 +79,25 @@ public class FanManagerApp {
      * @param context
      */
     public void init(Context context, List<String> testDeviceList) {
+
         AdSettings.addTestDevices(testDeviceList);
         this.context = context;
+        AudienceNetworkAds.initialize(context);
+    }
+
+    public void init(Context context, List<String> testDeviceList,Boolean isDebug) {
+        if (isDebug){
+            Log.i(TAG, "init: enable debug");
+            AdSettings.turnOnSDKDebugger(context);
+        }
+        AdSettings.addTestDevices(testDeviceList);
+        this.context = context;
+        AudienceNetworkAds.initialize(context);
     }
 
     public void init(Context context) {
         this.context = context;
+        AudienceNetworkAds.initialize(context);
     }
 
     public void loadSplashInterstitialAds(final Context context, String id, long timeOut, long timeDelay, final FanCallback adListener) {

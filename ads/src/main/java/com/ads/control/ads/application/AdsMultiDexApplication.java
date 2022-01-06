@@ -34,7 +34,7 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         Admod.getInstance().init(this, getListTestDeviceId());
-        AudienceNetworkAds.initialize(this);
+
         FanManagerApp.getInstance().init(this, getListTestDeviceId());
         if (enableAdsResume()) {
             AppOpenManager.getInstance().init(this, getOpenAppAdId());
