@@ -1,43 +1,35 @@
-# Import
 
-~~~
-maven { url 'https://jitpack.io' }
-implementation 'com.github.AperoVN:AperoModuleAds:2.4.1'
-~~~
-## Setup id ads
-*  Config 2 variant trong gradle appTest và appRelease
+# Setup id ads
+* Config 2 variant trong gradle test và release
 * appTest: Sử dụng id admob test  trong quá trình dev,
-* appRelease: Sửn dụng id thật, dùng để build release (build file .aab)
+* appRelease: Sử dụng id thật, dùng để build release (build file .aab)
 ~~~    
       productFlavors {
-      appTest {
-      manifestPlaceholders = [ ad_app_id:"ca-app-pub-4973559944609228~6436944829" ]
-      buildConfigField "String", "ads_inter_turn_on", "\"ca-app-pub-3940256099942544/1033173712\""
-      buildConfigField "String", "ads_inter_turn_off", "\"ca-app-pub-3940256099942544/1033173712\""
-    
+      test {
+              manifestPlaceholders = [ ad_app_id:"AD_APP_ID_TEST" ]
+              buildConfigField "String", "ads_inter_turn_on", "\"AD_ID_INTERSTIAL_TEST\""
+              buildConfigField "String", "ads_inter_turn_off", "\"AD_ID_INTERSTIAL_TEST\""
            }
-           appRelease {
-               manifestPlaceholders = [ ad_app_id:"ca-app-pub-4973559944609228~6436944829" ]
-               buildConfigField "String", "ads_inter_splash", "\"ca-app-pub-4973559944609228/9569695340\""
-               buildConfigField "String", "ads_inter_turn_on", "\"ca-app-pub-4973559944609228/3004286993\""
+       release {
+               manifestPlaceholders = [ ad_app_id:"AD_APP_ID" ]
+               buildConfigField "String", "ads_inter_splash", "\"AD_ID_INTERSTIAL\""
+               buildConfigField "String", "ads_inter_turn_on", "\"AD_ID_INTERSTIAL\""
            }
       }
 ~~~
+AndroidManiafest.xml
 ~~~
-  {code:java|title=AndroidManiafest.xml|borderStyle=solid}
   <meta-data
   android:name="com.google.android.gms.ads.APPLICATION_ID"
   android:value="@string/admob_app_id" />
 ~~~
-
-## Init Ads
-
-Tạo class Application extent từ
+# Init Ads
+Create class Application 
 ~~~
 class App : AdsMultiDexApplication(){}
 ~~~
+AndroidManiafest.xml
 ~~~
-{code:java|title=AndroidManiafest.xml|borderStyle=solid}
 <application
 android:name=".App"
 ................
@@ -54,10 +46,9 @@ Admod.getInstance().setColony(false)
 }
 ~~~
 # Ads fomats
-
 ## Ad Splash
-~~~
-  {code:java|title=SplashActivity|borderStyle=solid}
+SplashActivity
+~~~ 
   var adCallback: AdCallback = object : AdCallback() {
   override fun onAdFailedToLoad(i: LoadAdError?) {
   startMain()
@@ -72,7 +63,6 @@ Admod.getInstance().setColony(false)
   }
 ~~~
 ~~~
-  {code:java|title=SplashActivity|borderStyle=solid}
   Admod.getInstance()
   .loadSplashInterstitalAds(
   this,
@@ -83,7 +73,7 @@ Admod.getInstance().setColony(false)
   )
 ~~~
 ## Interstitial
-  Load ad interstital trước khi show
+  Load ad interstital before show
 ~~~
   private fun loadInterCreate() {
   Admod.getInstance().getInterstitalAds(
@@ -112,8 +102,8 @@ Admod.getInstance().setColony(false)
 ~~~
 ## Ad Banner
   include layout banner
+  activity_main.xml
 ~~~
-  {code:java|title:activity_main.xml}
   <include
   android:id="@+id/include"
   layout="@layout/layout_banner_control"
@@ -128,7 +118,7 @@ Admod.getInstance().setColony(false)
 ~~~
 
 ## Ad Native
-  Load ad native trước khi sử dụng
+  Load ad native before show 
 ~~~
   Admod.getInstance()
   .loadNativeAd(context, ID_AD_NATIVE, object : AdCallback() {
@@ -143,7 +133,7 @@ Admod.getInstance().setColony(false)
   .inflate(R.layout.custom_native_home, null) as NativeAdView
   Admod.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, adView)
 ~~~
-  Tự động load, show native có loading
+  auto load and show native contains loading
 ~~~
   {code:java|title=activity_main.xml|borderStyle=solid}
   <include layout="@layout/layout_native_control" />
@@ -173,8 +163,8 @@ public void onUserEarnedReward(RewardItem var1) {
             });
 ~~~
 ## Ad resume
-~~~
-  {code:java|title=App}
+App
+~~~ 
   override fun onCreate() {
   super.onCreate()
   AppOpenManager.getInstance().enableAppResume()
