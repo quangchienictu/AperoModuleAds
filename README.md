@@ -1,20 +1,23 @@
 
 # AndModuleAds
-
+Import Module
+~~~
 	maven { url 'https://jitpack.io' }
 
-	 implementation 'com.github.AperoVN:AperoModuleAds:2.4.1'
-
-* [Example Admob](#example-admob)
-    *[Setup id ads](#set_up_ads)
-    *[Ads Formats](#ads_formats)
-* Example Iron Source
-  Coming soon
-* Example FAN
-  Coming soon
+	implementation 'com.github.AperoVN:AperoModuleAds:2.4.1'
+~~~	 
+# Summary
+* [Setup Admob](#example-admob)
+	* [Setup id ads](#set_up_ads)
+	* [Ads Formats](#ads_formats)
+* Setup Iron Source
+	* Coming soon
+* Setup FAN
+	* Coming soon
 * [Billing App](#billing_app)
+* [Ads rule](#ads_rule)
 
-# <a id="example-admob"></a>Example Admob
+# <a id="example-admob"></a>Setup Admob
 ## <a id="set_up_ads"></a>Setup id ads
 * Config 2 variant trong gradle test và release
 * appTest: Sử dụng id admob test  trong quá trình dev,
@@ -250,7 +253,7 @@ Application
 
 
 
-# Ads rule
+# <a id="ads_rule"></a>Ads rule
 ## Always add device test to idTestList with all of your team's device
 To ignore invalid ads traffic
 https://support.google.com/adsense/answer/16737?hl=en
