@@ -703,6 +703,18 @@ public class FanManagerApp {
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
         loadBanner(mActivity, id, adContainer, containerShimmer);
     }
+    
+    /**
+     * Load quảng cáo Banner Trong Activity
+     *
+     * @param mActivity
+     * @param id
+     */
+    public void loadBanner(final Activity mActivity, String id, AdSize adSize) {
+        final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
+        loadBanner(mActivity, id, adContainer, containerShimmer,adSize);
+    }
 
     /**
      * Load quảng cáo Banner Trong Activity
@@ -723,6 +735,59 @@ public class FanManagerApp {
 
         try {
             adView = new AdView(mActivity, id, AdSize.BANNER_HEIGHT_50);
+            adContainer.addView(adView);
+
+            adView.loadAd(adView.buildLoadAdConfig().withAdListener(new AdListener() {
+                @Override
+                public void onError(Ad ad, AdError adError) {
+                    Log.d(TAG, "loadBanner onError: " + adError.getErrorMessage());
+                    containerShimmer.stopShimmer();
+                    adContainer.setVisibility(View.GONE);
+                    containerShimmer.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAdLoaded(Ad ad) {
+                    Log.d(TAG, "Banner onAdLoaded   ");
+                    containerShimmer.stopShimmer();
+                    containerShimmer.setVisibility(View.GONE);
+                    adContainer.setVisibility(View.VISIBLE);
+
+                }
+
+                @Override
+                public void onAdClicked(Ad ad) {
+
+                }
+
+                @Override
+                public void onLoggingImpression(Ad ad) {
+
+                }
+            }).build());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * Load quảng cáo Banner Trong Activity
+     * @param mActivity
+     * @param id
+     */
+    private void loadBanner(final Activity mActivity, String id, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer, AdSize adSize) {
+
+        if (AppPurchase.getInstance().isPurchased(mActivity)) {
+            containerShimmer.setVisibility(View.GONE);
+            return;
+        }
+
+        containerShimmer.setVisibility(View.VISIBLE);
+        containerShimmer.startShimmer();
+
+
+        try {
+            adView = new AdView(mActivity, id, adSize);
             adContainer.addView(adView);
 
             adView.loadAd(adView.buildLoadAdConfig().withAdListener(new AdListener() {
