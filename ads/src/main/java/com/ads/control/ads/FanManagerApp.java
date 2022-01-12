@@ -304,7 +304,7 @@ public class FanManagerApp {
                     if (shouldReloadAds) {
                         requestInterstitialAds(mInterstitialAd);
                     }
-                    if (dialog != null) {
+                    if (dialog != null&&!((Activity) context).isDestroyed()) {
                         dialog.dismiss();
                     }
                 }
@@ -704,7 +704,12 @@ public class FanManagerApp {
         loadBanner(mActivity, id, adContainer, containerShimmer);
     }
 
-
+    /**
+     * Load quảng cáo Banner Trong Activity
+     *  Size mặc đinh BANNER_HEIGHT_50
+     * @param mActivity
+     * @param id
+     */
     private void loadBanner(final Activity mActivity, String id, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer) {
 
         if (AppPurchase.getInstance().isPurchased(mActivity)) {

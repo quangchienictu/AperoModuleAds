@@ -22,20 +22,11 @@ public class MainFanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_fan);
 
-        FanManagerApp.getInstance().forceShowInterstitial(
-                this,
-                MyApplication.getApplication().getStorageCommon().getInterstitialSplashAd(),
-                new FanCallback() {
-                    @Override
-                    public void onAdClosed() {
-                        super.onAdClosed();
-                    }
-                }, false);
 
         FanManagerApp.getInstance().loadNativeBannerAds(this, getString(R.string.fan_native_banner_id));
         FanManagerApp.getInstance().loadBanner(this, getString(R.string.fan_banner_id));
 
-        FanManagerApp.getInstance().getNativeBannerAds(this,getString(R.string.fan_native_banner_id),new FanCallback(){
+        FanManagerApp.getInstance().getNativeBannerAds(this, getString(R.string.fan_native_banner_id), new FanCallback() {
             @Override
             public void onNativeBannerAdLoaded(NativeBannerAd nativeAd) {
                 MyApplication.getApplication().getStorageCommon().setNativeBannerAd(nativeAd);
@@ -78,5 +69,11 @@ public class MainFanActivity extends AppCompatActivity {
 
     public void nextStep(View view) {
         startActivity(new Intent(this, ContentFanActivity.class));
+    }
+
+    @Override
+    protected void onDestroy() {
+        FanManagerApp.getInstance().destroyBanner();
+        super.onDestroy();
     }
 }

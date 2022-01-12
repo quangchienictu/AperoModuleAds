@@ -35,7 +35,9 @@
         <activity android:name=".iron_source.IronSourceSplashActivity"></activity>
         <activity android:name=".admob.ContentActivity" />
         <activity android:name=".admob.MainActivity" />
-        <activity android:name=".admob.SplashActivity" />
+        <activity android:name=".admob.SplashActivity"  >
+
+        </activity>
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
