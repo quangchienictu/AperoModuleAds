@@ -20,11 +20,7 @@
             android:name=".fan.MainFanActivity"
             android:exported="false" />
         <activity android:name=".fan.SplashFanActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".iron_source.Test2Activity"
@@ -36,7 +32,11 @@
         <activity android:name=".admob.ContentActivity" />
         <activity android:name=".admob.MainActivity" />
         <activity android:name=".admob.SplashActivity"  >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <meta-data

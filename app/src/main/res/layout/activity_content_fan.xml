@@ -25,7 +25,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:text="Ads banner "
+            android:layout_margin="8dp"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:layout_height="wrap_content"/>
 
+        <include
+            android:id="@+id/include"
+            layout="@layout/layout_banner_control"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -36,6 +50,7 @@
             android:textSize="18sp" />
 
         <include layout="@layout/layout_native_fan" />
+
 
 
     </androidx.appcompat.widget.LinearLayoutCompat>

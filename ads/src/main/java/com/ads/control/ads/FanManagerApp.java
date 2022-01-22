@@ -703,7 +703,7 @@ public class FanManagerApp {
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
         loadBanner(mActivity, id, adContainer, containerShimmer);
     }
-    
+
     /**
      * Load quảng cáo Banner Trong Activity
      *

@@ -23,7 +23,7 @@ public class ContentFanActivity extends AppCompatActivity {
                 .inflate(R.layout.fb_native_ad_small, null);
 
         FanManagerApp.getInstance().populateNativeBannerAdView(MyApplication.getApplication().getStorageCommon().getNativeBannerAd(), adView);
-
+        FanManagerApp.getInstance().loadBanner(this, getString(R.string.fan_banner_id));
         FrameLayout frameLayout = findViewById(R.id.frAds);
         frameLayout.addView(adView);
 

@@ -29,8 +29,10 @@
         <entry key="app/src/main/res/layout/activity_splash_fan.xml" value="0.2617753623188406" />
         <entry key="app/src/main/res/layout/activity_test2.xml" value="0.31521739130434784" />
         <entry key="app/src/main/res/layout/activity_test_isactivity.xml" value="0.2463768115942029" />
+        <entry key="app/src/main/res/layout/custom_native.xml" value="0.27898550724637683" />
         <entry key="app/src/main/res/layout/fragment_blank.xml" value="0.28396739130434784" />
         <entry key="app/src/main/res/layout/fragment_blank2.xml" value="0.32019927536231885" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.32314814814814813" />
       </map>
     </option>
   </component>

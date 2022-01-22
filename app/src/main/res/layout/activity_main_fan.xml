@@ -10,32 +10,34 @@
 
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Next Step"
         android:onClick="nextStep"
+        android:text="Next Step"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:orientation="vertical"
-            android:layout_height="match_parent">
-            <TextView
-                android:layout_width="wrap_content"
-                android:text="Ads Native banner FAN"
-                android:layout_margin="8dp"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:layout_height="wrap_content"/>
-            <include layout="@layout/layout_native_fan" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:text="Ads banner "
-                android:layout_margin="8dp"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="Ads Native banner FAN"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <include layout="@layout/layout_native_fan" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="Ads banner "
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
         <include
             android:id="@+id/include"
