@@ -39,6 +39,7 @@ import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.AdmodHelper;
 import com.ads.control.funtion.RewardCallback;
+import com.ads.control.util.AppUtil;
 import com.ads.control.util.FirebaseAnalyticsUtil;
 import com.applovin.mediation.AppLovinExtras;
 import com.applovin.mediation.ApplovinAdapter;
@@ -1540,12 +1541,12 @@ public class Admod {
             notificationManager.createNotificationChannel(channel);
         }
         notificationManager.notify(typeAds, notification);
-//        String build_type = BuildConfig.BUILD_TYPE;
-//        Log.e(TAG, "Found test ad id on : "+build_type );
-//
-//        if (build_type.equals("release")){
-//             throw new RuntimeException("Found test ad id on release");
-//        }
+
+        Log.e(TAG, "Found test ad id on debug : "+ AppUtil.BUILD_DEBUG);
+
+        if (!AppUtil.BUILD_DEBUG){
+             throw new RuntimeException("Found test ad id on release");
+        }
     }
 
     public final static int SPLASH_ADS = 0;

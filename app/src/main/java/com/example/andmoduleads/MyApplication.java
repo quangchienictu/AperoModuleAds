@@ -54,6 +54,11 @@ public class MyApplication extends AdsApplication {
     }
 
     @Override
+    public Boolean buildDebug() {
+        return BuildConfig.DEBUG;
+    }
+
+    @Override
     public boolean enableAdjust() {
         return true;
     }

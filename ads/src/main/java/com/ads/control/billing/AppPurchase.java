@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import com.ads.control.funtion.BillingListener;
 import com.ads.control.funtion.PurchaseListioner;
 import com.ads.control.util.AdjustApero;
+import com.ads.control.util.AppUtil;
 import com.android.billingclient.api.AcknowledgePurchaseParams;
 import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
@@ -41,7 +42,7 @@ public class AppPurchase {
     private static final String MERCHANT_ID = null;
     private static final String TAG = "PurchaseEG";
 
-    //    public static final String PRODUCT_ID = "android.test.purchased";
+    public static final String PRODUCT_ID_TEST = "android.test.purchased";
     @SuppressLint("StaticFieldLeak")
     private static AppPurchase instance;
 
@@ -232,6 +233,9 @@ public class AppPurchase {
     public void initBilling(final Application application) {
         listSubcriptionId = new ArrayList<>();
         listINAPId = new ArrayList<>();
+        if (AppUtil.BUILD_DEBUG){
+            listINAPId.add(PRODUCT_ID_TEST);
+        }
         billingClient = BillingClient.newBuilder(application)
                 .setListener(purchasesUpdatedListener)
                 .enablePendingPurchases()
@@ -244,6 +248,9 @@ public class AppPurchase {
         listSubcriptionId = listSubsId;
         this.listINAPId = listINAPId;
 
+        if (AppUtil.BUILD_DEBUG){
+            listINAPId.add(PRODUCT_ID_TEST);
+        }
         billingClient = BillingClient.newBuilder(application)
                 .setListener(purchasesUpdatedListener)
                 .enablePendingPurchases()
@@ -333,12 +340,14 @@ public class AppPurchase {
                 purchaseListioner.displayErrorMessage("Billing error init");
             return "";
         }
+        if (AppUtil.BUILD_DEBUG){
+            // Dùng ID Purchase test khi debug
+            productId = PRODUCT_ID_TEST;
+        }
+
         SkuDetails skuDetails = skuDetailsINAPMap.get(productId);
-//        for (int i = 0; i < skuListINAPFromStore.size(); i++) {
-//            if (skuListINAPFromStore.get(i).getSku().equalsIgnoreCase(productId)) {
-//                skuDetails = skuListINAPFromStore.get(i);
-//            }
-//        }
+
+
         if (skuDetails == null) {
             return "Product ID invalid";
         }
@@ -408,6 +417,13 @@ public class AppPurchase {
                 purchaseListioner.displayErrorMessage("Billing error init");
             return "";
         }
+
+        if (AppUtil.BUILD_DEBUG){
+            // sử dụng ID Purchase test
+            purchase(activity,PRODUCT_ID_TEST);
+            return "Billing test";
+        }
+
         SkuDetails skuDetails = skuDetailsSubsMap.get(SubsId);
 
         idPurchaseCurrent = SubsId;

@@ -24,6 +24,7 @@ import com.ads.control.util.AdjustApero;
 import com.ads.control.ads.AppOpenManager;
 import com.ads.control.BuildConfig;
 import com.ads.control.ads.Admod;
+import com.ads.control.util.AppUtil;
 import com.facebook.ads.AudienceNetworkAds;
 
 import java.util.List;
@@ -33,8 +34,9 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        AppUtil.BUILD_DEBUG = buildDebug();
+        Log.i("Application", " run debug: " + AppUtil.BUILD_DEBUG );
         Admod.getInstance().init(this, getListTestDeviceId());
-
         FanManagerApp.getInstance().init(this, getListTestDeviceId());
         if (enableAdsResume()) {
             AppOpenManager.getInstance().init(this, getOpenAppAdId());
@@ -51,7 +53,7 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
 
     private void setupAdjust() {
 
-        String environment = BuildConfig.DEBUG ? AdjustConfig.ENVIRONMENT_SANDBOX : AdjustConfig.ENVIRONMENT_PRODUCTION;
+        String environment = buildDebug() ? AdjustConfig.ENVIRONMENT_SANDBOX : AdjustConfig.ENVIRONMENT_PRODUCTION;
         Log.i("Application", "setupAdjust: "+environment);
         AdjustConfig config = new AdjustConfig(this, getAdjustToken(), environment);
 
@@ -120,6 +122,7 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
 
     public abstract String getAdjustToken();
 
+    public abstract Boolean buildDebug();
 
     private static final class AdjustLifecycleCallbacks implements ActivityLifecycleCallbacks {
         @Override
