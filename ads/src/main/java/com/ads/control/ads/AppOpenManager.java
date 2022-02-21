@@ -430,7 +430,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         }
 
                     }
-                    if (finalDialog != null) {
+                    if (currentActivity!=null&&!currentActivity.isDestroyed()&&finalDialog != null) {
                         finalDialog.dismiss();
                     }
                 }

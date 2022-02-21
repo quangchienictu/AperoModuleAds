@@ -425,14 +425,13 @@ public class Admod {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-
                             if (dialog != null && dialog.isShowing() && !activity.isDestroyed())
                                 dialog.dismiss();
                         }
                     }, 1500);
                 }
-
-                mInterstitialSplash.show(activity);
+                if (activity != null)
+                    mInterstitialSplash.show(activity);
                 isShowLoadingSplash = false;
             }, 800);
 
@@ -1542,10 +1541,10 @@ public class Admod {
         }
         notificationManager.notify(typeAds, notification);
 
-        Log.e(TAG, "Found test ad id on debug : "+ AppUtil.BUILD_DEBUG);
+        Log.e(TAG, "Found test ad id on debug : " + AppUtil.BUILD_DEBUG);
 
-        if (!AppUtil.BUILD_DEBUG){
-             throw new RuntimeException("Found test ad id on release");
+        if (!AppUtil.BUILD_DEBUG) {
+            throw new RuntimeException("Found test ad id on release");
         }
     }
 
