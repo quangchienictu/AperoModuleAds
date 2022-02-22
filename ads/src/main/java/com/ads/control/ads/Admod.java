@@ -1543,9 +1543,9 @@ public class Admod {
 
         Log.e(TAG, "Found test ad id on debug : " + AppUtil.BUILD_DEBUG);
 
-        if (!AppUtil.BUILD_DEBUG) {
-            throw new RuntimeException("Found test ad id on release");
-        }
+//        if (!AppUtil.BUILD_DEBUG) {
+//            throw new RuntimeException("Found test ad id on release");
+//        }
     }
 
     public final static int SPLASH_ADS = 0;

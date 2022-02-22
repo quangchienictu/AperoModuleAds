@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="ads/src/main/res/layout/dialog_inapp.xml" value="0.1646403242147923" />
+        <entry key="ads/src/main/res/layout/dialog_prepair_loading_ads.xml" value="0.32608695652173914" />
         <entry key="ads/src/main/res/layout/layout_banner_control.xml" value="0.32019927536231885" />
         <entry key="ads/src/main/res/layout/layout_inline_banner_control.xml" value="0.32019927536231885" />
         <entry key="ads/src/main/res/layout/layout_native_control.xml" value="0.28396739130434784" />
