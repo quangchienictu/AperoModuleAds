@@ -19,13 +19,10 @@ import com.adjust.sdk.OnEventTrackingFailedListener;
 import com.adjust.sdk.OnEventTrackingSucceededListener;
 import com.adjust.sdk.OnSessionTrackingFailedListener;
 import com.adjust.sdk.OnSessionTrackingSucceededListener;
-import com.ads.control.ads.FanManagerApp;
-import com.ads.control.util.AdjustApero;
-import com.ads.control.ads.AppOpenManager;
-import com.ads.control.BuildConfig;
 import com.ads.control.ads.Admod;
+import com.ads.control.ads.AppOpenManager;
+import com.ads.control.util.AdjustApero;
 import com.ads.control.util.AppUtil;
-import com.facebook.ads.AudienceNetworkAds;
 
 import java.util.List;
 
@@ -37,7 +34,6 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
         AppUtil.BUILD_DEBUG = buildDebug();
         Log.i("Application", " run debug: " + AppUtil.BUILD_DEBUG );
         Admod.getInstance().init(this, getListTestDeviceId());
-        FanManagerApp.getInstance().init(this, getListTestDeviceId());
         if (enableAdsResume()) {
             AppOpenManager.getInstance().init(this, getOpenAppAdId());
         }

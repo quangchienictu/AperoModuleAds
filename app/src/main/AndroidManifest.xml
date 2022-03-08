@@ -13,25 +13,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AndModuleAds">
-        <activity
-            android:name=".fan.ContentFanActivity"
-            android:exported="false" />
-        <activity
-            android:name=".fan.MainFanActivity"
-            android:exported="false" />
-        <activity android:name=".fan.SplashFanActivity">
-
-        </activity>
-        <activity
-            android:name=".iron_source.Test2Activity"
-            android:exported="false" />
-        <activity
-            android:name=".iron_source.TestISActivity"
-            android:exported="false" />
-        <activity android:name=".iron_source.IronSourceSplashActivity"></activity>
         <activity android:name=".admob.ContentActivity" />
         <activity android:name=".admob.MainActivity" />
-        <activity android:name=".admob.SplashActivity"  >
+        <activity android:name=".admob.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
