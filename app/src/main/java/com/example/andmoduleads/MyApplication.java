@@ -14,6 +14,7 @@ public class MyApplication extends AdsApplication {
 
     protected StorageCommon storageCommon;
     private static MyApplication context;
+
     public static MyApplication getApplication() {
         return context;
     }
@@ -21,14 +22,15 @@ public class MyApplication extends AdsApplication {
     public StorageCommon getStorageCommon() {
         return storageCommon;
     }
+
     @Override
     public void onCreate() {
-
-            super.onCreate();
-        context =this;
+        super.onCreate();
+        context = this;
         //        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 10000);
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
         Admod.getInstance().setOpenActivityAfterShowInterAds(false);
+        Admod.getInstance().setNumToShowAds(0);
         AdjustApero.setEventNamePurchase("gzel1k");
 //        Admod.getInstance().setNumToShowAds(3,3);
         storageCommon = new StorageCommon();
@@ -47,7 +49,6 @@ public class MyApplication extends AdsApplication {
     }
 
 
-
     @Override
     public String getOpenAppAdId() {
         return AppOpenManager.AD_UNIT_ID_TEST;
@@ -60,7 +61,7 @@ public class MyApplication extends AdsApplication {
 
     @Override
     public boolean enableAdjust() {
-        return true;
+        return false;
     }
 
     @Override

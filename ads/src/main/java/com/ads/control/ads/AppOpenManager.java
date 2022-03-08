@@ -428,9 +428,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             appResumeAd.setFullScreenContentCallback(callback);
                             appResumeAd.show(currentActivity);
                         }
-
                     }
                     if (currentActivity!=null&&!currentActivity.isDestroyed()&&finalDialog != null) {
+                        Log.d(TAG, "dismiss dialog loading ad open: ");
                         finalDialog.dismiss();
                     }
                 }
