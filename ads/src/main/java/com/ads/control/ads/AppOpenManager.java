@@ -23,7 +23,6 @@ import androidx.lifecycle.ProcessLifecycleOwner;
 import com.ads.control.R;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
-import com.ads.control.util.AdjustApero;
 import com.ads.control.util.FirebaseAnalyticsUtil;
 import com.google.android.gms.ads.AdActivity;
 import com.google.android.gms.ads.AdError;
@@ -190,7 +189,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         if (!isSplash) {
                             AppOpenManager.this.appResumeAd = ad;
                             AppOpenManager.this.appResumeAd.setOnPaidEventListener(adValue -> {
-                                AdjustApero.pushTrackEventAdmod( adValue);
                                 FirebaseAnalyticsUtil.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         ad.getAdUnitId(),
@@ -201,7 +199,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         } else {
                             AppOpenManager.this.splashAd = ad;
                             AppOpenManager.this.splashAd.setOnPaidEventListener(adValue -> {
-                                AdjustApero.pushTrackEventAdmod(adValue);
                                 FirebaseAnalyticsUtil.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         ad.getAdUnitId(),
@@ -227,7 +224,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
 
                 };
-        if (currentActivity!=null) {
+        if (currentActivity != null) {
             if (Arrays.asList(currentActivity.getResources().getStringArray(R.array.list_id_test)).contains(isSplash ? splashAdId : appResumeAdId)) {
                 showTestIdAlert(currentActivity, isSplash, isSplash ? splashAdId : appResumeAdId);
             }
@@ -424,12 +421,12 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         splashAd.setFullScreenContentCallback(callback);
                         splashAd.show(currentActivity);
                     } else {
-                        if (appResumeAd != null){
+                        if (appResumeAd != null) {
                             appResumeAd.setFullScreenContentCallback(callback);
                             appResumeAd.show(currentActivity);
                         }
                     }
-                    if (currentActivity!=null&&!currentActivity.isDestroyed()&&finalDialog != null) {
+                    if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null) {
                         Log.d(TAG, "dismiss dialog loading ad open: ");
                         finalDialog.dismiss();
                     }
@@ -454,7 +451,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
         loadCallback =
                 new AppOpenAd.AppOpenAdLoadCallback() {
-
 
 
                     /**

@@ -1,9 +1,8 @@
 package com.example.andmoduleads;
 
-import com.ads.control.util.AdjustApero;
 import com.ads.control.ads.Admod;
-import com.ads.control.ads.application.AdsApplication;
 import com.ads.control.ads.AppOpenManager;
+import com.ads.control.ads.application.AdsApplication;
 import com.example.andmoduleads.admob.SplashActivity;
 
 import java.util.Collections;
@@ -31,7 +30,6 @@ public class MyApplication extends AdsApplication {
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
         Admod.getInstance().setOpenActivityAfterShowInterAds(false);
         Admod.getInstance().setNumToShowAds(0);
-        AdjustApero.setEventNamePurchase("gzel1k");
 //        Admod.getInstance().setNumToShowAds(3,3);
         storageCommon = new StorageCommon();
 
@@ -57,15 +55,5 @@ public class MyApplication extends AdsApplication {
     @Override
     public Boolean buildDebug() {
         return BuildConfig.DEBUG;
-    }
-
-    @Override
-    public boolean enableAdjust() {
-        return false;
-    }
-
-    @Override
-    public String getAdjustToken() {
-        return "cc4jvudppczk";
     }
 }

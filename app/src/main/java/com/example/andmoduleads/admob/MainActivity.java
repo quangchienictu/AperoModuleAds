@@ -12,13 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.ads.control.util.AdjustApero;
 import com.ads.control.ads.Admod;
 import com.ads.control.billing.AppPurchase;
-import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.dialog.DialogExitApp1;
 import com.ads.control.dialog.InAppDialog;
 import com.ads.control.funtion.AdCallback;
+import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.funtion.PurchaseListioner;
 import com.ads.control.funtion.RewardCallback;
 import com.example.andmoduleads.R;
@@ -40,21 +39,22 @@ public class MainActivity extends AppCompatActivity {
     private InterstitialAd mInterstitialAd;
 
     private boolean isShowDialogExit = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         frAds = findViewById(R.id.fr_ads);
 
-        Admod.getInstance().initRewardAds(this,getString(R.string.admod_app_reward_id));
+        Admod.getInstance().initRewardAds(this, getString(R.string.admod_app_reward_id));
 
 
-        Admod.getInstance().setNumToShowAds(4,3);
+        Admod.getInstance().setNumToShowAds(4, 3);
 //        Admod.getInstance().setNumToShowAds(3);
         Admod.getInstance().loadNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {
             @Override
             public void onUnifiedNativeAdLoaded(NativeAd unifiedNativeAd) {
-                @SuppressLint("InflateParams") NativeAdView adView = ( NativeAdView) LayoutInflater.from(MainActivity.this).inflate(R.layout.custom_native, null);
+                @SuppressLint("InflateParams") NativeAdView adView = (NativeAdView) LayoutInflater.from(MainActivity.this).inflate(R.layout.custom_native, null);
                 frAds.addView(adView);
                 Admod.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, adView);
             }
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
             public void onProductPurchased(String productId, String transactionDetails) {
                 Log.e("PurchaseListioner", "ProductPurchased:" + productId);
                 Log.e("PurchaseListioner", "transactionDetails:" + transactionDetails);
-                startActivity(new Intent(MainActivity.this,MainActivity.class));
+                startActivity(new Intent(MainActivity.this, MainActivity.class));
                 finish();
             }
 
@@ -157,16 +157,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-    public void onTrackSimpleEventClick(View v) {
-        AdjustApero.onTrackEvent(EVENT_TOKEN_SIMPLE);
-    }
-
-    public void onTrackRevenueEventClick(View v) {
-        AdjustApero.onTrackRevenue(EVENT_TOKEN_REVENUE, 1f, "EUR");
-    }
-
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -186,14 +176,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (unifiedNativeAd==null)
+        if (unifiedNativeAd == null)
             return;
 
         DialogExitApp1 dialogExitApp1 = new DialogExitApp1(this, unifiedNativeAd, 1);
-        dialogExitApp1.setDialogExitListener(new DialogExitListener(){
+        dialogExitApp1.setDialogExitListener(new DialogExitListener() {
             @Override
             public void onExit(boolean exit) {
-                    MainActivity.super.onBackPressed();
+                MainActivity.super.onBackPressed();
             }
         });
         dialogExitApp1.setCancelable(false);

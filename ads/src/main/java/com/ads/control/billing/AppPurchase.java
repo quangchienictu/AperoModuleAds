@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 
 import com.ads.control.funtion.BillingListener;
 import com.ads.control.funtion.PurchaseListioner;
-import com.ads.control.util.AdjustApero;
 import com.ads.control.util.AppUtil;
 import com.android.billingclient.api.AcknowledgePurchaseParams;
 import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
@@ -233,7 +232,7 @@ public class AppPurchase {
     public void initBilling(final Application application) {
         listSubcriptionId = new ArrayList<>();
         listINAPId = new ArrayList<>();
-        if (AppUtil.BUILD_DEBUG){
+        if (AppUtil.BUILD_DEBUG) {
             listINAPId.add(PRODUCT_ID_TEST);
         }
         billingClient = BillingClient.newBuilder(application)
@@ -248,7 +247,7 @@ public class AppPurchase {
         listSubcriptionId = listSubsId;
         this.listINAPId = listINAPId;
 
-        if (AppUtil.BUILD_DEBUG){
+        if (AppUtil.BUILD_DEBUG) {
             listINAPId.add(PRODUCT_ID_TEST);
         }
         billingClient = BillingClient.newBuilder(application)
@@ -340,7 +339,7 @@ public class AppPurchase {
                 purchaseListioner.displayErrorMessage("Billing error init");
             return "";
         }
-        if (AppUtil.BUILD_DEBUG){
+        if (AppUtil.BUILD_DEBUG) {
             // Dùng ID Purchase test khi debug
             productId = PRODUCT_ID_TEST;
         }
@@ -418,9 +417,9 @@ public class AppPurchase {
             return "";
         }
 
-        if (AppUtil.BUILD_DEBUG){
+        if (AppUtil.BUILD_DEBUG) {
             // sử dụng ID Purchase test
-            purchase(activity,PRODUCT_ID_TEST);
+            purchase(activity, PRODUCT_ID_TEST);
             return "Billing test";
         }
 
@@ -534,7 +533,6 @@ public class AppPurchase {
         //tracking adjust
         double price = getPriceWithoutCurrency(idPurchaseCurrent, typeIap);
         String currentcy = getCurrency(idPurchaseCurrent, typeIap);
-        AdjustApero.onTrackRevenuePurchase((float) price, currentcy);
 
         if (purchaseListioner != null)
             purchaseListioner.onProductPurchased(purchase.getOrderId(), purchase.getOriginalJson());
