@@ -529,6 +529,7 @@ public class Admod {
         }
         if (AppPurchase.getInstance().isPurchased(context) || AdmodHelper.getNumClickAdsPerDay(context, id) >= maxClickAds) {
             adCallback.onInterstitialLoad(null);
+            return;
         }
 
 

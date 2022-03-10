@@ -229,9 +229,12 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
                 };
         if (currentActivity != null) {
+            if (AppPurchase.getInstance().isPurchased(currentActivity))
+                return;
             if (Arrays.asList(currentActivity.getResources().getStringArray(R.array.list_id_test)).contains(isSplash ? splashAdId : appResumeAdId)) {
                 showTestIdAlert(currentActivity, isSplash, isSplash ? splashAdId : appResumeAdId);
             }
+
         }
         AdRequest request = getAdRequest();
         AppOpenAd.load(
@@ -418,6 +421,10 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     }
 
     private void showResumeAds() {
+        if (currentActivity != null && AppPurchase.getInstance().isPurchased(currentActivity)){
+            return;
+        }
+
         if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
             Dialog dialog = null;
             try {
