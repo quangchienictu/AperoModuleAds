@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 //        AppPurchase.getInstance().handleActivityResult(requestCode, resultCode, data);
         Log.e("onActivityResult", "ProductPurchased:" + data.toString());
-        if (AppPurchase.getInstance().isPurchased(this, PRODUCT_ID)) {
+        if (AppPurchase.getInstance().isPurchased(this)) {
             findViewById(R.id.btIap).setVisibility(View.GONE);
         }
     }

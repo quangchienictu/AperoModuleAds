@@ -939,7 +939,6 @@ public class Admod {
             containerShimmer.getLayoutParams().height = (int) (adSize.getHeight()* Resources.getSystem().getDisplayMetrics().density + 0.5f);
             adView.setAdSize(adSize);
             adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            adView.loadAd(getAdRequest());
             adView.setAdListener(new AdListener() {
                 @Override
                 public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
@@ -978,7 +977,7 @@ public class Admod {
 
             });
 
-
+            adView.loadAd(getAdRequest());
         } catch (Exception e) {
             e.printStackTrace();
         }

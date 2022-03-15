@@ -25,6 +25,7 @@ import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ConsumeParams;
 import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
@@ -67,7 +68,9 @@ public class AppPurchase {
     //tracking purchase adjust
     private String idPurchaseCurrent = "";
     private int typeIap;
+    private boolean verified = false;
 
+    private boolean isPurchase = false;//state purchase on app
 
     public void setPurchaseListioner(PurchaseListioner purchaseListioner) {
         this.purchaseListioner = purchaseListioner;
@@ -162,14 +165,13 @@ public class AppPurchase {
         public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
             Log.d(TAG, "onBillingSetupFinished:  " + billingResult.getResponseCode());
 
-            if (billingListener != null && !isInitBillingFinish)
-                billingListener.onInitBillingListener(billingResult.getResponseCode());
+            if (billingListener != null && !isInitBillingFinish) {
+                verifyPurchased(true);
+            }
+
             isInitBillingFinish = true;
             if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-
-
                 isAvailable = true;
-
                 SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
                 params.setSkusList(listINAPId).setType(BillingClient.SkuType.INAPP);
                 billingClient.querySkuDetailsAsync(params.build(), new SkuDetailsResponseListener() {
@@ -233,7 +235,7 @@ public class AppPurchase {
     public void initBilling(final Application application) {
         listSubcriptionId = new ArrayList<>();
         listINAPId = new ArrayList<>();
-        if (AppUtil.BUILD_DEBUG){
+        if (AppUtil.BUILD_DEBUG) {
             listINAPId.add(PRODUCT_ID_TEST);
         }
         billingClient = BillingClient.newBuilder(application)
@@ -248,7 +250,7 @@ public class AppPurchase {
         listSubcriptionId = listSubsId;
         this.listINAPId = listINAPId;
 
-        if (AppUtil.BUILD_DEBUG){
+        if (AppUtil.BUILD_DEBUG) {
             listINAPId.add(PRODUCT_ID_TEST);
         }
         billingClient = BillingClient.newBuilder(application)
@@ -272,56 +274,118 @@ public class AppPurchase {
         }
     }
 
-    //check all id INAP + Subs
+    public boolean isPurchased() {
+        return isPurchase;
+    }
+
     public boolean isPurchased(Context context) {
+        return isPurchase;
+    }
+
+    private boolean verifiedINAP = false;
+    private boolean verifiedSUBS = false;
+
+    // kiểm tra trạng thái purchase
+    public void verifyPurchased(boolean isCallback) {
+        Log.d(TAG, "isPurchased : " + listSubcriptionId.size());
+        verified = false;
         if (listINAPId != null) {
-            Purchase.PurchasesResult result = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
-            if (result.getResponseCode() == BillingClient.BillingResponseCode.OK && result.getPurchasesList() != null) {
-                for (Purchase purchase : result.getPurchasesList()) {
-                    for (String id : listINAPId) {
-                        if (purchase.getSkus().contains(id)) {
-                            return true;
+            billingClient.queryPurchasesAsync(BillingClient.SkuType.INAPP, new PurchasesResponseListener() {
+                @Override
+                public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> list) {
+                    Log.d(TAG, "verifyPurchased INAPP  code:" + billingResult.getResponseCode() + " ===   size:" + list.size());
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null) {
+                        for (Purchase purchase : list) {
+                            for (String id : listINAPId) {
+                                if (purchase.getSkus().contains(id)) {
+                                    Log.d(TAG, "verifyPurchased INAPP: true");
+                                    isPurchase = true;
+                                    if (!verified) {
+                                        if (isCallback)
+                                            billingListener.onInitBillingListener(billingResult.getResponseCode());
+                                        verified = true;
+                                        verifiedINAP = true;
+                                        return;
+                                    }
+                                }
+                            }
                         }
                     }
+                    if (verifiedSUBS && !verified) {
+                        // chưa mua subs và IAP
+                        billingListener.onInitBillingListener(billingResult.getResponseCode());
+                    }
+                    verifiedINAP = true;
                 }
-            }
+            });
         }
+
         if (listSubcriptionId != null) {
-            Purchase.PurchasesResult result = billingClient.queryPurchases(BillingClient.SkuType.SUBS);
-            if (result.getResponseCode() == BillingClient.BillingResponseCode.OK && result.getPurchasesList() != null) {
-                for (Purchase purchase : result.getPurchasesList()) {
-                    for (String id : listSubcriptionId) {
-                        if (purchase.getSkus().contains(id)) {
-                            return true;
+            billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS, new PurchasesResponseListener() {
+                @Override
+                public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> list) {
+                    Log.d(TAG, "verifyPurchased SUBS  code:" + billingResult.getResponseCode() + " ===   size:" + list.size());
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null) {
+                        for (Purchase purchase : list) {
+                            for (String id : listSubcriptionId) {
+                                if (purchase.getSkus().contains(id)) {
+                                    Log.d(TAG, "verifyPurchased SUBS: true");
+                                    isPurchase = true;
+                                    if (!verified) {
+                                        if (isCallback)
+                                            billingListener.onInitBillingListener(billingResult.getResponseCode());
+                                        verified = true;
+                                        verifiedINAP = true;
+                                        return;
+                                    }
+                                }
+                            }
                         }
                     }
+                    if (verifiedINAP && !verified) {
+                        // chưa mua subs và IAP
+                        billingListener.onInitBillingListener(billingResult.getResponseCode());
+                    }
+                    verifiedSUBS = true;
                 }
+            });
+        }
+    }
+
+
+    private String logResultBilling(Purchase.PurchasesResult result) {
+        if (result == null || result.getPurchasesList() == null)
+            return "null";
+        StringBuilder log = new StringBuilder();
+        for (Purchase purchase : result.getPurchasesList()) {
+            for (String s : purchase.getSkus()) {
+                log.append(s).append(",");
             }
         }
-        return false;
+        return log.toString();
     }
 
     //check  id INAP
-    public boolean isPurchased(Context context, String productId) {
-        Log.d(TAG, "isPurchased: " + productId);
-        Purchase.PurchasesResult resultINAP = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
-        if (resultINAP.getResponseCode() == BillingClient.BillingResponseCode.OK && resultINAP.getPurchasesList() != null) {
-            for (Purchase purchase : resultINAP.getPurchasesList()) {
-                if (purchase.getSkus().contains(productId)) {
-                    return true;
-                }
-            }
-        }
-        Purchase.PurchasesResult resultSubs = billingClient.queryPurchases(BillingClient.SkuType.SUBS);
-        if (resultSubs.getResponseCode() == BillingClient.BillingResponseCode.OK && resultSubs.getPurchasesList() != null) {
-            for (Purchase purchase : resultSubs.getPurchasesList()) {
-                if (purchase.getOrderId().equalsIgnoreCase(productId)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+//    public boolean isPurchased(Context context, String productId) {
+//        Log.d(TAG, "isPurchased: " + productId);
+//        Purchase.PurchasesResult resultINAP = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
+//        if (resultINAP.getResponseCode() == BillingClient.BillingResponseCode.OK && resultINAP.getPurchasesList() != null) {
+//            for (Purchase purchase : resultINAP.getPurchasesList()) {
+//                if (purchase.getSkus().contains(productId)) {
+//                    return true;
+//                }
+//            }
+//        }
+//        Purchase.PurchasesResult resultSubs = billingClient.queryPurchases(BillingClient.SkuType.SUBS);
+//        if (resultSubs.getResponseCode() == BillingClient.BillingResponseCode.OK && resultSubs.getPurchasesList() != null) {
+//            for (Purchase purchase : resultSubs.getPurchasesList()) {
+//                if (purchase.getOrderId().equalsIgnoreCase(productId)) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
 
     public void purchase(Activity activity) {
         if (productId == null) {
@@ -340,7 +404,7 @@ public class AppPurchase {
                 purchaseListioner.displayErrorMessage("Billing error init");
             return "";
         }
-        if (AppUtil.BUILD_DEBUG){
+        if (AppUtil.BUILD_DEBUG) {
             // Dùng ID Purchase test khi debug
             productId = PRODUCT_ID_TEST;
         }
@@ -403,7 +467,6 @@ public class AppPurchase {
 
             case BillingClient.BillingResponseCode.OK:
                 return "Subscribed Successfully";
-
             //}
 
         }
@@ -418,9 +481,9 @@ public class AppPurchase {
             return "";
         }
 
-        if (AppUtil.BUILD_DEBUG){
+        if (AppUtil.BUILD_DEBUG) {
             // sử dụng ID Purchase test
-            purchase(activity,PRODUCT_ID_TEST);
+            purchase(activity, PRODUCT_ID_TEST);
             return "Billing test";
         }
 
@@ -519,6 +582,7 @@ public class AppPurchase {
                 public void onConsumeResponse(BillingResult billingResult, String purchaseToken) {
                     if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                         Log.e(TAG, "onConsumeResponse: OK");
+                        verifyPurchased(false);
                     }
                 }
             };
@@ -537,7 +601,8 @@ public class AppPurchase {
         AdjustApero.onTrackRevenuePurchase((float) price, currentcy);
 
         if (purchaseListioner != null)
-            purchaseListioner.onProductPurchased(purchase.getOrderId(), purchase.getOriginalJson());
+            isPurchase = true;
+        purchaseListioner.onProductPurchased(purchase.getOrderId(), purchase.getOriginalJson());
         if (isConsumePurchase) {
             ConsumeParams consumeParams =
                     ConsumeParams.newBuilder()
