@@ -410,6 +410,14 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                 isShowingAd = true;
                                 splashAd = null;
                             }
+
+                            @Override
+                            public void onAdClicked() {
+                                super.onAdClicked();
+                                if (currentActivity != null) {
+                                    FirebaseAnalyticsUtil.logClickAdsEvent(currentActivity, splashAdId);
+                                }
+                            }
                         });
                 splashAd.show(currentActivity);
                 if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null) {
@@ -421,7 +429,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     }
 
     private void showResumeAds() {
-        if (currentActivity != null && AppPurchase.getInstance().isPurchased(currentActivity)){
+        if (currentActivity != null && AppPurchase.getInstance().isPurchased(currentActivity)) {
             return;
         }
 
@@ -477,6 +485,14 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         public void onAdShowedFullScreenContent() {
                             isShowingAd = true;
                             appResumeAd = null;
+                        }
+
+                        @Override
+                        public void onAdClicked() {
+                            super.onAdClicked();
+                            if (currentActivity != null) {
+                                FirebaseAnalyticsUtil.logClickAdsEvent(currentActivity, appResumeAdId);
+                            }
                         }
                     });
                     appResumeAd.show(currentActivity);

@@ -397,7 +397,12 @@ public class Admod {
                         dialog.dismiss();
                     }
                 }
+            }
 
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                FirebaseAnalyticsUtil.logClickAdsEvent(context, mInterstitialSplash.getAdUnitId());
             }
         });
 
@@ -670,6 +675,12 @@ public class Admod {
                 super.onAdShowedFullScreenContent();
                 // Called when fullscreen content is shown.
             }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                FirebaseAnalyticsUtil.logClickAdsEvent(context, mInterstitialAd.getAdUnitId());
+            }
         });
 
         if (AdmodHelper.getNumClickAdsPerDay(context, mInterstitialAd.getAdUnitId()) < maxClickAds) {
@@ -912,6 +923,11 @@ public class Admod {
                     }
                 }
 
+                @Override
+                public void onAdClicked() {
+                    super.onAdClicked();
+                    FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
+                }
             });
 
 
@@ -969,6 +985,7 @@ public class Admod {
                 @Override
                 public void onAdClicked() {
                     super.onAdClicked();
+                    FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
                     if (callback != null) {
                         callback.onAdClicked();
                         Log.d(TAG, "onAdClicked");
@@ -1073,6 +1090,7 @@ public class Admod {
                     @Override
                     public void onAdClicked() {
                         super.onAdClicked();
+                        FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
                         if (callback != null) {
                             callback.onAdClicked();
                             Log.d(TAG, "onAdClicked");
@@ -1139,7 +1157,11 @@ public class Admod {
                         frameLayout.setVisibility(View.GONE);
                     }
 
-
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
+                    }
                 })
                 .withNativeAdOptions(adOptions)
                 .build();
@@ -1205,6 +1227,7 @@ public class Admod {
                     @Override
                     public void onAdClicked() {
                         super.onAdClicked();
+                        FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
                         if (callback != null) {
                             callback.onAdClicked();
                             Log.d(TAG, "onAdClicked");
@@ -1467,6 +1490,12 @@ public class Admod {
                     if (adCallback != null)
                         adCallback.onRewardedAdFailedToShow(adError.getCode());
                 }
+
+                @Override
+                public void onAdClicked() {
+                    super.onAdClicked();
+                    FirebaseAnalyticsUtil.logClickAdsEvent(context, rewardedAd.getAdUnitId());
+                }
             });
             rewardedAd.show(context, new OnUserEarnedRewardListener() {
                 @Override
@@ -1476,7 +1505,6 @@ public class Admod {
                         initRewardAds(context, nativeId);
                     }
                 }
-
             });
         }
     }
