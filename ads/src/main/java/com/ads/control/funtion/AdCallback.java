@@ -14,10 +14,14 @@ public class AdCallback {
     public void onAdClosed() {
     }
 
-
-
-    public void onAdFailedToLoad(@Nullable  LoadAdError i) {
+    // event AD closed when setOpenActivityAfterShowInterAds = true
+    public void onAdClosedByUser() {
     }
+
+
+    public void onAdFailedToLoad(@Nullable LoadAdError i) {
+    }
+
     public void onAdFailedToShow(@Nullable AdError adError) {
     }
 
@@ -39,7 +43,7 @@ public class AdCallback {
     }
 
 
-    public void onUnifiedNativeAdLoaded( NativeAd unifiedNativeAd) {
+    public void onUnifiedNativeAdLoaded(NativeAd unifiedNativeAd) {
 
     }
 }

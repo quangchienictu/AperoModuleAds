@@ -86,7 +86,6 @@ public class AppPurchase {
         if (isAvailable) {
             billingListener.onInitBillingListener(0);
             isInitBillingFinish = true;
-
         }
     }
 

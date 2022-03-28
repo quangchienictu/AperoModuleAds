@@ -29,7 +29,7 @@ public class MyApplication extends AdsApplication {
         context = this;
         //        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 10000);
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
-        Admod.getInstance().setOpenActivityAfterShowInterAds(false);
+        Admod.getInstance().setOpenActivityAfterShowInterAds(true);
         Admod.getInstance().setNumToShowAds(0);
         AdjustApero.setEventNamePurchase("gzel1k");
 //        Admod.getInstance().setNumToShowAds(3,3);
@@ -45,7 +45,7 @@ public class MyApplication extends AdsApplication {
     @Override
     public List<String> getListTestDeviceId() {
         // thêm device test ( trong log, bắt buộc với FAN)
-        return Collections.singletonList("c75c6b77-92c5-4a63-b581-fa8bcbebbcf2");
+        return Collections.singletonList("EC25F576DA9B6CE74778B268CB87E431");
     }
 
 

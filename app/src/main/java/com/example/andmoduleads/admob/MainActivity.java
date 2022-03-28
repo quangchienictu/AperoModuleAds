@@ -28,7 +28,7 @@ import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.android.gms.ads.rewarded.RewardItem;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String PRODUCT_ID = "android.test.purchased111";
+    public static final String PRODUCT_ID = "android.test.purchased";
 
     //adjust
     private static final String EVENT_TOKEN_SIMPLE = "g3mfiw";

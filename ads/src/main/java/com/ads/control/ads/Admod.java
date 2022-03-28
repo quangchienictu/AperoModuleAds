@@ -375,6 +375,8 @@ public class Admod {
                 if (adListener != null) {
                     if (!openActivityAfterShowInterAds) {
                         adListener.onAdClosed();
+                    }else {
+                        adListener.onAdClosedByUser();
                     }
 
                     if (dialog != null) {
@@ -639,6 +641,8 @@ public class Admod {
                 if (callback != null) {
                     if (!openActivityAfterShowInterAds) {
                         callback.onAdClosed();
+                    }else {
+                        callback.onAdClosedByUser();
                     }
 
                     if (dialog != null) {
@@ -880,7 +884,7 @@ public class Admod {
             adView.setAdUnitId(id);
             adContainer.addView(adView);
             AdSize adSize = getAdSize(mActivity, useInlineAdaptive);
-            containerShimmer.getLayoutParams().height = (int) (adSize.getHeight()* Resources.getSystem().getDisplayMetrics().density + 0.5f);
+            containerShimmer.getLayoutParams().height = (int) (adSize.getHeight() * Resources.getSystem().getDisplayMetrics().density + 0.5f);
             adView.setAdSize(adSize);
             adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             adView.loadAd(getAdRequest());
@@ -936,7 +940,7 @@ public class Admod {
             adView.setAdUnitId(id);
             adContainer.addView(adView);
             AdSize adSize = getAdSize(mActivity, useInlineAdaptive);
-            containerShimmer.getLayoutParams().height = (int) (adSize.getHeight()* Resources.getSystem().getDisplayMetrics().density + 0.5f);
+            containerShimmer.getLayoutParams().height = (int) (adSize.getHeight() * Resources.getSystem().getDisplayMetrics().density + 0.5f);
             adView.setAdSize(adSize);
             adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             adView.setAdListener(new AdListener() {
@@ -1424,6 +1428,7 @@ public class Admod {
             @Override
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                 callback.onAdFailedToLoad(loadAdError);
+                Admod.this.rewardedAd = null;
                 Log.e(TAG, "RewardedAd onAdFailedToLoad: " + loadAdError.getMessage());
             }
         });
@@ -1444,7 +1449,6 @@ public class Admod {
     public void showRewardAds(final Activity context, final RewardCallback adCallback) {
         if (AppPurchase.getInstance().isPurchased(context)) {
             adCallback.onUserEarnedReward(null);
-
             return;
         }
         if (rewardedAd == null) {
@@ -1459,6 +1463,11 @@ public class Admod {
                     super.onAdDismissedFullScreenContent();
                     if (adCallback != null)
                         adCallback.onRewardedAdClosed();
+
+                    if (AppOpenManager.getInstance().isInitialized()) {
+                        AppOpenManager.getInstance().enableAppResume();
+                    }
+
                 }
 
                 @Override
@@ -1467,13 +1476,23 @@ public class Admod {
                     if (adCallback != null)
                         adCallback.onRewardedAdFailedToShow(adError.getCode());
                 }
+
+                @Override
+                public void onAdShowedFullScreenContent() {
+                    super.onAdShowedFullScreenContent();
+                    if (AppOpenManager.getInstance().isInitialized()) {
+                        AppOpenManager.getInstance().disableAppResume();
+                    }
+                    initRewardAds(context, nativeId);
+                    rewardedAd = null;
+                }
             });
             rewardedAd.show(context, new OnUserEarnedRewardListener() {
                 @Override
                 public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
                     if (adCallback != null) {
                         adCallback.onUserEarnedReward(rewardItem);
-                        initRewardAds(context, nativeId);
+
                     }
                 }
 
