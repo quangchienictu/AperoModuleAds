@@ -420,7 +420,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             }
                         });
                 splashAd.show(currentActivity);
-                if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null) {
+                if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null && finalDialog.isShowing()) {
                     Log.d(TAG, "dismiss dialog loading ad open: ");
                     finalDialog.dismiss();
                 }
@@ -463,7 +463,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             isShowingAd = false;
                             fetchAd(false);
 
-                            if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null) {
+                            if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null && finalDialog.isShowing()) {
                                 Log.d(TAG, "dismiss dialog loading ad open: ");
                                 finalDialog.dismiss();
                             }
@@ -475,7 +475,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                 fullScreenContentCallback.onAdFailedToShowFullScreenContent(adError);
                             }
 
-                            if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null) {
+                            if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null && finalDialog.isShowing()) {
                                 Log.d(TAG, "dismiss dialog loading ad open: ");
                                 finalDialog.dismiss();
                             }

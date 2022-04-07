@@ -1,5 +1,6 @@
 package com.ads.control.funtion;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.ads.AdError;
@@ -32,7 +33,7 @@ public class AdCallback {
     public void onAdLoaded() {
     }
 
-    public void onInterstitialLoad(InterstitialAd interstitialAd) {
+    public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
 
     }
 
@@ -43,7 +44,7 @@ public class AdCallback {
     }
 
 
-    public void onUnifiedNativeAdLoaded(NativeAd unifiedNativeAd) {
+    public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
 
     }
 }
