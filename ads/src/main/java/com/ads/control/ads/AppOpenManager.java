@@ -422,7 +422,11 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                 splashAd.show(currentActivity);
                 if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null && finalDialog.isShowing()) {
                     Log.d(TAG, "dismiss dialog loading ad open: ");
-                    finalDialog.dismiss();
+                    try{
+                        finalDialog.dismiss();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                 }
             }, 800);
         }
@@ -465,7 +469,11 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
                             if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null && finalDialog.isShowing()) {
                                 Log.d(TAG, "dismiss dialog loading ad open: ");
-                                finalDialog.dismiss();
+                                try{
+                                    finalDialog.dismiss();
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
                             }
                         }
 
@@ -477,7 +485,11 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
                             if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null && finalDialog.isShowing()) {
                                 Log.d(TAG, "dismiss dialog loading ad open: ");
-                                finalDialog.dismiss();
+                                try{
+                                    finalDialog.dismiss();
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
                             }
                         }
 
