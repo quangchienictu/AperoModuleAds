@@ -32,6 +32,8 @@ public class AdCallback {
 
     public void onAdLoaded() {
     }
+    public void onAdSplashReady() {
+    }
 
     public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
 

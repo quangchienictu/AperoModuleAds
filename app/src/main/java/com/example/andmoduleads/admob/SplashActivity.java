@@ -53,11 +53,18 @@ public class SplashActivity extends AppCompatActivity {
 
     private void loadSplash(){
         Log.d(TAG, "onCreate: show splash ads");
-        Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 30000,5000, new AdCallback() {
+        Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 30000,5000,true, new AdCallback() {
             @Override
             public void onAdClosed() {
                 Log.d(TAG, "Close ads splash " );
                 startMain();
+            }
+
+            @Override
+            public void onAdSplashReady() {
+                super.onAdSplashReady();
+                Log.d(TAG, "onAdSplashReady");
+                Admod.getInstance().onShowSplash(SplashActivity.this,this);
             }
 
             @Override

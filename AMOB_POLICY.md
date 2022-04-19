@@ -22,6 +22,7 @@
 ~~~
 
 * [AdMob policies and restrictions](https://support.google.com/admob/answer/6128543?hl=en)
+* [Implementation guidance](https://support.google.com/admob/answer/2936217?hl=en)
 # Các loại ad
 * [Ad Banner](#ad_banner)
 * [Ad Interstitial](#ad_inter)

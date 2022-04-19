@@ -27,7 +27,7 @@ import com.ads.control.util.AppUtil;
 import java.util.List;
 
 public abstract class AdsMultiDexApplication extends MultiDexApplication {
-
+    public static String TAG = "AdjustApero";
     @Override
     public void onCreate() {
         super.onCreate();
@@ -58,8 +58,8 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
         config.setOnAttributionChangedListener(new OnAttributionChangedListener() {
             @Override
             public void onAttributionChanged(AdjustAttribution attribution) {
-                Log.d("AdjustApero", "Attribution callback called!");
-                Log.d("AdjustApero", "Attribution: " + attribution.toString());
+                Log.d(TAG, "Attribution callback called!");
+                Log.d(TAG, "Attribution: " + attribution.toString());
             }
         });
 
@@ -67,16 +67,16 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
         config.setOnEventTrackingSucceededListener(new OnEventTrackingSucceededListener() {
             @Override
             public void onFinishedEventTrackingSucceeded(AdjustEventSuccess eventSuccessResponseData) {
-                Log.d("AdjustApero", "Event success callback called!");
-                Log.d("AdjustApero", "Event success data: " + eventSuccessResponseData.toString());
+                Log.d(TAG, "Event success callback called!");
+                Log.d(TAG, "Event success data: " + eventSuccessResponseData.toString());
             }
         });
         // Set event failure tracking delegate.
         config.setOnEventTrackingFailedListener(new OnEventTrackingFailedListener() {
             @Override
             public void onFinishedEventTrackingFailed(AdjustEventFailure eventFailureResponseData) {
-                Log.d("AdjustApero", "Event failure callback called!");
-                Log.d("AdjustApero", "Event failure data: " + eventFailureResponseData.toString());
+                Log.d(TAG, "Event failure callback called!");
+                Log.d(TAG, "Event failure data: " + eventFailureResponseData.toString());
             }
         });
 
@@ -84,8 +84,8 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
         config.setOnSessionTrackingSucceededListener(new OnSessionTrackingSucceededListener() {
             @Override
             public void onFinishedSessionTrackingSucceeded(AdjustSessionSuccess sessionSuccessResponseData) {
-                Log.d("AdjustApero", "Session success callback called!");
-                Log.d("AdjustApero", "Session success data: " + sessionSuccessResponseData.toString());
+                Log.d(TAG, "Session success callback called!");
+                Log.d(TAG, "Session success data: " + sessionSuccessResponseData.toString());
             }
         });
 
@@ -93,8 +93,8 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
         config.setOnSessionTrackingFailedListener(new OnSessionTrackingFailedListener() {
             @Override
             public void onFinishedSessionTrackingFailed(AdjustSessionFailure sessionFailureResponseData) {
-                Log.d("AdjustApero", "Session failure callback called!");
-                Log.d("AdjustApero", "Session failure data: " + sessionFailureResponseData.toString());
+                Log.d(TAG, "Session failure callback called!");
+                Log.d(TAG, "Session failure data: " + sessionFailureResponseData.toString());
             }
         });
 
