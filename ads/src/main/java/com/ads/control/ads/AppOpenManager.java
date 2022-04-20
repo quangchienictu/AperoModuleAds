@@ -333,7 +333,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     public void showAdIfAvailable(final boolean isSplash) {
         // Only show ad if there is not already an app open ad currently showing
         // and an ad is available.
-        if (currentActivity != null && AppPurchase.getInstance().isPurchased(currentActivity)) {
+        if (currentActivity == null || AppPurchase.getInstance().isPurchased(currentActivity)) {
             if (fullScreenContentCallback != null) {
                 fullScreenContentCallback.onAdDismissedFullScreenContent();
             }
@@ -431,15 +431,16 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             }, 800);
         }
     }
-
+    Dialog dialog = null;
     private void showResumeAds() {
-        if (currentActivity != null && AppPurchase.getInstance().isPurchased(currentActivity)) {
+        if (appResumeAd == null ||currentActivity == null || AppPurchase.getInstance().isPurchased(currentActivity)) {
             return;
         }
 
         if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
-            Dialog dialog = null;
+
             try {
+                dismissDialogLoading();
                 dialog = new ResumeLoadingDialog(currentActivity);
                 try {
                     dialog.show();
@@ -479,6 +480,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
                         @Override
                         public void onAdFailedToShowFullScreenContent(AdError adError) {
+                            Log.e(TAG, "onAdFailedToShowFullScreenContent: " + adError.getMessage());
                             if (fullScreenContentCallback != null) {
                                 fullScreenContentCallback.onAdFailedToShowFullScreenContent(adError);
                             }
@@ -491,6 +493,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                     e.printStackTrace();
                                 }
                             }
+                            appResumeAd = null;
+                            isShowingAd = false;
+                            fetchAd(false);
                         }
 
                         @Override
@@ -610,6 +615,20 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         Log.d(TAG, "onStart: show resume ads");
         showAdIfAvailable(false);
     }
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    public void onStop(){
+        Log.d(TAG, "onStop: app stop");
 
+    }
+
+    private void dismissDialogLoading(){
+        if (dialog!=null && dialog.isShowing()){
+            try {
+                dialog.dismiss();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
 }
 
