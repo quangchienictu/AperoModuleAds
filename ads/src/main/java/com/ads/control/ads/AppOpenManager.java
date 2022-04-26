@@ -357,7 +357,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         }
 
         if (!isShowingAd && isAdAvailable(isSplash)) {
-            Log.d(TAG, "Will show ad isSplash:" +isSplash );
+            Log.d(TAG, "Will show ad isSplash:" + isSplash);
             if (isSplash) {
                 showAdsWithLoading();
             } else {
@@ -428,18 +428,20 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                 splashAd.show(currentActivity);
                 if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null && finalDialog.isShowing()) {
                     Log.d(TAG, "dismiss dialog loading ad open: ");
-                    try{
+                    try {
                         finalDialog.dismiss();
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
             }, 800);
         }
     }
+
     Dialog dialog = null;
+
     private void showResumeAds() {
-        if (appResumeAd == null ||currentActivity == null || AppPurchase.getInstance().isPurchased(currentActivity)) {
+        if (appResumeAd == null || currentActivity == null || AppPurchase.getInstance().isPurchased(currentActivity)) {
             return;
         }
 
@@ -476,9 +478,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
                             if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null && finalDialog.isShowing()) {
                                 Log.d(TAG, "dismiss dialog loading ad open: ");
-                                try{
+                                try {
                                     finalDialog.dismiss();
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -493,9 +495,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
                             if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null && finalDialog.isShowing()) {
                                 Log.d(TAG, "dismiss dialog loading ad open: ");
-                                try{
+                                try {
                                     finalDialog.dismiss();
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                             }
@@ -556,7 +558,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
                         if (isTimeout) {
                             Log.e(TAG, "onAppOpenAdLoaded: splash timeout");
-                            if (fullScreenContentCallback != null  ) {
+                            if (fullScreenContentCallback != null) {
                                 fullScreenContentCallback.onAdDismissedFullScreenContent();
                                 enableScreenContentCallback = false;
                             }
@@ -616,17 +618,18 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         Log.d(TAG, "onStart: show resume ads");
         showAdIfAvailable(false);
     }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    public void onStop(){
+    public void onStop() {
         Log.d(TAG, "onStop: app stop");
 
     }
 
-    private void dismissDialogLoading(){
-        if (dialog!=null && dialog.isShowing()){
+    private void dismissDialogLoading() {
+        if (dialog != null && dialog.isShowing()) {
             try {
                 dialog.dismiss();
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
