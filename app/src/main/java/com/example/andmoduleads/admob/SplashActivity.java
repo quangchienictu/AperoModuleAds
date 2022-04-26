@@ -4,14 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ads.control.ads.Admod;
+import com.ads.control.ads.AppOpenManager;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.funtion.BillingListener;
 import com.example.andmoduleads.R;
-import com.example.andmoduleads.admob.MainActivity;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 
 import java.util.ArrayList;
@@ -32,7 +35,8 @@ public class SplashActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        loadSplash();
+//                        loadSplash();
+                        loadSplashAdOpenApp();
                     }
                 });
             }
@@ -78,6 +82,41 @@ public class SplashActivity extends AppCompatActivity {
                 Log.d(TAG, "onAdClosedByUser" );
             }
         });
+
+
+    }
+
+    private void loadSplashAdOpenApp(){
+        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, getString(R.string.admod_app_open_ad_id), 30000);
+        AppOpenManager.getInstance().setFullScreenContentCallback(new FullScreenContentCallback() {
+            @Override
+            public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                super.onAdFailedToShowFullScreenContent(adError);
+                startMain();
+            }
+
+            @Override
+            public void onAdShowedFullScreenContent() {
+                super.onAdShowedFullScreenContent();
+            }
+
+            @Override
+            public void onAdDismissedFullScreenContent() {
+                super.onAdDismissedFullScreenContent();
+                startMain();
+            }
+
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+            }
+        });
+        AppOpenManager.getInstance().loadAndShowSplashAds(getString(R.string.admod_app_open_ad_id));
     }
 
     private void startMain() {
