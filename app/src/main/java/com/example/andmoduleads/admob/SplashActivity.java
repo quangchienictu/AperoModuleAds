@@ -2,8 +2,6 @@ package com.example.andmoduleads.admob;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -11,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ads.control.ads.Admod;
 import com.ads.control.ads.AppOpenManager;
-import com.ads.control.funtion.AdCallback;
 import com.ads.control.billing.AppPurchase;
+import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.BillingListener;
 import com.example.andmoduleads.R;
 import com.google.android.gms.ads.AdError;
@@ -50,7 +48,6 @@ public class SplashActivity extends AppCompatActivity {
             }, 5000);
         }
     }
-
 
 
     private void loadSplash() {
