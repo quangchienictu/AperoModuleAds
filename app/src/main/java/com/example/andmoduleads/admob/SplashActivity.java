@@ -6,6 +6,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.splashscreen.SplashScreen;
+import androidx.core.splashscreen.SplashScreenViewProvider;
 
 import com.ads.control.ads.Admod;
 import com.ads.control.ads.AppOpenManager;
@@ -27,16 +29,25 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+//        splashScreen.setKeepOnScreenCondition(() -> true );
+//        splashScreen.setOnExitAnimationListener(new SplashScreen.OnExitAnimationListener() {
+//            @Override
+//            public void onSplashScreenExit(@NonNull SplashScreenViewProvider splashScreenViewProvider) {
+//                Log.i(TAG, "onSplashScreenExit: ");
+//            }
+//        });
         AppPurchase.getInstance().setBillingListener(new BillingListener() {
             @Override
             public void onInitBillingListener(int code) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-//                        loadSplash();
-                        loadSplashAdOpenApp();
+                        loadSplash();
+//                        loadSplashAdOpenApp();
                     }
                 });
             }
