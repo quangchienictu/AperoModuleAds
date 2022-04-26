@@ -41,6 +41,7 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
             setupIdEvent();
             setupAdjust();
         }
+
     }
 
     private void setupIdEvent() {
