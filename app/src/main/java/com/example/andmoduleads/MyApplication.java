@@ -30,7 +30,7 @@ public class MyApplication extends AdsApplication {
     public void onCreate() {
         super.onCreate();
         context = this;
-        //        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 10000);
+                AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 5000);
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
         Admod.getInstance().setOpenActivityAfterShowInterAds(true);
         Admod.getInstance().setNumToShowAds(0);
