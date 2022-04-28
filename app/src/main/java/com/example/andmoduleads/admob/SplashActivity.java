@@ -2,6 +2,8 @@ package com.example.andmoduleads.admob;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -46,8 +48,9 @@ public class SplashActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        loadSplash();
-//                        loadSplashAdOpenApp();
+//                        loadSplash();
+                        loadSplashAdOpenApp();
+//                        delayShowMain();
                     }
                 });
             }
@@ -64,6 +67,15 @@ public class SplashActivity extends AppCompatActivity {
         AppPurchase.getInstance().initBilling(getApplication(),listINAPId,listSubsId);
 //        AppPurchase.getInstance().addProductId(MainActivity.PRODUCT_ID);
 
+    }
+
+    private void delayShowMain(){
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                    startMain();
+            }
+        }, 2000);
     }
 
     private void loadSplash(){
@@ -98,7 +110,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void loadSplashAdOpenApp(){
-        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, getString(R.string.admod_app_open_ad_id), 30000);
+//        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, getString(R.string.admod_app_open_ad_id), 2000);
         AppOpenManager.getInstance().setFullScreenContentCallback(new FullScreenContentCallback() {
             @Override
             public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
