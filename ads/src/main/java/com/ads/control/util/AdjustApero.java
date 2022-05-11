@@ -4,6 +4,7 @@ import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAdRevenue;
 import com.adjust.sdk.AdjustConfig;
 import com.adjust.sdk.AdjustEvent;
+import com.applovin.mediation.MaxAd;
 import com.google.android.gms.ads.AdValue;
 
 public class AdjustApero {
@@ -52,6 +53,17 @@ public class AdjustApero {
             adRevenue.setRevenue(adValue.getValueMicros() / 1000000.0, adValue.getCurrencyCode());
 
             Adjust.trackAdRevenue(adRevenue);
+        }
+    }
+    public static void pushTrackEventApplovin(  MaxAd ad) {
+        if (AdjustApero.enableAdjust) {
+            AdjustAdRevenue adjustAdRevenue = new AdjustAdRevenue( AdjustConfig.AD_REVENUE_APPLOVIN_MAX );
+            adjustAdRevenue.setRevenue( ad.getRevenue(), "USD" );
+            adjustAdRevenue.setAdRevenueNetwork( ad.getNetworkName() );
+            adjustAdRevenue.setAdRevenueUnit( ad.getAdUnitId() );
+            adjustAdRevenue.setAdRevenuePlacement( ad.getPlacement() );
+
+            Adjust.trackAdRevenue( adjustAdRevenue );
         }
     }
 }

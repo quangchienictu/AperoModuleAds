@@ -444,6 +444,7 @@ public class Admod {
 
     public void onShowSplash(Activity activity, AdCallback adListener) {
         isShowLoadingSplash = true;
+        Log.d(TAG, "onShowSplash: ");
 
         if (mInterstitialSplash != null) {
             mInterstitialSplash.setOnPaidEventListener(adValue -> {
