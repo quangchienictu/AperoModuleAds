@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxInterstitialAd;
 import com.applovin.mediation.nativeAds.MaxNativeAd;
+import com.applovin.mediation.nativeAds.MaxNativeAdView;
 
 public class AppLovinCallback {
     public void initAppLovinSuccess() {
@@ -42,8 +43,11 @@ public class AppLovinCallback {
     public void onAdImpression() {
     }
 
+    public void onAdSplashReady() {
+    }
 
-    public void onUnifiedNativeAdLoaded(MaxNativeAd unifiedNativeAd) {
+
+    public void onUnifiedNativeAdLoaded(MaxNativeAdView unifiedNativeAd) {
 
     }
 }

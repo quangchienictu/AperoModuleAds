@@ -195,8 +195,122 @@ public class AppLovin {
             }
         });
     }
+    /**
+     * Load quảng cáo Full tại màn SplashActivity
+     * Sau khoảng thời gian timeout thì load ads và callback về cho View
+     *
+     * @param context
+     * @param id
+     * @param timeOut    : thời gian chờ ads, timeout <= 0 tương đương với việc bỏ timeout
+     * @param timeDelay  : thời gian chờ show ad từ lúc load ads
+     * @param adListener
+     */
+    public void loadSplashInterstitialAds(final Context context, String id, long timeOut, long timeDelay,boolean showSplashIfReady, AppLovinCallback adListener) {
+        isTimeDelay = false;
+        isTimeout = false;
+        Log.i(TAG, "loadSplashInterstitialAds  start time loading:"
+                + Calendar.getInstance().getTimeInMillis()
+                + " ShowLoadingSplash:" + isShowLoadingSplash);
 
-    private void onShowSplash(Activity activity, AppLovinCallback adListener) {
+        if (AppPurchase.getInstance().isPurchased(context)) {
+            if (adListener != null) {
+                adListener.onAdClosed();
+            }
+            return;
+        }
+        new Handler().postDelayed(() -> {
+            //check delay show ad splash
+            if (interstitialSplash.isReady()) {
+                Log.i(TAG, "loadSplashInterstitialAds:show ad on delay ");
+                if (showSplashIfReady)
+                    onShowSplash((Activity) context, adListener);
+                else
+                    adListener.onAdSplashReady();
+                return;
+            }
+            Log.i(TAG, "loadSplashInterstitialAds: delay validate");
+            isTimeDelay = true;
+        }, timeDelay);
+
+        if (timeOut > 0) {
+            handlerTimeout = new Handler();
+            rdTimeout = () -> {
+                Log.e(TAG, "loadSplashInterstitialAds: on timeout");
+                isTimeout = true;
+                if (interstitialSplash.isReady()) {
+                    Log.i(TAG, "loadSplashInterstitialAds:show ad on timeout ");
+                    if (showSplashIfReady)
+                        onShowSplash((Activity) context, adListener);
+                    else
+                        adListener.onAdSplashReady();
+
+                    return;
+                }
+                if (adListener != null) {
+                    adListener.onAdClosed();
+                    isShowLoadingSplash = false;
+                }
+            };
+            handlerTimeout.postDelayed(rdTimeout, timeOut);
+        }
+
+        isShowLoadingSplash = true;
+
+        interstitialSplash = getInterstitialAds(context, id);
+        interstitialSplash.setListener(new MaxAdListener() {
+            @Override
+            public void onAdLoaded(MaxAd ad) {
+                Log.e(TAG, "loadSplashInterstitialAds end time loading success: "
+                        + Calendar.getInstance().getTimeInMillis()
+                        + " time limit:" + isTimeout);
+                if (isTimeout)
+                    return;
+                if (isTimeDelay) {
+                    if (showSplashIfReady)
+                        onShowSplash((Activity) context, adListener);
+                    else
+                        adListener.onAdSplashReady();
+                    Log.i(TAG, "loadSplashInterstitialAds: show ad on loaded ");
+                }
+            }
+
+            @Override
+            public void onAdDisplayed(MaxAd ad) {
+
+            }
+
+            @Override
+            public void onAdHidden(MaxAd ad) {
+
+            }
+
+            @Override
+            public void onAdClicked(MaxAd ad) {
+
+            }
+
+            @Override
+            public void onAdLoadFailed(String adUnitId, MaxError error) {
+                Log.e(TAG, "onAdLoadFailed: " + error.getMessage());
+                if (isTimeout)
+                    return;
+                if (adListener != null) {
+                    if (handlerTimeout != null && rdTimeout != null) {
+                        handlerTimeout.removeCallbacks(rdTimeout);
+                    }
+                    Log.e(TAG, "loadSplashInterstitialAds: load fail " + error.getMessage());
+                    adListener.onAdFailedToLoad(error);
+                }
+            }
+
+            @Override
+            public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+
+            }
+        });
+    }
+
+    public void onShowSplash(Activity activity, AppLovinCallback adListener) {
         isShowLoadingSplash = true;
         Log.d(TAG, "onShowSplash: ");
         if (handlerTimeout != null && rdTimeout != null) {
@@ -555,6 +669,8 @@ public class AppLovin {
         final ShimmerFrameLayout containerShimmer = parent.findViewById(R.id.shimmer_container_small_native);
         loadNativeAd(mActivity, containerShimmer, frameLayout, adUnitId, R.layout.max_native_custom_ad_small);
     }
+
+
     public void loadNativeAd(Activity activity, ShimmerFrameLayout containerShimmer, FrameLayout nativeAdLayout, String id, int layoutCustomNative) {
 
         if (AppPurchase.getInstance().isPurchased(context)) {
@@ -608,6 +724,48 @@ public class AppLovin {
 
                 nativeAdView = new MaxNativeAdView(binder, activity);
                 nativeAdLoader.loadAd(nativeAdView);
+            }
+        });
+        nativeAdLoader.loadAd(nativeAdView);
+    }
+    public void loadNativeAd(Activity activity, String id, int layoutCustomNative, AppLovinCallback callback) {
+
+        if (AppPurchase.getInstance().isPurchased(context)) {
+            callback.onAdClosed();
+            return;
+        }
+
+        MaxNativeAdViewBinder binder = new MaxNativeAdViewBinder.Builder(layoutCustomNative)
+                .setTitleTextViewId(R.id.title_text_view)
+                .setBodyTextViewId(R.id.body_text_view)
+                .setAdvertiserTextViewId(R.id.advertiser_textView)
+                .setIconImageViewId(R.id.icon_image_view)
+                .setMediaContentViewGroupId(R.id.media_view_container)
+                .setOptionsContentViewGroupId(R.id.options_view)
+                .setCallToActionButtonId(R.id.cta_button)
+                .build();
+
+        nativeAdView = new MaxNativeAdView(binder, activity);
+
+        MaxNativeAdLoader nativeAdLoader = new MaxNativeAdLoader(id, activity);
+        nativeAdLoader.setRevenueListener(AdjustApero::pushTrackEventApplovin);
+        nativeAdLoader.setNativeAdListener(new MaxNativeAdListener() {
+            @Override
+            public void onNativeAdLoaded(final MaxNativeAdView nativeAdView, final MaxAd ad) {
+                Log.d(TAG, "onNativeAdLoaded " );
+                callback.onUnifiedNativeAdLoaded(nativeAdView);
+            }
+
+            @Override
+            public void onNativeAdLoadFailed(final String adUnitId, final MaxError error) {
+                Log.e(TAG, "onAdFailedToLoad: " + error.getMessage());
+                callback.onAdFailedToLoad(error);
+            }
+
+            @Override
+            public void onNativeAdClicked(final MaxAd ad) {
+                Log.e(TAG, "onNativeAdClicked: "  );
+                callback.onAdClicked();
             }
         });
         nativeAdLoader.loadAd(nativeAdView);
