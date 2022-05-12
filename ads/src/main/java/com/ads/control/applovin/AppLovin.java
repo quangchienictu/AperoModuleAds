@@ -14,9 +14,6 @@ import android.widget.FrameLayout;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
-import com.adjust.sdk.Adjust;
-import com.adjust.sdk.AdjustAdRevenue;
-import com.adjust.sdk.AdjustConfig;
 import com.ads.control.R;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
@@ -36,7 +33,6 @@ import com.applovin.mediation.nativeAds.MaxNativeAdViewBinder;
 import com.applovin.sdk.AppLovinSdk;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
-import java.util.Arrays;
 import java.util.Calendar;
 
 public class AppLovin {
@@ -682,13 +678,13 @@ public class AppLovin {
 
         nativeAdLayout.removeAllViews();
         MaxNativeAdViewBinder binder = new MaxNativeAdViewBinder.Builder(layoutCustomNative)
-                .setTitleTextViewId(R.id.title_text_view)
-                .setBodyTextViewId(R.id.body_text_view)
-                .setAdvertiserTextViewId(R.id.advertiser_textView)
-                .setIconImageViewId(R.id.icon_image_view)
-                .setMediaContentViewGroupId(R.id.media_view_container)
-                .setOptionsContentViewGroupId(R.id.options_view)
-                .setCallToActionButtonId(R.id.cta_button)
+                .setTitleTextViewId(R.id.ad_headline)
+                .setBodyTextViewId(R.id.ad_body)
+                .setAdvertiserTextViewId(R.id.ad_advertiser)
+                .setIconImageViewId(R.id.ad_app_icon)
+                .setMediaContentViewGroupId(R.id.ad_media)
+                .setOptionsContentViewGroupId(R.id.ad_options_view)
+                .setCallToActionButtonId(R.id.ad_call_to_action)
                 .build();
 
         nativeAdView = new MaxNativeAdView(binder, activity);
@@ -736,13 +732,13 @@ public class AppLovin {
         }
 
         MaxNativeAdViewBinder binder = new MaxNativeAdViewBinder.Builder(layoutCustomNative)
-                .setTitleTextViewId(R.id.title_text_view)
-                .setBodyTextViewId(R.id.body_text_view)
-                .setAdvertiserTextViewId(R.id.advertiser_textView)
-                .setIconImageViewId(R.id.icon_image_view)
-                .setMediaContentViewGroupId(R.id.media_view_container)
+                .setTitleTextViewId(R.id.ad_headline)
+                .setBodyTextViewId(R.id.ad_body)
+                .setAdvertiserTextViewId(R.id.ad_advertiser)
+                .setIconImageViewId(R.id.ad_app_icon)
+                .setMediaContentViewGroupId(R.id.ad_media)
                 .setOptionsContentViewGroupId(R.id.options_view)
-                .setCallToActionButtonId(R.id.cta_button)
+                .setCallToActionButtonId(R.id.ad_call_to_action)
                 .build();
 
         nativeAdView = new MaxNativeAdView(binder, activity);
