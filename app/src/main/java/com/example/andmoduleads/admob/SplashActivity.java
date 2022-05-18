@@ -35,38 +35,24 @@ public class SplashActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-//        splashScreen.setKeepOnScreenCondition(() -> true );
-//        splashScreen.setOnExitAnimationListener(new SplashScreen.OnExitAnimationListener() {
-//            @Override
-//            public void onSplashScreenExit(@NonNull SplashScreenViewProvider splashScreenViewProvider) {
-//                Log.i(TAG, "onSplashScreenExit: ");
-//            }
-//        });
-        AppPurchase.getInstance().setBillingListener(new BillingListener() {
-            @Override
-            public void onInitBillingListener(int code) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-//                        loadSplash();
-                        loadSplashAdOpenApp();
-//                        delayShowMain();
-                    }
-                });
-            }
-        },5000);
 
-        initBilling();
-    }
-
-    private void initBilling() {
-        List<String> listINAPId = new ArrayList<>();
-        listINAPId.add(MainActivity.PRODUCT_ID);
-        List<String> listSubsId = new ArrayList<>();
-
-        AppPurchase.getInstance().initBilling(getApplication(),listINAPId,listSubsId);
-//        AppPurchase.getInstance().addProductId(MainActivity.PRODUCT_ID);
-
+        if (AppPurchase.getInstance().getInitBillingFinish()) {
+            loadSplash();
+//            loadSplashAdOpenApp();
+        } else {
+            AppPurchase.getInstance().setBillingListener(new BillingListener() {
+                @Override
+                public void onInitBillingListener(int code) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadSplash();
+//                            loadSplashAdOpenApp();
+                        }
+                    });
+                }
+            }, 5000);
+        }
     }
 
     private void delayShowMain(){
