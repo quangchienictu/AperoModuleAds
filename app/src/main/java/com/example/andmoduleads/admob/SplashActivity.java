@@ -2,6 +2,8 @@ package com.example.andmoduleads.admob;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -29,38 +31,34 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        AppPurchase.getInstance().setBillingListener(new BillingListener() {
-            @Override
-            public void onInitBillingListener(int code) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-//                        loadSplash();
-                        loadSplashAdOpenApp();
-                    }
-                });
-            }
-        },5000);
 
-        initBilling();
+        if (AppPurchase.getInstance().getInitBillingFinish()) {
+            loadSplash();
+//            loadSplashAdOpenApp();
+        } else {
+            AppPurchase.getInstance().setBillingListener(new BillingListener() {
+                @Override
+                public void onInitBillingListener(int code) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadSplash();
+//                            loadSplashAdOpenApp();
+                        }
+                    });
+                }
+            }, 5000);
+        }
     }
 
-    private void initBilling() {
-        List<String> listINAPId = new ArrayList<>();
-        listINAPId.add(MainActivity.PRODUCT_ID);
-        List<String> listSubsId = new ArrayList<>();
 
-        AppPurchase.getInstance().initBilling(getApplication(),listINAPId,listSubsId);
-//        AppPurchase.getInstance().addProductId(MainActivity.PRODUCT_ID);
 
-    }
-
-    private void loadSplash(){
+    private void loadSplash() {
         Log.d(TAG, "onCreate: show splash ads");
-        Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 30000,5000,true, new AdCallback() {
+        Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 30000, 5000, true, new AdCallback() {
             @Override
             public void onAdClosed() {
-                Log.d(TAG, "Close ads splash " );
+                Log.d(TAG, "Close ads splash ");
                 startMain();
             }
 
@@ -68,7 +66,7 @@ public class SplashActivity extends AppCompatActivity {
             public void onAdSplashReady() {
                 super.onAdSplashReady();
                 Log.d(TAG, "onAdSplashReady");
-                Admod.getInstance().onShowSplash(SplashActivity.this,this);
+                Admod.getInstance().onShowSplash(SplashActivity.this, this);
             }
 
             @Override
@@ -79,14 +77,14 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onAdClosedByUser() {
                 super.onAdClosedByUser();
-                Log.d(TAG, "onAdClosedByUser" );
+                Log.d(TAG, "onAdClosedByUser");
             }
         });
 
 
     }
 
-    private void loadSplashAdOpenApp(){
+    private void loadSplashAdOpenApp() {
         AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, getString(R.string.admod_app_open_ad_id), 30000);
         AppOpenManager.getInstance().setFullScreenContentCallback(new FullScreenContentCallback() {
             @Override
