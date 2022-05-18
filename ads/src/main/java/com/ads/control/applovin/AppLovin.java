@@ -78,7 +78,6 @@ public class AppLovin {
         }
 
         AppLovinSdk.getInstance(context).setMediationProvider("max");
-        AppLovinSdk.getInstance(context).getSettings().setCreativeDebuggerEnabled(true);
         AppLovinSdk.initializeSdk(context, configuration -> {
             // AppLovin SDK is initialized, start loading ads
             Log.d(TAG, "init: applovin success");
@@ -712,7 +711,7 @@ public class AppLovin {
 
             @Override
             public void onNativeAdClicked(final MaxAd ad) {
-                Log.e(TAG, "onNativeAdClicked: "  );
+                Log.e(TAG, "`onNativeAdClicked`: "  );
                 containerShimmer.setVisibility(View.VISIBLE);
                 containerShimmer.startShimmer();
                 nativeAdLayout.removeAllViews();
