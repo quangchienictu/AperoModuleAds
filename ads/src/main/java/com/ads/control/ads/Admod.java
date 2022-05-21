@@ -445,17 +445,21 @@ public class Admod {
     public void onShowSplash(Activity activity, AdCallback adListener) {
         isShowLoadingSplash = true;
 
-        if (mInterstitialSplash != null) {
-            mInterstitialSplash.setOnPaidEventListener(adValue -> {
-                Log.d(TAG, "OnPaidEvent splash:" + adValue.getValueMicros());
-                AdjustApero.pushTrackEventAdmod(adValue);
-                FirebaseAnalyticsUtil.logPaidAdImpression(context,
-                        adValue,
-                        mInterstitialSplash.getAdUnitId(),
-                        mInterstitialSplash.getResponseInfo()
-                                .getMediationAdapterClassName());
-            });
+        if (mInterstitialSplash == null) {
+            adListener.onAdClosed();
+            return;
         }
+
+        mInterstitialSplash.setOnPaidEventListener(adValue -> {
+            Log.d(TAG, "OnPaidEvent splash:" + adValue.getValueMicros());
+            AdjustApero.pushTrackEventAdmod(adValue);
+            FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                    adValue,
+                    mInterstitialSplash.getAdUnitId(),
+                    mInterstitialSplash.getResponseInfo()
+                            .getMediationAdapterClassName());
+        });
+
         if (handlerTimeout != null && rdTimeout != null) {
             handlerTimeout.removeCallbacks(rdTimeout);
         }
