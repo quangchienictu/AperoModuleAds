@@ -400,43 +400,46 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             }
             final Dialog finalDialog = dialog;
             new Handler().postDelayed(() -> {
-                splashAd.setFullScreenContentCallback(
-                        new FullScreenContentCallback() {
-                            @Override
-                            public void onAdDismissedFullScreenContent() {
-                                // Set the reference to null so isAdAvailable() returns false.
-                                appResumeAd = null;
-                                if (fullScreenContentCallback != null && enableScreenContentCallback) {
-                                    fullScreenContentCallback.onAdDismissedFullScreenContent();
-                                    enableScreenContentCallback = false;
+                if(splashAd != null){
+                    splashAd.setFullScreenContentCallback(
+                            new FullScreenContentCallback() {
+                                @Override
+                                public void onAdDismissedFullScreenContent() {
+                                    // Set the reference to null so isAdAvailable() returns false.
+                                    appResumeAd = null;
+                                    if (fullScreenContentCallback != null && enableScreenContentCallback) {
+                                        fullScreenContentCallback.onAdDismissedFullScreenContent();
+                                        enableScreenContentCallback = false;
+                                    }
+                                    isShowingAd = false;
+                                    fetchAd(true);
                                 }
-                                isShowingAd = false;
-                                fetchAd(true);
-                            }
 
-                            @Override
-                            public void onAdFailedToShowFullScreenContent(AdError adError) {
-                                if (fullScreenContentCallback != null && enableScreenContentCallback) {
-                                    fullScreenContentCallback.onAdFailedToShowFullScreenContent(adError);
+                                @Override
+                                public void onAdFailedToShowFullScreenContent(AdError adError) {
+                                    if (fullScreenContentCallback != null && enableScreenContentCallback) {
+                                        fullScreenContentCallback.onAdFailedToShowFullScreenContent(adError);
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onAdShowedFullScreenContent() {
-                                isShowingAd = true;
-                                splashAd = null;
-                            }
-
-
-                            @Override
-                            public void onAdClicked() {
-                                super.onAdClicked();
-                                if (currentActivity != null) {
-                                    FirebaseAnalyticsUtil.logClickAdsEvent(currentActivity, splashAdId);
+                                @Override
+                                public void onAdShowedFullScreenContent() {
+                                    isShowingAd = true;
+                                    splashAd = null;
                                 }
-                            }
-                        });
-                splashAd.show(currentActivity);
+
+
+                                @Override
+                                public void onAdClicked() {
+                                    super.onAdClicked();
+                                    if (currentActivity != null) {
+                                        FirebaseAnalyticsUtil.logClickAdsEvent(currentActivity, splashAdId);
+                                    }
+                                }
+                            });
+                    splashAd.show(currentActivity);
+                }
+                
                 if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null && finalDialog.isShowing()) {
                     Log.d(TAG, "dismiss dialog loading ad open: ");
                     try {
