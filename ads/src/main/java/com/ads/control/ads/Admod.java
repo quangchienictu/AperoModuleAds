@@ -537,17 +537,21 @@ public class Admod {
 
                 if (openActivityAfterShowInterAds && adListener != null) {
                     adListener.onAdClosed();
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (dialog != null && dialog.isShowing() && !activity.isDestroyed())
-                                dialog.dismiss();
-                        }
+                    new Handler().postDelayed(() -> {
+                        if (dialog != null && dialog.isShowing() && !activity.isDestroyed())
+                            dialog.dismiss();
                     }, 1500);
                 }
-                if (activity != null)
+                if (activity != null && mInterstitialSplash != null) {
                     mInterstitialSplash.show(activity);
-                isShowLoadingSplash = false;
+                    isShowLoadingSplash = false;
+                } else if (adListener !=null) {
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                    adListener.onAdClosed();
+                    isShowLoadingSplash = false;
+                }
             }, 800);
 
         }
