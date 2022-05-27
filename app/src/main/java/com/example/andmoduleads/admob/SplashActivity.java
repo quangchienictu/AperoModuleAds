@@ -8,6 +8,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.splashscreen.SplashScreen;
+import androidx.core.splashscreen.SplashScreenViewProvider;
 
 import com.ads.control.ads.Admod;
 import com.ads.control.ads.AppOpenManager;
@@ -29,6 +31,8 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        SplashScreen splashScreen = SplashScreen.installSplashScreen(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
@@ -51,13 +55,21 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
+    private void delayShowMain(){
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                    startMain();
+            }
+        }, 2000);
+    }
 
     private void loadSplash() {
         Log.d(TAG, "onCreate: show splash ads");
-        Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 30000, 5000, true, new AdCallback() {
+        Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 30000,5000,true, new AdCallback() {
             @Override
             public void onAdClosed() {
-                Log.d(TAG, "Close ads splash ");
+                Log.d(TAG, "Close ads splash " );
                 startMain();
             }
 
@@ -65,7 +77,7 @@ public class SplashActivity extends AppCompatActivity {
             public void onAdSplashReady() {
                 super.onAdSplashReady();
                 Log.d(TAG, "onAdSplashReady");
-                Admod.getInstance().onShowSplash(SplashActivity.this, this);
+                Admod.getInstance().onShowSplash(SplashActivity.this,this);
             }
 
             @Override
@@ -76,15 +88,15 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onAdClosedByUser() {
                 super.onAdClosedByUser();
-                Log.d(TAG, "onAdClosedByUser");
+                Log.d(TAG, "onAdClosedByUser" );
             }
         });
 
 
     }
 
-    private void loadSplashAdOpenApp() {
-        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, getString(R.string.admod_app_open_ad_id), 30000);
+    private void loadSplashAdOpenApp(){
+//        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, getString(R.string.admod_app_open_ad_id), 2000);
         AppOpenManager.getInstance().setFullScreenContentCallback(new FullScreenContentCallback() {
             @Override
             public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
