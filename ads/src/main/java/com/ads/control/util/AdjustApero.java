@@ -1,5 +1,7 @@
 package com.ads.control.util;
 
+import android.content.Context;
+
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAdRevenue;
 import com.adjust.sdk.AdjustConfig;
@@ -55,7 +57,7 @@ public class AdjustApero {
             Adjust.trackAdRevenue(adRevenue);
         }
     }
-    public static void pushTrackEventApplovin(  MaxAd ad) {
+    public static void pushTrackEventApplovin(MaxAd ad, Context context) {
         if (AdjustApero.enableAdjust) {
             AdjustAdRevenue adjustAdRevenue = new AdjustAdRevenue( AdjustConfig.AD_REVENUE_APPLOVIN_MAX );
             adjustAdRevenue.setRevenue( ad.getRevenue(), "USD" );
@@ -64,6 +66,8 @@ public class AdjustApero {
             adjustAdRevenue.setAdRevenuePlacement( ad.getPlacement() );
 
             Adjust.trackAdRevenue( adjustAdRevenue );
+
+            FirebaseAnalyticsUtil.logPaidAdImpression(context,ad);
         }
     }
 }

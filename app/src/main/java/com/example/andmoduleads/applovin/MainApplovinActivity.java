@@ -37,7 +37,7 @@ public class MainApplovinActivity extends AppCompatActivity {
                 shimmerFrameLayout,
                 frAds,
                "c810c577b4c36ee5",
-                com.ads.control.R.layout.max_native_custom_ad_small
+                com.ads.control.R.layout.max_native_custom_ad_view
         );
 //        AppLovin.getInstance().loadNative(this, "c810c577b4c36ee5");
 //        AppLovin.getInstance().loadNativeAd(this, "c810c577b4c36ee5", com.ads.control.R.layout.max_native_custom_ad_view, new AppLovinCallback() {

@@ -76,7 +76,25 @@ public class AppLovin {
                 WebView.setDataDirectorySuffix(processName);
             }
         }
+        AppLovinSdk.getInstance(context).setMediationProvider("max");
+        AppLovinSdk.initializeSdk(context, configuration -> {
+            // AppLovin SDK is initialized, start loading ads
+            Log.d(TAG, "init: applovin success");
+            adCallback.initAppLovinSuccess();
+        });
+        this.context = context;
+    }
 
+    public void init(Context context, AppLovinCallback adCallback, Boolean enableDebug) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            String processName = Application.getProcessName();
+            String packageName = context.getPackageName();
+            if (!packageName.equals(processName)) {
+                WebView.setDataDirectorySuffix(processName);
+            }
+        }
+        if (enableDebug)
+            AppLovinSdk.getInstance(context).showMediationDebugger();
         AppLovinSdk.getInstance(context).setMediationProvider("max");
         AppLovinSdk.initializeSdk(context, configuration -> {
             // AppLovin SDK is initialized, start loading ads
@@ -190,6 +208,7 @@ public class AppLovin {
             }
         });
     }
+
     /**
      * Load quảng cáo Full tại màn SplashActivity
      * Sau khoảng thời gian timeout thì load ads và callback về cho View
@@ -200,7 +219,7 @@ public class AppLovin {
      * @param timeDelay  : thời gian chờ show ad từ lúc load ads
      * @param adListener
      */
-    public void loadSplashInterstitialAds(final Context context, String id, long timeOut, long timeDelay,boolean showSplashIfReady, AppLovinCallback adListener) {
+    public void loadSplashInterstitialAds(final Context context, String id, long timeOut, long timeDelay, boolean showSplashIfReady, AppLovinCallback adListener) {
         isTimeDelay = false;
         isTimeout = false;
         Log.i(TAG, "loadSplashInterstitialAds  start time loading:"
@@ -315,6 +334,11 @@ public class AppLovin {
         if (adListener != null) {
             adListener.onAdLoaded();
         }
+        if (interstitialSplash == null) {
+            adListener.onAdClosed();
+            return;
+        }
+        interstitialSplash.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, context));
         interstitialSplash.setListener(new MaxAdListener() {
             @Override
             public void onAdLoaded(MaxAd ad) {
@@ -474,6 +498,8 @@ public class AppLovin {
             }
             return;
         }
+
+        interstitialAd.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, context));
         interstitialAd.setListener(new MaxAdListener() {
             @Override
             public void onAdLoaded(MaxAd ad) {
@@ -585,6 +611,7 @@ public class AppLovin {
         containerShimmer.setVisibility(View.VISIBLE);
         containerShimmer.startShimmer();
         MaxAdView adView = new MaxAdView(id, mActivity);
+        adView.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, mActivity));
         int width = ViewGroup.LayoutParams.MATCH_PARENT;
         // Banner height on phones and tablets is 50 and 90, respectively
         int heightPx = context.getResources().getDimensionPixelSize(R.dimen.banner_height);
@@ -641,7 +668,6 @@ public class AppLovin {
     }
 
 
-
     public void loadNative(final Activity mActivity, String adUnitId) {
         final FrameLayout frameLayout = mActivity.findViewById(R.id.fl_adplaceholder);
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_native);
@@ -659,6 +685,7 @@ public class AppLovin {
         final ShimmerFrameLayout containerShimmer = parent.findViewById(R.id.shimmer_container_native);
         loadNativeAd(mActivity, containerShimmer, frameLayout, adUnitId, R.layout.max_native_custom_ad_view);
     }
+
     public void loadNativeSmallFragment(final Activity mActivity, String adUnitId, View parent) {
         final FrameLayout frameLayout = parent.findViewById(R.id.fl_adplaceholder);
         final ShimmerFrameLayout containerShimmer = parent.findViewById(R.id.shimmer_container_small_native);
@@ -689,7 +716,7 @@ public class AppLovin {
         nativeAdView = new MaxNativeAdView(binder, activity);
 
         MaxNativeAdLoader nativeAdLoader = new MaxNativeAdLoader(id, activity);
-        nativeAdLoader.setRevenueListener(AdjustApero::pushTrackEventApplovin);
+        nativeAdLoader.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, activity));
         nativeAdLoader.setNativeAdListener(new MaxNativeAdListener() {
             @Override
             public void onNativeAdLoaded(final MaxNativeAdView nativeAdView, final MaxAd ad) {
@@ -711,7 +738,7 @@ public class AppLovin {
 
             @Override
             public void onNativeAdClicked(final MaxAd ad) {
-                Log.e(TAG, "`onNativeAdClicked`: "  );
+                Log.e(TAG, "`onNativeAdClicked`: ");
                 containerShimmer.setVisibility(View.VISIBLE);
                 containerShimmer.startShimmer();
                 nativeAdLayout.removeAllViews();
@@ -723,6 +750,7 @@ public class AppLovin {
         });
         nativeAdLoader.loadAd(nativeAdView);
     }
+
     public void loadNativeAd(Activity activity, String id, int layoutCustomNative, AppLovinCallback callback) {
 
         if (AppPurchase.getInstance().isPurchased(context)) {
@@ -743,11 +771,11 @@ public class AppLovin {
         nativeAdView = new MaxNativeAdView(binder, activity);
 
         MaxNativeAdLoader nativeAdLoader = new MaxNativeAdLoader(id, activity);
-        nativeAdLoader.setRevenueListener(AdjustApero::pushTrackEventApplovin);
+        nativeAdLoader.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, activity));
         nativeAdLoader.setNativeAdListener(new MaxNativeAdListener() {
             @Override
             public void onNativeAdLoaded(final MaxNativeAdView nativeAdView, final MaxAd ad) {
-                Log.d(TAG, "onNativeAdLoaded " );
+                Log.d(TAG, "onNativeAdLoaded ");
                 callback.onUnifiedNativeAdLoaded(nativeAdView);
             }
 
@@ -759,7 +787,7 @@ public class AppLovin {
 
             @Override
             public void onNativeAdClicked(final MaxAd ad) {
-                Log.e(TAG, "onNativeAdClicked: "  );
+                Log.e(TAG, "onNativeAdClicked: ");
                 callback.onAdClicked();
             }
         });

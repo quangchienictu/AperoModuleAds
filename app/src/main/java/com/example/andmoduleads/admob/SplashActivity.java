@@ -41,6 +41,7 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void run() {
 //                        loadSplash();
+                        AppPurchase.getInstance().consumePurchase(AppPurchase.PRODUCT_ID_TEST);
                         loadSplashAdOpenApp();
                     }
                 });
@@ -123,7 +124,7 @@ public class SplashActivity extends AppCompatActivity {
                     }
                 });
             }
-        });
+        },true);
     }
 
     private void loadAdmobAd() {

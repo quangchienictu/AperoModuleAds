@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.applovin.mediation.MaxAd;
 import com.google.android.gms.ads.AdValue;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -27,6 +28,20 @@ public class FirebaseAnalyticsUtil {
         params.putInt("precision", adValue.getPrecisionType());
         params.putString("adunitid", adUnitId);
         params.putString("network", mediationAdapterClassName);
+
+        FirebaseAnalytics.getInstance(context).logEvent("paid_ad_impression", params);
+    }
+
+    public static void logPaidAdImpression(Context context, MaxAd adValue ) {
+        Log.d(TAG, "Paid event of value :" + adValue.getRevenue() +
+                        "  microcents in currency  for ad unit :"+adValue.getAdUnitId()+ " from ad network  " +  adValue.getNetworkName());
+
+        Bundle params = new Bundle(); // Log ad value in micros.
+        params.putDouble("valuemicros", adValue.getRevenue());
+        // These values below won’t be used in ROAS recipe.
+        // But log for purposes of debugging and future reference.
+        params.putString("adunitid",  adValue.getAdUnitId());
+        params.putString("network", adValue.getNetworkName());
 
         FirebaseAnalytics.getInstance(context).logEvent("paid_ad_impression", params);
     }
