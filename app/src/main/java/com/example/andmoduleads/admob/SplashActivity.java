@@ -13,8 +13,8 @@ import androidx.core.splashscreen.SplashScreenViewProvider;
 
 import com.ads.control.ads.Admod;
 import com.ads.control.ads.AppOpenManager;
-import com.ads.control.funtion.AdCallback;
 import com.ads.control.billing.AppPurchase;
+import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.BillingListener;
 import com.example.andmoduleads.R;
 import com.google.android.gms.ads.AdError;
@@ -64,7 +64,7 @@ public class SplashActivity extends AppCompatActivity {
         }, 2000);
     }
 
-    private void loadSplash(){
+    private void loadSplash() {
         Log.d(TAG, "onCreate: show splash ads");
         Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 30000,5000,true, new AdCallback() {
             @Override
