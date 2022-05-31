@@ -2,6 +2,7 @@ package com.example.andmoduleads.admob;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -61,6 +62,29 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
+    AppLovinCallback adCallback = new AppLovinCallback() {
+        @Override
+        public void onAdFailedToLoad(@Nullable MaxError i) {
+            super.onAdFailedToLoad(i);
+            startActivity(new Intent(SplashActivity.this, MainApplovinActivity.class));
+            finish();
+        }
+
+        @Override
+        public void onAdLoaded() {
+            super.onAdLoaded();
+            Log.d(TAG, "onAdLoaded");
+        }
+
+        @Override
+        public void onAdClosed() {
+            super.onAdClosed();
+            Log.d(TAG, "onAdClosed");
+            startActivity(new Intent(SplashActivity.this, MainApplovinActivity.class));
+            finish();
+        }
+    };
+
     private void loadSplash() {
         Log.d(TAG, "onCreate: show splash ads");
         Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 30000, 5000, true, new AdCallback() {
@@ -96,35 +120,16 @@ public class SplashActivity extends AppCompatActivity {
         loadAppLovinAd();
     }
 
+
     private void loadAppLovinAd() {
         AppLovin.getInstance().init(this, new AppLovinCallback() {
             @Override
             public void initAppLovinSuccess() {
                 super.initAppLovinSuccess();
-                AppLovin.getInstance().loadSplashInterstitialAds(SplashActivity.this, "cb0a8303fedc7687", 100000, 7000, new AppLovinCallback() {
-                    @Override
-                    public void onAdFailedToLoad(@Nullable MaxError i) {
-                        super.onAdFailedToLoad(i);
-                        startActivity(new Intent(SplashActivity.this, MainApplovinActivity.class));
-                        finish();
-                    }
-
-                    @Override
-                    public void onAdLoaded() {
-                        super.onAdLoaded();
-                        Log.d(TAG, "onAdLoaded");
-                    }
-
-                    @Override
-                    public void onAdClosed() {
-                        super.onAdClosed();
-                        Log.d(TAG, "onAdClosed");
-                        startActivity(new Intent(SplashActivity.this, MainApplovinActivity.class));
-                        finish();
-                    }
-                });
+                AppLovin.getInstance().loadSplashInterstitialAds(SplashActivity.this, getString(R.string.applovin_test_inter), 30000, 7000, adCallback
+                );
             }
-        },true);
+        }, false);
     }
 
     private void loadAdmobAd() {
@@ -163,6 +168,19 @@ public class SplashActivity extends AppCompatActivity {
     private void startMain() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new Handler(getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (AppLovin.getInstance().getInterstitialSplash() != null && AppLovin.getInstance().getInterstitialSplash().isReady() && !AppLovin.getInstance().isShowLoadingSplash) {
+                    AppLovin.getInstance().onShowSplash(SplashActivity.this, adCallback);
+                }
+            }
+        }, 1000);
     }
 
     @Override

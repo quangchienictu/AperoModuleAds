@@ -32,13 +32,7 @@ public class MainApplovinActivity extends AppCompatActivity {
         frAds = findViewById(R.id.fl_adplaceholder);
         shimmerFrameLayout = findViewById(R.id.shimmer_container_native);
 
-        AppLovin.getInstance().loadNativeAd(
-                this,
-                shimmerFrameLayout,
-                frAds,
-               "c810c577b4c36ee5",
-                com.ads.control.R.layout.max_native_custom_ad_view
-        );
+
 //        AppLovin.getInstance().loadNative(this, "c810c577b4c36ee5");
 //        AppLovin.getInstance().loadNativeAd(this, "c810c577b4c36ee5", com.ads.control.R.layout.max_native_custom_ad_view, new AppLovinCallback() {
 //            @Override
@@ -51,7 +45,19 @@ public class MainApplovinActivity extends AppCompatActivity {
 //            }
 //        });
 
-        AppLovin.getInstance().loadBanner(this, "51999ea397c63f9c");
+        AppLovin.getInstance().loadBanner(this, getString(R.string.applovin_test_banner));
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppLovin.getInstance().loadNativeAd(
+                this,
+                shimmerFrameLayout,
+                frAds,
+                getString(R.string.applovin_test_native),
+                com.ads.control.R.layout.max_native_custom_ad_view
+        );
     }
 }

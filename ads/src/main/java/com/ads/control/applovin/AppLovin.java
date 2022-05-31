@@ -48,7 +48,7 @@ public class AppLovin {
     private PrepareLoadingAdsDialog dialog;
     private boolean isTimeout; // xử lý timeout show ads
 
-    private boolean isShowLoadingSplash = false;  //kiểm tra trạng thái ad splash, ko cho load, show khi đang show loading ads splash
+    public boolean isShowLoadingSplash = false;  //kiểm tra trạng thái ad splash, ko cho load, show khi đang show loading ads splash
     boolean isTimeDelay = false; //xử lý delay time show ads, = true mới show ads
     private Context context;
 //    private AppOpenAd appOpenAd = null;
@@ -104,6 +104,10 @@ public class AppLovin {
         this.context = context;
     }
 
+    public MaxInterstitialAd getInterstitialSplash() {
+        return interstitialSplash;
+    }
+
     /**
      * Load quảng cáo Full tại màn SplashActivity
      * Sau khoảng thời gian timeout thì load ads và callback về cho View
@@ -127,9 +131,11 @@ public class AppLovin {
             }
             return;
         }
+
+        interstitialSplash = getInterstitialAds(context, id);
         new Handler().postDelayed(() -> {
             //check delay show ad splash
-            if (interstitialSplash.isReady()) {
+            if (interstitialSplash != null && interstitialSplash.isReady()) {
                 Log.i(TAG, "loadSplashInterstitialAds:show ad on delay ");
                 onShowSplash((Activity) context, adListener);
                 return;
@@ -143,7 +149,7 @@ public class AppLovin {
             rdTimeout = () -> {
                 Log.e(TAG, "loadSplashInterstitialAds: on timeout");
                 isTimeout = true;
-                if (interstitialSplash.isReady()) {
+                if (interstitialSplash != null && interstitialSplash.isReady()) {
                     Log.i(TAG, "loadSplashInterstitialAds:show ad on timeout ");
                     onShowSplash((Activity) context, adListener);
                     return;
@@ -158,7 +164,6 @@ public class AppLovin {
 
         isShowLoadingSplash = true;
 
-        interstitialSplash = getInterstitialAds(context, id);
         interstitialSplash.setListener(new MaxAdListener() {
             @Override
             public void onAdLoaded(MaxAd ad) {
@@ -232,9 +237,11 @@ public class AppLovin {
             }
             return;
         }
+
+        interstitialSplash = getInterstitialAds(context, id);
         new Handler().postDelayed(() -> {
             //check delay show ad splash
-            if (interstitialSplash.isReady()) {
+            if (interstitialSplash != null && interstitialSplash.isReady()) {
                 Log.i(TAG, "loadSplashInterstitialAds:show ad on delay ");
                 if (showSplashIfReady)
                     onShowSplash((Activity) context, adListener);
@@ -251,7 +258,7 @@ public class AppLovin {
             rdTimeout = () -> {
                 Log.e(TAG, "loadSplashInterstitialAds: on timeout");
                 isTimeout = true;
-                if (interstitialSplash.isReady()) {
+                if (interstitialSplash != null && interstitialSplash.isReady()) {
                     Log.i(TAG, "loadSplashInterstitialAds:show ad on timeout ");
                     if (showSplashIfReady)
                         onShowSplash((Activity) context, adListener);
@@ -270,7 +277,6 @@ public class AppLovin {
 
         isShowLoadingSplash = true;
 
-        interstitialSplash = getInterstitialAds(context, id);
         interstitialSplash.setListener(new MaxAdListener() {
             @Override
             public void onAdLoaded(MaxAd ad) {
@@ -392,21 +398,23 @@ public class AppLovin {
                 if (dialog != null && dialog.isShowing())
                     dialog.dismiss();
                 dialog = new PrepareLoadingAdsDialog(activity);
-                try {
+                if (activity != null && !activity.isDestroyed()) {
                     dialog.show();
-                } catch (Exception e) {
-                    adListener.onAdClosed();
-                    return;
                 }
             } catch (Exception e) {
                 dialog = null;
                 e.printStackTrace();
+                adListener.onAdClosed();
+                return;
             }
             new Handler().postDelayed(() -> {
-                if (activity != null)
+                if (activity != null && !activity.isDestroyed())
                     interstitialSplash.showAd();
                 isShowLoadingSplash = false;
             }, 800);
+        }else {
+            Log.e(TAG, "onShowSplash fail " );
+            isShowLoadingSplash = false;
         }
     }
 
@@ -614,7 +622,7 @@ public class AppLovin {
         adView.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, mActivity));
         int width = ViewGroup.LayoutParams.MATCH_PARENT;
         // Banner height on phones and tablets is 50 and 90, respectively
-        int heightPx = context.getResources().getDimensionPixelSize(R.dimen.banner_height);
+        int heightPx = mActivity.getResources().getDimensionPixelSize(R.dimen.banner_height);
         adView.setLayoutParams(new FrameLayout.LayoutParams(width, heightPx));
         adContainer.addView(adView);
         adView.setListener(new MaxAdViewAdListener() {
@@ -703,6 +711,7 @@ public class AppLovin {
         containerShimmer.startShimmer();
 
         nativeAdLayout.removeAllViews();
+        nativeAdLayout.setVisibility(View.GONE);
         MaxNativeAdViewBinder binder = new MaxNativeAdViewBinder.Builder(layoutCustomNative)
                 .setTitleTextViewId(R.id.ad_headline)
                 .setBodyTextViewId(R.id.ad_body)
