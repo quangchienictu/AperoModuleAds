@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
 
@@ -359,14 +360,14 @@ public class AppLovin {
 
             @Override
             public void onAdHidden(MaxAd ad) {
-                Log.d(TAG, "onAdHidden: ");
-                if (adListener != null) {
+                Log.d(TAG, "onAdHidden: " +((AppCompatActivity) activity).getLifecycle().getCurrentState());
+                if (adListener != null && ((AppCompatActivity) activity).getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
                     adListener.onAdClosed();
+                    interstitialSplash = null;
                     if (dialog != null) {
                         dialog.dismiss();
                     }
                 }
-                interstitialSplash = null;
             }
 
             @Override
@@ -519,9 +520,10 @@ public class AppLovin {
 
             }
 
+
             @Override
             public void onAdHidden(MaxAd ad) {
-                if (callback != null) {
+                if (callback != null  && ((AppCompatActivity) context).getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
                     callback.onAdClosed();
                     if (shouldReloadAds) {
                         requestInterstitialAds(interstitialAd);
@@ -530,7 +532,7 @@ public class AppLovin {
                         dialog.dismiss();
                     }
                 }
-                Log.d(TAG, "onAdHidden: ");
+                Log.d(TAG, "onAdHidden: " +((AppCompatActivity) context).getLifecycle().getCurrentState());
             }
 
             @Override
