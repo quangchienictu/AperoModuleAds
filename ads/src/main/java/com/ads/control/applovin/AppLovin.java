@@ -404,6 +404,7 @@ public class AppLovin {
                     dialog.dismiss();
                 dialog = new PrepareLoadingAdsDialog(activity);
                 if (activity != null && !activity.isDestroyed()) {
+                    dialog.setCancelable(false);
                     dialog.show();
                 }
             } catch (Exception e) {
@@ -505,7 +506,7 @@ public class AppLovin {
             callback.onAdClosed();
             return;
         }
-        if (interstitialAd == null) {
+        if (interstitialAd == null || !interstitialAd.isReady()) {
             if (callback != null) {
                 callback.onAdClosed();
             }
@@ -585,6 +586,7 @@ public class AppLovin {
                         dialog.dismiss();
                     dialog = new PrepareLoadingAdsDialog(context);
                     try {
+                        dialog.setCancelable(false);
                         dialog.show();
                     } catch (Exception e) {
                         callback.onAdClosed();
@@ -810,7 +812,7 @@ public class AppLovin {
     }
 
     public MaxRecyclerAdapter getNativeRepeatAdapter(Activity activity, String id, int layoutCustomNative, RecyclerView.Adapter originalAdapter,
-                                                     MaxAdPlacer.Listener listener, int repeatingInterval) {
+                                                     MaxAdPlacer.Listener listener, int repeatingInterval ) {
         //seting max
         MaxAdPlacerSettings settings = new MaxAdPlacerSettings(id);
         settings.setRepeatingInterval(repeatingInterval);
@@ -818,7 +820,7 @@ public class AppLovin {
         MaxRecyclerAdapter adAdapter = new MaxRecyclerAdapter(settings, originalAdapter, activity);
         adAdapter.getAdPlacer().setAdSize(-1, -1);
 
-        MaxNativeAdViewBinder binder = new MaxNativeAdViewBinder.Builder(R.layout.max_native_custom_ad_view)
+        MaxNativeAdViewBinder binder = new MaxNativeAdViewBinder.Builder(layoutCustomNative)
                 .setTitleTextViewId(com.ads.control.R.id.ad_headline)
                 .setBodyTextViewId(com.ads.control.R.id.ad_body)
                 .setAdvertiserTextViewId(com.ads.control.R.id.ad_advertiser)
@@ -829,7 +831,6 @@ public class AppLovin {
                 .build();
 
         adAdapter.getAdPlacer().setNativeAdViewBinder(binder);
-        adAdapter.getAdPlacer().setAdSize(-1, 280);
         if (listener != null)
             adAdapter.setListener(listener);
         return adAdapter;
@@ -844,7 +845,7 @@ public class AppLovin {
         MaxRecyclerAdapter adAdapter = new MaxRecyclerAdapter(settings, originalAdapter, activity);
         adAdapter.getAdPlacer().setAdSize(-1, -1);
 
-        MaxNativeAdViewBinder binder = new MaxNativeAdViewBinder.Builder(R.layout.max_native_custom_ad_view)
+        MaxNativeAdViewBinder binder = new MaxNativeAdViewBinder.Builder(layoutCustomNative)
                 .setTitleTextViewId(com.ads.control.R.id.ad_headline)
                 .setBodyTextViewId(com.ads.control.R.id.ad_body)
                 .setAdvertiserTextViewId(com.ads.control.R.id.ad_advertiser)
@@ -855,7 +856,6 @@ public class AppLovin {
                 .build();
 
         adAdapter.getAdPlacer().setNativeAdViewBinder(binder);
-        adAdapter.getAdPlacer().setAdSize(-1, 280);
         if (listener != null)
             adAdapter.setListener(listener);
         return adAdapter;
