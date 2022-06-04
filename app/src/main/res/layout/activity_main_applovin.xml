@@ -7,7 +7,9 @@
     tools:context=".applovin.MainApplovinActivity">
 
 
-    <include layout="@layout/layout_native_control" />
+    <include
+        android:id="@+id/include2"
+        layout="@layout/layout_native_control" />
      <include
     android:id="@+id/include"
     layout="@layout/layout_banner_control"
@@ -15,4 +17,14 @@
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     app:layout_constraintBottom_toBottomOf="parent" />
+
+    <Button
+        android:id="@+id/btnLoadInter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Load inter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

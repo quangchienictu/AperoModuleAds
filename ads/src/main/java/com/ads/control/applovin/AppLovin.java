@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.ads.control.R;
 import com.ads.control.billing.AppPurchase;
@@ -31,6 +32,9 @@ import com.applovin.mediation.nativeAds.MaxNativeAdListener;
 import com.applovin.mediation.nativeAds.MaxNativeAdLoader;
 import com.applovin.mediation.nativeAds.MaxNativeAdView;
 import com.applovin.mediation.nativeAds.MaxNativeAdViewBinder;
+import com.applovin.mediation.nativeAds.adPlacer.MaxAdPlacer;
+import com.applovin.mediation.nativeAds.adPlacer.MaxAdPlacerSettings;
+import com.applovin.mediation.nativeAds.adPlacer.MaxRecyclerAdapter;
 import com.applovin.sdk.AppLovinSdk;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
@@ -360,7 +364,7 @@ public class AppLovin {
 
             @Override
             public void onAdHidden(MaxAd ad) {
-                Log.d(TAG, "onAdHidden: " +((AppCompatActivity) activity).getLifecycle().getCurrentState());
+                Log.d(TAG, "onAdHidden: " + ((AppCompatActivity) activity).getLifecycle().getCurrentState());
                 if (adListener != null && ((AppCompatActivity) activity).getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
                     adListener.onAdClosed();
                     interstitialSplash = null;
@@ -413,8 +417,8 @@ public class AppLovin {
                     interstitialSplash.showAd();
                 isShowLoadingSplash = false;
             }, 800);
-        }else {
-            Log.e(TAG, "onShowSplash fail " );
+        } else {
+            Log.e(TAG, "onShowSplash fail ");
             isShowLoadingSplash = false;
         }
     }
@@ -523,7 +527,7 @@ public class AppLovin {
 
             @Override
             public void onAdHidden(MaxAd ad) {
-                if (callback != null  && ((AppCompatActivity) context).getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+                if (callback != null && ((AppCompatActivity) context).getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
                     callback.onAdClosed();
                     if (shouldReloadAds) {
                         requestInterstitialAds(interstitialAd);
@@ -532,7 +536,7 @@ public class AppLovin {
                         dialog.dismiss();
                     }
                 }
-                Log.d(TAG, "onAdHidden: " +((AppCompatActivity) context).getLifecycle().getCurrentState());
+                Log.d(TAG, "onAdHidden: " + ((AppCompatActivity) context).getLifecycle().getCurrentState());
             }
 
             @Override
@@ -803,5 +807,57 @@ public class AppLovin {
             }
         });
         nativeAdLoader.loadAd(nativeAdView);
+    }
+
+    public MaxRecyclerAdapter getNativeRepeatAdapter(Activity activity, String id, int layoutCustomNative, RecyclerView.Adapter originalAdapter,
+                                                     MaxAdPlacer.Listener listener, int repeatingInterval) {
+        //seting max
+        MaxAdPlacerSettings settings = new MaxAdPlacerSettings(id);
+        settings.setRepeatingInterval(repeatingInterval);
+
+        MaxRecyclerAdapter adAdapter = new MaxRecyclerAdapter(settings, originalAdapter, activity);
+        adAdapter.getAdPlacer().setAdSize(-1, -1);
+
+        MaxNativeAdViewBinder binder = new MaxNativeAdViewBinder.Builder(R.layout.max_native_custom_ad_view)
+                .setTitleTextViewId(com.ads.control.R.id.ad_headline)
+                .setBodyTextViewId(com.ads.control.R.id.ad_body)
+                .setAdvertiserTextViewId(com.ads.control.R.id.ad_advertiser)
+                .setIconImageViewId(com.ads.control.R.id.ad_app_icon)
+                .setMediaContentViewGroupId(com.ads.control.R.id.ad_media)
+                .setOptionsContentViewGroupId(com.ads.control.R.id.ad_options_view)
+                .setCallToActionButtonId(com.ads.control.R.id.ad_call_to_action)
+                .build();
+
+        adAdapter.getAdPlacer().setNativeAdViewBinder(binder);
+        adAdapter.getAdPlacer().setAdSize(-1, 280);
+        if (listener != null)
+            adAdapter.setListener(listener);
+        return adAdapter;
+    }
+
+    public MaxRecyclerAdapter getNativeFixedPositionAdapter(Activity activity, String id, int layoutCustomNative, RecyclerView.Adapter originalAdapter,
+                                                        MaxAdPlacer.Listener listener, int position) {
+        //seting max
+        MaxAdPlacerSettings settings = new MaxAdPlacerSettings(id);
+        settings.addFixedPosition(position);
+
+        MaxRecyclerAdapter adAdapter = new MaxRecyclerAdapter(settings, originalAdapter, activity);
+        adAdapter.getAdPlacer().setAdSize(-1, -1);
+
+        MaxNativeAdViewBinder binder = new MaxNativeAdViewBinder.Builder(R.layout.max_native_custom_ad_view)
+                .setTitleTextViewId(com.ads.control.R.id.ad_headline)
+                .setBodyTextViewId(com.ads.control.R.id.ad_body)
+                .setAdvertiserTextViewId(com.ads.control.R.id.ad_advertiser)
+                .setIconImageViewId(com.ads.control.R.id.ad_app_icon)
+                .setMediaContentViewGroupId(com.ads.control.R.id.ad_media)
+                .setOptionsContentViewGroupId(com.ads.control.R.id.ad_options_view)
+                .setCallToActionButtonId(com.ads.control.R.id.ad_call_to_action)
+                .build();
+
+        adAdapter.getAdPlacer().setNativeAdViewBinder(binder);
+        adAdapter.getAdPlacer().setAdSize(-1, 280);
+        if (listener != null)
+            adAdapter.setListener(listener);
+        return adAdapter;
     }
 }

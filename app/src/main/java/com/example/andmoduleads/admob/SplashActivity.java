@@ -126,8 +126,9 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void initAppLovinSuccess() {
                 super.initAppLovinSuccess();
-                AppLovin.getInstance().loadSplashInterstitialAds(SplashActivity.this, getString(R.string.applovin_test_inter), 30000, 7000, adCallback
-                );
+//                startActivity(new Intent(SplashActivity.this, MainApplovinActivity.class));
+//                finish();
+                AppLovin.getInstance().loadSplashInterstitialAds(SplashActivity.this, getString(R.string.applovin_test_inter), 30000, 7000, adCallback);
             }
         }, false);
     }

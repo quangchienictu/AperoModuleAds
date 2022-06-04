@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.solver.GoalRow;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,12 @@ public class MainApplovinActivity extends AppCompatActivity {
         frAds = findViewById(R.id.fl_adplaceholder);
         shimmerFrameLayout = findViewById(R.id.shimmer_container_native);
 
+        findViewById(R.id.btnLoadInter).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainApplovinActivity.this, SimpleListActivity.class));
+            }
+        });
 
 //        AppLovin.getInstance().loadNative(this, "c810c577b4c36ee5");
 //        AppLovin.getInstance().loadNativeAd(this, "c810c577b4c36ee5", com.ads.control.R.layout.max_native_custom_ad_view, new AppLovinCallback() {
