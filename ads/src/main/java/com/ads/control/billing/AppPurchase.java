@@ -164,7 +164,7 @@ public class AppPurchase {
         public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
             Log.d(TAG, "onBillingSetupFinished:  " + billingResult.getResponseCode());
 
-            if (billingListener != null && !isInitBillingFinish) {
+            if (!isInitBillingFinish) {
                 verifyPurchased(true);
             }
 
@@ -300,7 +300,7 @@ public class AppPurchase {
                                     Log.d(TAG, "verifyPurchased INAPP: true");
                                     isPurchase = true;
                                     if (!verified) {
-                                        if (isCallback)
+                                        if (billingListener != null && isCallback)
                                             billingListener.onInitBillingListener(billingResult.getResponseCode());
                                         verified = true;
                                         verifiedINAP = true;
@@ -331,7 +331,7 @@ public class AppPurchase {
                                     Log.d(TAG, "verifyPurchased SUBS: true");
                                     isPurchase = true;
                                     if (!verified) {
-                                        if (isCallback)
+                                        if (billingListener != null && isCallback)
                                             billingListener.onInitBillingListener(billingResult.getResponseCode());
                                         verified = true;
                                         verifiedINAP = true;
@@ -612,8 +612,7 @@ public class AppPurchase {
                 @Override
                 public void onConsumeResponse(BillingResult billingResult, String purchaseToken) {
                     Log.d(TAG, "onConsumeResponse: " + billingResult.getDebugMessage());
-                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                    }
+
                 }
             };
 
