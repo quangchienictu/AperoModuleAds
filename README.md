@@ -4,12 +4,18 @@ Import Module
 ~~~
 	maven { url 'https://jitpack.io' }
 
-	implementation 'com.github.AperoVN:AperoModuleAds:2.4.1'
+	// for targetSdkVersion >31 and admob sdk 20.5.0
+	implementation 'com.github.AperoVN:AperoModuleAds:3.0.2'
+	// for targetSdkVersion <31 and admob sdk 20.4.0
+	implementation 'com.github.AperoVN:AperoModuleAds:2.6.0-rc.3'
+	// integrate max mediation 
+	implementation 'com.github.AperoVN:AperoModuleAds:2.6.10-max'
 ~~~	 
 # Summary
 * [Setup Admob](#example-admob)
 	* [Setup id ads](#set_up_ads)
 	* [Ads Formats](#ads_formats)
+* [Setup Max Mediation](#example-max)
 * Setup Iron Source
 	* Coming soon
 * Setup FAN
@@ -64,7 +70,7 @@ override fun onCreate() {
 }
 ~~~
 ## <a id="ads_formats"></a>Ads formats
-### Ad Splash
+### Ad Splash Interstitial
 SplashActivity
 ~~~ 
   var adCallback: AdCallback = object : AdCallback() {
@@ -195,7 +201,113 @@ App
   	return ID_AD_RESUME
   }
 ~~~
+# <a id="example-max"></a>Setup Max Mediation
+AndroidManiafest.xml
+~~~
+        <meta-data
+            android:name="applovin.sdk.key"
+            android:value="@string/sdk_key_applovin" />
+~~~
+### Init and load Ad Splash Interstitial
+~~~ 
+AppLovin.getInstance().init(this, object : AppLovinCallback() {
+                override fun initAppLovinSuccess() {
+                    super.initAppLovinSuccess()
+                    AppLovin.getInstance().loadSplashInterstitialAds(
+                        this@SplashActivity,
+                        idAdSplash,
+                        timeout,
+                        timeDelayShowSplash,
+                        true,
+                        appLovinCallbackWhenLoad
+                    )
+                }
+            })
+~~~
+### Interstitial
+Load ad interstital before show
+~~~
+	//load interstitial	
+	adInterstital = AppLovin.getInstance()
+                        .getInterstitialAds(this, BuildConfig.ad_interstitial_view_file)
+	
+	// show interstitial and reload interstitial
+	   AppLovin.getInstance().forceShowInterstitial(
+                        this,
+                        adInterstital,
+                        new AdCallback() {
+                            @Override
+                            public void onAdClosed() {
+                                // next action here
+                            }
 
+                            @Override
+                            public void onAdClicked() {
+                                super.onAdClicked();
+                            }
+                        },true);
+~~~
+### Ad Banner
+include layout banner
+activity_main.xml
+~~~
+  <include
+  android:id="@+id/include"
+  layout="@layout/layout_banner_control"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:layout_alignParentBottom="true"
+  app:layout_constraintBottom_toBottomOf="parent" />
+~~~
+load ad banner
+~~~
+ AppLovin.getInstance().loadBanner(this,ID_AD_BANNER)
+~~~
+### Ad Native
+Load ad native before show
+~~~
+ AppLovin.getInstance().loadNativeAd(
+                        this,
+                        BuildConfig.native_language,
+                        R.layout.layout_custom_native_max,
+                        object :
+                            AppLovinCallback() {
+                            override fun onUnifiedNativeAdLoaded(unifiedNativeAd: MaxNativeAdView?) {
+                                super.onUnifiedNativeAdLoaded(unifiedNativeAd)
+                               
+                            }
+
+                            override fun onAdFailedToLoad(i: MaxError?) {
+                                super.onAdFailedToLoad(i)
+                               
+                            }
+                        })
+~~~
+Show ad native
+~~~
+	layoutAdNative.addView(unifiedNativeAd)
+~~~
+Native Ads for recycleView
+~~~
+// Fixed Position native in adapter
+adAdapter = AppLovin.getInstance().getNativeFixedPositionAdapter(this,getString(R.string.applovin_test_native),R.layout.layout_custom_native_max,
+                originalAdapter, listener,5);
+// Repeat Native in adapter
+adAdapter = AppLovin.getInstance().getNativeRepeatAdapter(this, getString(R.string.applovin_test_native), R.layout.max_native_custom_ad_small,
+                originalAdapter, listener,5);
+	
+recyclerView.setAdapter(adAdapter);
+adAdapter.loadAds();
+
+//remove adAdapter
+@Override
+public void onDestroy()
+    {
+        adAdapter.destroy();
+        super.onDestroy();
+    }
+~~~
+	
 # <a id="billing_app"></a>Billing app
 ## Init Billing
 Application
