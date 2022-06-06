@@ -188,6 +188,10 @@ public class Admod {
     }
 
 
+    public boolean isShowLoadingSplash() {
+        return isShowLoadingSplash;
+    }
+
     private String getProcessName(Context context) {
         if (context == null) return null;
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -322,6 +326,7 @@ public class Admod {
             @Override
             public void onAdFailedToLoad(LoadAdError i) {
                 super.onAdFailedToLoad(i);
+                isShowLoadingSplash = false;
                 Log.e(TAG, "loadSplashInterstitalAds  end time loading error:" + Calendar.getInstance().getTimeInMillis() + "     time limit:" + isTimeout);
                 if (isTimeout)
                     return;
@@ -491,10 +496,12 @@ public class Admod {
                     }
                 }
                 mInterstitialSplash = null;
+                isShowLoadingSplash = false;
             }
 
             @Override
             public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                Log.e(TAG, "Splash onAdFailedToShowFullScreenContent: ");
                 mInterstitialSplash = null;
                 isShowLoadingSplash = false;
                 if (adListener != null) {
@@ -554,6 +561,9 @@ public class Admod {
                 }
             }, 800);
 
+        }else {
+            isShowLoadingSplash = false;
+            Log.e(TAG, "onShowSplash: fail on background" );
         }
     }
 

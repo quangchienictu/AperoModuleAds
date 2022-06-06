@@ -64,33 +64,35 @@ public class SplashActivity extends AppCompatActivity {
         }, 2000);
     }
 
-    private void loadSplash() {
+    private AdCallback callback = new AdCallback() {
+        @Override
+        public void onAdClosed() {
+            Log.d(TAG, "Close ads splash " );
+            startMain();
+        }
+
+        @Override
+        public void onAdSplashReady() {
+            super.onAdSplashReady();
+            Log.d(TAG, "onAdSplashReady");
+            Admod.getInstance().onShowSplash(SplashActivity.this,this);
+        }
+
+        @Override
+        public void onAdFailedToLoad(LoadAdError i) {
+            startMain();
+        }
+
+        @Override
+        public void onAdClosedByUser() {
+            super.onAdClosedByUser();
+            Log.d(TAG, "onAdClosedByUser" );
+        }
+    };
+
+    private void loadSplash(){
         Log.d(TAG, "onCreate: show splash ads");
-        Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 30000,5000,true, new AdCallback() {
-            @Override
-            public void onAdClosed() {
-                Log.d(TAG, "Close ads splash " );
-                startMain();
-            }
-
-            @Override
-            public void onAdSplashReady() {
-                super.onAdSplashReady();
-                Log.d(TAG, "onAdSplashReady");
-                Admod.getInstance().onShowSplash(SplashActivity.this,this);
-            }
-
-            @Override
-            public void onAdFailedToLoad(LoadAdError i) {
-                startMain();
-            }
-
-            @Override
-            public void onAdClosedByUser() {
-                super.onAdClosedByUser();
-                Log.d(TAG, "onAdClosedByUser" );
-            }
-        });
+        Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 30000,5000,true, callback);
 
 
     }
@@ -131,6 +133,19 @@ public class SplashActivity extends AppCompatActivity {
     private void startMain() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new Handler(getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (Admod.getInstance().interstialSplashLoead()     && !Admod.getInstance().isShowLoadingSplash()) {
+                    Admod.getInstance().onShowSplash(SplashActivity.this, callback);
+                }
+            }
+        }, 1000);
     }
 
     @Override
