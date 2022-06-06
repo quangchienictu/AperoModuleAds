@@ -2,11 +2,11 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion 17
-        targetSdkVersion 31
+        targetSdkVersion 30
         versionCode 9
         versionName "1.1.3"
     }
@@ -37,7 +37,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.gms:play-services-ads:20.5.0'
+    implementation 'com.google.android.gms:play-services-ads:20.4.0'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 //    implementation 'com.anjlab.android.iab.v3:library:1.1.0'
     implementation 'com.intuit.sdp:sdp-android:1.0.6'

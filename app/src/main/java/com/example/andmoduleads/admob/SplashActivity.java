@@ -8,8 +8,6 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.splashscreen.SplashScreen;
-import androidx.core.splashscreen.SplashScreenViewProvider;
 
 import com.ads.control.ads.Admod;
 import com.ads.control.ads.AppOpenManager;
