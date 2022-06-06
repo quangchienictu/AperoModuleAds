@@ -138,14 +138,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        new Handler(getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (Admod.getInstance().interstialSplashLoead()     && !Admod.getInstance().isShowLoadingSplash()) {
-                    Admod.getInstance().onShowSplash(SplashActivity.this, callback);
-                }
-            }
-        }, 1000);
+        Admod.getInstance().onCheckShowSplashWhenFail(this, callback, 1000);
     }
 
     @Override

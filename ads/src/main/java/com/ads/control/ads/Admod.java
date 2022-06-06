@@ -552,7 +552,7 @@ public class Admod {
                 if (activity != null && mInterstitialSplash != null) {
                     mInterstitialSplash.show(activity);
                     isShowLoadingSplash = false;
-                } else if (adListener !=null) {
+                } else if (adListener != null) {
                     if (dialog != null) {
                         dialog.dismiss();
                     }
@@ -561,10 +561,21 @@ public class Admod {
                 }
             }, 800);
 
-        }else {
+        } else {
             isShowLoadingSplash = false;
-            Log.e(TAG, "onShowSplash: fail on background" );
+            Log.e(TAG, "onShowSplash: fail on background");
         }
+    }
+
+    public void onCheckShowSplashWhenFail(Activity activity, AdCallback callback, int timeDelay) {
+        new Handler(activity.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (interstialSplashLoead() && !isShowLoadingSplash()) {
+                    Admod.getInstance().onShowSplash(activity, callback);
+                }
+            }
+        }, timeDelay);
     }
 
     public void loadInterstitialAds(Context context, String id, long timeOut, AdCallback adListener) {
