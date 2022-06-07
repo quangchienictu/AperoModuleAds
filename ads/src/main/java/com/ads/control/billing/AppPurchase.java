@@ -343,7 +343,9 @@ public class AppPurchase {
                     }
                     if (verifiedINAP && !verified) {
                         // chưa mua subs và IAP
-                        billingListener.onInitBillingListener(billingResult.getResponseCode());
+                        if (billingListener != null && isCallback) {
+                            billingListener.onInitBillingListener(billingResult.getResponseCode());
+                        }
                     }
                     verifiedSUBS = true;
                 }

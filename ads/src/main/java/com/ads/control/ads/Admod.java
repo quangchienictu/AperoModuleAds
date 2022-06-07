@@ -188,6 +188,10 @@ public class Admod {
     }
 
 
+    public boolean isShowLoadingSplash() {
+        return isShowLoadingSplash;
+    }
+
     private String getProcessName(Context context) {
         if (context == null) return null;
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -322,6 +326,7 @@ public class Admod {
             @Override
             public void onAdFailedToLoad(LoadAdError i) {
                 super.onAdFailedToLoad(i);
+                isShowLoadingSplash = false;
                 Log.e(TAG, "loadSplashInterstitalAds  end time loading error:" + Calendar.getInstance().getTimeInMillis() + "     time limit:" + isTimeout);
                 if (isTimeout)
                     return;
@@ -446,17 +451,21 @@ public class Admod {
         isShowLoadingSplash = true;
         Log.d(TAG, "onShowSplash: ");
 
-        if (mInterstitialSplash != null) {
-            mInterstitialSplash.setOnPaidEventListener(adValue -> {
-                Log.d(TAG, "OnPaidEvent splash:" + adValue.getValueMicros());
-                AdjustApero.pushTrackEventAdmod(adValue);
-                FirebaseAnalyticsUtil.logPaidAdImpression(context,
-                        adValue,
-                        mInterstitialSplash.getAdUnitId(),
-                        mInterstitialSplash.getResponseInfo()
-                                .getMediationAdapterClassName());
-            });
+        if (mInterstitialSplash == null) {
+            adListener.onAdClosed();
+            return;
         }
+
+        mInterstitialSplash.setOnPaidEventListener(adValue -> {
+            Log.d(TAG, "OnPaidEvent splash:" + adValue.getValueMicros());
+            AdjustApero.pushTrackEventAdmod(adValue);
+            FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                    adValue,
+                    mInterstitialSplash.getAdUnitId(),
+                    mInterstitialSplash.getResponseInfo()
+                            .getMediationAdapterClassName());
+        });
+
         if (handlerTimeout != null && rdTimeout != null) {
             handlerTimeout.removeCallbacks(rdTimeout);
         }
@@ -488,10 +497,12 @@ public class Admod {
                     }
                 }
                 mInterstitialSplash = null;
+                isShowLoadingSplash = false;
             }
 
             @Override
             public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                Log.e(TAG, "Splash onAdFailedToShowFullScreenContent: ");
                 mInterstitialSplash = null;
                 isShowLoadingSplash = false;
                 if (adListener != null) {
@@ -534,20 +545,38 @@ public class Admod {
 
                 if (openActivityAfterShowInterAds && adListener != null) {
                     adListener.onAdClosed();
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (dialog != null && dialog.isShowing() && !activity.isDestroyed())
-                                dialog.dismiss();
-                        }
+                    new Handler().postDelayed(() -> {
+                        if (dialog != null && dialog.isShowing() && !activity.isDestroyed())
+                            dialog.dismiss();
                     }, 1500);
                 }
-                if (activity != null)
+                if (activity != null && mInterstitialSplash != null) {
                     mInterstitialSplash.show(activity);
-                isShowLoadingSplash = false;
+                    isShowLoadingSplash = false;
+                } else if (adListener != null) {
+                    if (dialog != null) {
+                        dialog.dismiss();
+                    }
+                    adListener.onAdClosed();
+                    isShowLoadingSplash = false;
+                }
             }, 800);
 
+        } else {
+            isShowLoadingSplash = false;
+            Log.e(TAG, "onShowSplash: fail on background");
         }
+    }
+
+    public void onCheckShowSplashWhenFail(Activity activity, AdCallback callback, int timeDelay) {
+        new Handler(activity.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (interstialSplashLoead() && !isShowLoadingSplash()) {
+                    Admod.getInstance().onShowSplash(activity, callback);
+                }
+            }
+        }, timeDelay);
     }
 
     public void loadInterstitialAds(Context context, String id, long timeOut, AdCallback adListener) {

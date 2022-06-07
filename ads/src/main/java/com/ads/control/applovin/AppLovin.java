@@ -17,6 +17,7 @@ import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ads.control.R;
+import com.ads.control.ads.Admod;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
@@ -424,6 +425,18 @@ public class AppLovin {
         }
     }
 
+    public void onCheckShowSplashWhenFail(Activity activity, AppLovinCallback callback, int timeDelay) {
+        new Handler(activity.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (AppLovin.getInstance().getInterstitialSplash() != null && AppLovin.getInstance().getInterstitialSplash().isReady() && !AppLovin.getInstance().isShowLoadingSplash) {
+                    AppLovin.getInstance().onShowSplash(activity, callback);
+                }
+            }
+        }, timeDelay);
+    }
+
+
     /**
      * Trả về 1 InterstitialAd và request Ads
      *
@@ -812,7 +825,7 @@ public class AppLovin {
     }
 
     public MaxRecyclerAdapter getNativeRepeatAdapter(Activity activity, String id, int layoutCustomNative, RecyclerView.Adapter originalAdapter,
-                                                     MaxAdPlacer.Listener listener, int repeatingInterval ) {
+                                                     MaxAdPlacer.Listener listener, int repeatingInterval) {
         //seting max
         MaxAdPlacerSettings settings = new MaxAdPlacerSettings(id);
         settings.setRepeatingInterval(repeatingInterval);
@@ -837,7 +850,7 @@ public class AppLovin {
     }
 
     public MaxRecyclerAdapter getNativeFixedPositionAdapter(Activity activity, String id, int layoutCustomNative, RecyclerView.Adapter originalAdapter,
-                                                        MaxAdPlacer.Listener listener, int position) {
+                                                            MaxAdPlacer.Listener listener, int position) {
         //seting max
         MaxAdPlacerSettings settings = new MaxAdPlacerSettings(id);
         settings.addFixedPosition(position);
