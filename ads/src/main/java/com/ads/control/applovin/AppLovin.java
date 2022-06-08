@@ -27,8 +27,11 @@ import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdListener;
 import com.applovin.mediation.MaxAdViewAdListener;
 import com.applovin.mediation.MaxError;
+import com.applovin.mediation.MaxReward;
+import com.applovin.mediation.MaxRewardedAdListener;
 import com.applovin.mediation.ads.MaxAdView;
 import com.applovin.mediation.ads.MaxInterstitialAd;
+import com.applovin.mediation.ads.MaxRewardedAd;
 import com.applovin.mediation.nativeAds.MaxNativeAdListener;
 import com.applovin.mediation.nativeAds.MaxNativeAdLoader;
 import com.applovin.mediation.nativeAds.MaxNativeAdView;
@@ -872,5 +875,139 @@ public class AppLovin {
         if (listener != null)
             adAdapter.setListener(listener);
         return adAdapter;
+    }
+
+
+    public MaxRewardedAd getRewardAd(Activity activity, String id, AppLovinCallback callback) {
+        MaxRewardedAd rewardedAd = MaxRewardedAd.getInstance(id, activity);
+        rewardedAd.setListener(new MaxRewardedAdListener() {
+            @Override
+            public void onRewardedVideoStarted(MaxAd ad) {
+                Log.d(TAG, "onRewardedVideoStarted: ");
+            }
+
+            @Override
+            public void onRewardedVideoCompleted(MaxAd ad) {
+                Log.d(TAG, "onRewardedVideoCompleted: ");
+            }
+
+            @Override
+            public void onUserRewarded(MaxAd ad, MaxReward reward) {
+                callback.onUserRewarded(reward);
+                Log.d(TAG, "onUserRewarded: ");
+            }
+
+            @Override
+            public void onAdLoaded(MaxAd ad) {
+                Log.d(TAG, "onAdLoaded: ");
+                callback.onAdLoaded();
+            }
+
+            @Override
+            public void onAdDisplayed(MaxAd ad) {
+                Log.d(TAG, "onAdDisplayed: ");
+            }
+
+            @Override
+            public void onAdHidden(MaxAd ad) {
+                callback.onAdClosed();
+                Log.d(TAG, "onAdHidden: ");
+            }
+
+            @Override
+            public void onAdClicked(MaxAd ad) {
+                callback.onAdClicked();
+            }
+
+            @Override
+            public void onAdLoadFailed(String adUnitId, MaxError error) {
+                Log.d(TAG, "onAdLoadFailed: " + error.getMessage());
+                callback.onAdFailedToLoad(error);
+            }
+
+            @Override
+            public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+                Log.d(TAG, "onAdDisplayFailed: " + error.getMessage());
+                callback.onAdFailedToShow(error);
+            }
+        });
+        rewardedAd.loadAd();
+        return rewardedAd;
+    }
+
+    public MaxRewardedAd getRewardAd(Activity activity, String id ) {
+        MaxRewardedAd rewardedAd = MaxRewardedAd.getInstance(id, activity);
+        rewardedAd.loadAd();
+        return rewardedAd;
+    }
+
+    public void showRewardAd(Activity activity, MaxRewardedAd maxRewardedAd,AppLovinCallback callback) {
+        if (maxRewardedAd.isReady()){
+            maxRewardedAd.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, activity));
+            maxRewardedAd.setListener(new MaxRewardedAdListener() {
+                @Override
+                public void onRewardedVideoStarted(MaxAd ad) {
+                    Log.d(TAG, "onRewardedVideoStarted: ");
+                }
+
+                @Override
+                public void onRewardedVideoCompleted(MaxAd ad) {
+                    Log.d(TAG, "onRewardedVideoCompleted: ");
+                }
+
+                @Override
+                public void onUserRewarded(MaxAd ad, MaxReward reward) {
+                    callback.onUserRewarded(reward);
+                    Log.d(TAG, "onUserRewarded: ");
+                }
+
+                @Override
+                public void onAdLoaded(MaxAd ad) {
+                    Log.d(TAG, "onAdLoaded: ");
+                    callback.onAdLoaded();
+                }
+
+                @Override
+                public void onAdDisplayed(MaxAd ad) {
+                    Log.d(TAG, "onAdDisplayed: ");
+                }
+
+                @Override
+                public void onAdHidden(MaxAd ad) {
+                    callback.onAdClosed();
+                    Log.d(TAG, "onAdHidden: ");
+                }
+
+                @Override
+                public void onAdClicked(MaxAd ad) {
+                    callback.onAdClicked();
+                }
+
+                @Override
+                public void onAdLoadFailed(String adUnitId, MaxError error) {
+                    Log.d(TAG, "onAdLoadFailed: " + error.getMessage());
+                    callback.onAdFailedToLoad(error);
+                }
+
+                @Override
+                public void onAdDisplayFailed(MaxAd ad, MaxError error) {
+                    Log.d(TAG, "onAdDisplayFailed: " + error.getMessage());
+                    callback.onAdFailedToShow(error);
+                }
+            });
+            maxRewardedAd.showAd();
+        }else {
+            Log.e(TAG, "showRewardAd error -  reward ad not ready" );
+            callback.onAdFailedToShow(null);
+        }
+    }
+
+    public void showRewardAd(Activity activity, MaxRewardedAd maxRewardedAd ) {
+        if (maxRewardedAd.isReady()){
+            maxRewardedAd.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, activity));
+            maxRewardedAd.showAd();
+        } else {
+            Log.e(TAG, "showRewardAd error -  reward ad not ready" );
+        }
     }
 }

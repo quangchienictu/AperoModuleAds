@@ -3,6 +3,7 @@ package com.ads.control.applovin;
 import androidx.annotation.Nullable;
 
 import com.applovin.mediation.MaxError;
+import com.applovin.mediation.MaxReward;
 import com.applovin.mediation.ads.MaxInterstitialAd;
 import com.applovin.mediation.nativeAds.MaxNativeAd;
 import com.applovin.mediation.nativeAds.MaxNativeAdView;
@@ -38,6 +39,8 @@ public class AppLovinCallback {
     }
 
     public void onAdClicked() {
+    }
+    public void onUserRewarded( MaxReward reward) {
     }
 
     public void onAdImpression() {
