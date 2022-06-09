@@ -1,31 +1,21 @@
 package com.example.andmoduleads.applovin;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.solver.GoalRow;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.ads.control.ads.Admod;
 import com.ads.control.applovin.AppLovin;
 import com.ads.control.applovin.AppLovinCallback;
 import com.ads.control.funtion.AdCallback;
 import com.applovin.mediation.ads.MaxInterstitialAd;
 import com.applovin.mediation.ads.MaxRewardedAd;
-import com.applovin.mediation.nativeAds.MaxNativeAdView;
 import com.example.andmoduleads.R;
-import com.example.andmoduleads.admob.MainActivity;
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.gms.ads.AdError;
-import com.google.android.gms.ads.nativead.NativeAd;
-import com.google.android.gms.ads.nativead.NativeAdView;
 
 public class MainApplovinActivity extends AppCompatActivity {
 

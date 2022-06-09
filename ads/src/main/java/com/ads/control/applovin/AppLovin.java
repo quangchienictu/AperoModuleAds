@@ -17,7 +17,6 @@ import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ads.control.R;
-import com.ads.control.ads.Admod;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;

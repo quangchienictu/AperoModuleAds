@@ -1,10 +1,10 @@
 package com.example.andmoduleads;
 
+import com.ads.control.application.AppLovinMultiDexApplication;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.util.AdjustApero;
-import com.ads.control.ads.Admod;
-import com.ads.control.ads.application.AdsApplication;
-import com.ads.control.ads.AppOpenManager;
+import com.ads.control.admob.Admob;
+import com.ads.control.admob.AppOpenManager;
 import com.example.andmoduleads.admob.MainActivity;
 import com.example.andmoduleads.admob.SplashActivity;
 
@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class MyApplication extends AdsApplication {
+public class MyApplication extends AppLovinMultiDexApplication {
 
     protected StorageCommon storageCommon;
     private static MyApplication context;
@@ -30,12 +30,13 @@ public class MyApplication extends AdsApplication {
     public void onCreate() {
         super.onCreate();
         context = this;
-                AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 5000);
+        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 5000);
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
-        Admod.getInstance().setOpenActivityAfterShowInterAds(true);
-        Admod.getInstance().setNumToShowAds(0);
+
+        Admob.getInstance().setOpenActivityAfterShowInterAds(true);
+        Admob.getInstance().setNumToShowAds(0);
+
         AdjustApero.setEventNamePurchase("gzel1k");
-//        Admod.getInstance().setNumToShowAds(3,3);
         storageCommon = new StorageCommon();
         initBilling();
     }

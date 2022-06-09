@@ -2,15 +2,14 @@ package com.example.andmoduleads.admob;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.ads.control.ads.Admod;
-import com.ads.control.ads.AppOpenManager;
+import com.ads.control.admob.Admob;
+import com.ads.control.admob.AppOpenManager;
 import com.ads.control.applovin.AppLovin;
 import com.ads.control.applovin.AppLovinCallback;
 import com.ads.control.funtion.AdCallback;
@@ -87,7 +86,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void loadSplash() {
         Log.d(TAG, "onCreate: show splash ads");
-        Admod.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 30000, 5000, true, new AdCallback() {
+        Admob.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 30000, 5000, true, new AdCallback() {
             @Override
             public void onAdClosed() {
                 Log.d(TAG, "Close ads splash ");
@@ -98,7 +97,7 @@ public class SplashActivity extends AppCompatActivity {
             public void onAdSplashReady() {
                 super.onAdSplashReady();
                 Log.d(TAG, "onAdSplashReady");
-                Admod.getInstance().onShowSplash(SplashActivity.this, this);
+                Admob.getInstance().onShowSplash(SplashActivity.this, this);
             }
 
             @Override

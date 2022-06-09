@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.ads.control.ads.Admod;
+import com.ads.control.admob.Admob;
 import com.ads.control.funtion.AdCallback;
 import com.example.andmoduleads.admob.ContentActivity;
 import com.example.andmoduleads.R;
@@ -41,7 +41,7 @@ public class BlankFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         button =    view.findViewById(R.id.btnNextFragment);
         button.setEnabled(false);
-        Admod.getInstance().getInterstitalAds(getContext(), getString(R.string.admod_interstitial_id), new AdCallback() {
+        Admob.getInstance().getInterstitalAds(getContext(), getString(R.string.admod_interstitial_id), new AdCallback() {
             @Override
             public void onInterstitialLoad(InterstitialAd interstitialAd) {
                 super.onInterstitialLoad(interstitialAd);
@@ -52,7 +52,7 @@ public class BlankFragment extends Fragment {
         });
 
         button.setOnClickListener(v -> {
-            Admod.getInstance().forceShowInterstitial(getActivity(), mInterstitialAd, new AdCallback() {
+            Admob.getInstance().forceShowInterstitial(getActivity(), mInterstitialAd, new AdCallback() {
                 @Override
                 public void onAdClosed() {
                     ((ContentActivity)getActivity()).showFragment(new InlineBannerFragment(),"BlankFragment2");
@@ -60,6 +60,6 @@ public class BlankFragment extends Fragment {
             });
         });
 
-        Admod.getInstance().loadNativeFragment(getActivity(),getString(R.string.admod_native_id),view);
+        Admob.getInstance().loadNativeFragment(getActivity(),getString(R.string.admod_native_id),view);
     }
 }

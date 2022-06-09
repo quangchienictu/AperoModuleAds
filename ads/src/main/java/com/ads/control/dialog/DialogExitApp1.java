@@ -9,7 +9,7 @@ import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.ads.control.ads.Admod;
+import com.ads.control.admob.Admob;
 import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.R;
 import com.google.android.gms.ads.nativead.NativeAd;
@@ -80,7 +80,7 @@ public class DialogExitApp1 extends Dialog {
         }
 
         frameLayout.addView(adView);
-        Admod.getInstance().populateUnifiedNativeAdView(nativeAd, adView);
+        Admob.getInstance().populateUnifiedNativeAdView(nativeAd, adView);
 
         btnExit.setOnClickListener(v ->{
             dismiss();
