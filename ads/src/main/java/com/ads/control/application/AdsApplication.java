@@ -30,8 +30,8 @@ public abstract class AdsApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        AppUtil.BUILD_DEBUG = buildDebug();
-        Log.i("Application", " run debug: " + AppUtil.BUILD_DEBUG);
+        AppUtil.VARIANT_DEV = buildDebug();
+        Log.i("Application", " run debug: " + AppUtil.VARIANT_DEV);
         Admob.getInstance().init(this, getListTestDeviceId());
 
         if (enableAdsResume()) {

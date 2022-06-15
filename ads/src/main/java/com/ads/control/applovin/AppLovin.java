@@ -684,7 +684,7 @@ public class AppLovin {
 
             @Override
             public void onAdLoadFailed(String adUnitId, MaxError error) {
-                Log.e(TAG, "onAdLoadFailed: banner " + error.getMessage());
+                Log.e(TAG, "onAdLoadFailed: banner " + error.getMessage() + "   code:"+error.getCode());
                 containerShimmer.stopShimmer();
                 adContainer.setVisibility(View.GONE);
                 containerShimmer.setVisibility(View.GONE);

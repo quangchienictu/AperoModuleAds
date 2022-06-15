@@ -10,6 +10,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.ads.control.admob.Admob;
 import com.ads.control.admob.AppOpenManager;
+import com.ads.control.ads.AperoAd;
+import com.ads.control.ads.AperoAdCallback;
+import com.ads.control.ads.AperoAdConfig;
+import com.ads.control.ads.AperoInitCallback;
+import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.applovin.AppLovin;
 import com.ads.control.applovin.AppLovinCallback;
 import com.ads.control.funtion.AdCallback;
@@ -29,11 +34,14 @@ public class SplashActivity extends AppCompatActivity {
 
     private static final String TAG = "SplashActivity";
     private List<String> list = new ArrayList<>();
+    private String idAdSplash;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+//        idAdSplash =  getString(R.string.admod_interstitial_id);
+        idAdSplash = getString(R.string.applovin_test_inter);
         AppPurchase.getInstance().setBillingListener(new BillingListener() {
             @Override
             public void onInitBillingListener(int code) {
@@ -42,7 +50,7 @@ public class SplashActivity extends AppCompatActivity {
                     public void run() {
 //                        loadSplash();
                         AppPurchase.getInstance().consumePurchase(AppPurchase.PRODUCT_ID_TEST);
-                        loadSplashAdOpenApp();
+                        loadSplash();
                     }
                 });
             }
@@ -61,9 +69,9 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
-    AppLovinCallback adCallback = new AppLovinCallback() {
+    AperoAdCallback adCallback = new AperoAdCallback() {
         @Override
-        public void onAdFailedToLoad(@Nullable MaxError i) {
+        public void onAdFailedToLoad(@Nullable ApAdError i) {
             super.onAdFailedToLoad(i);
             startActivity(new Intent(SplashActivity.this, MainApplovinActivity.class));
             finish();
@@ -86,51 +94,14 @@ public class SplashActivity extends AppCompatActivity {
 
     private void loadSplash() {
         Log.d(TAG, "onCreate: show splash ads");
-        Admob.getInstance().loadSplashInterstitalAds(this, getString(R.string.admod_interstitial_id), 30000, 5000, true, new AdCallback() {
+        AperoAd.getInstance().setInitCallback(new AperoInitCallback() {
             @Override
-            public void onAdClosed() {
-                Log.d(TAG, "Close ads splash ");
-                startMain();
-            }
-
-            @Override
-            public void onAdSplashReady() {
-                super.onAdSplashReady();
-                Log.d(TAG, "onAdSplashReady");
-                Admob.getInstance().onShowSplash(SplashActivity.this, this);
-            }
-
-            @Override
-            public void onAdFailedToLoad(LoadAdError i) {
-                startMain();
-            }
-
-            @Override
-            public void onAdClosedByUser() {
-                super.onAdClosedByUser();
-                Log.d(TAG, "onAdClosedByUser");
+            public void initAdSuccess() {
+                AperoAd.getInstance().loadSplashInterstitialAds(SplashActivity.this, idAdSplash, 30000, 5000, true, adCallback);
             }
         });
-
-
     }
 
-    private void loadSplashAdOpenApp() {
-        loadAppLovinAd();
-    }
-
-
-    private void loadAppLovinAd() {
-        AppLovin.getInstance().init(this, new AppLovinCallback() {
-            @Override
-            public void initAppLovinSuccess() {
-                super.initAppLovinSuccess();
-//                startActivity(new Intent(SplashActivity.this, MainApplovinActivity.class));
-//                finish();
-                AppLovin.getInstance().loadSplashInterstitialAds(SplashActivity.this, getString(R.string.applovin_test_inter), 30000, 7000, adCallback);
-            }
-        }, false);
-    }
 
     private void loadAdmobAd() {
         AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, getString(R.string.admod_app_open_ad_id), 30000);
@@ -173,7 +144,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AppLovin.getInstance().onCheckShowSplashWhenFail(this, adCallback, 1000);
+//        AppLovin.getInstance().onCheckShowSplashWhenFail(this, adCallback, 1000);
     }
 
     @Override

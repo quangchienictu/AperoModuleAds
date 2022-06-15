@@ -180,10 +180,9 @@ public class Admob {
 
         MobileAds.initialize(context, initializationStatus -> {
         });
-        if (BuildConfig.DEBUG) {
-            MobileAds.setRequestConfiguration(new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList(getDeviceId((Activity) context))).build());
-        }
-
+//        if (BuildConfig.DEBUG) {
+//            MobileAds.setRequestConfiguration(new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList(getDeviceId((Activity) context))).build());
+//        }
         this.context = context;
     }
 
@@ -1392,7 +1391,7 @@ public class Admob {
             adView.getMediaView().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (context != null && BuildConfig.DEBUG) {
+                    if (context != null && AppUtil.VARIANT_DEV) {
                         float sizeMin = TypedValue.applyDimension(
                                 TypedValue.COMPLEX_UNIT_DIP,
                                 120,
@@ -1732,7 +1731,7 @@ public class Admob {
         }
         notificationManager.notify(typeAds, notification);
 
-        Log.e(TAG, "Found test ad id on debug : " + AppUtil.BUILD_DEBUG);
+        Log.e(TAG, "Found test ad id on debug : " + AppUtil.VARIANT_DEV);
 
 //        if (!AppUtil.BUILD_DEBUG) {
 //            throw new RuntimeException("Found test ad id on release");
