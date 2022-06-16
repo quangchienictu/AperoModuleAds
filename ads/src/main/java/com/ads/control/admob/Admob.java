@@ -34,7 +34,6 @@ import androidx.lifecycle.ProcessLifecycleOwner;
 
 import com.ads.control.util.AdjustApero;
 import com.ads.control.billing.AppPurchase;
-import com.ads.control.BuildConfig;
 import com.ads.control.R;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
@@ -306,7 +305,7 @@ public class Admob {
 //        if (isShowLoadingSplash)
 //            return;
         isShowLoadingSplash = true;
-        getInterstitalAds(context, id, new AdCallback() {
+        getInterstitialAds(context, id, new AdCallback() {
             @Override
             public void onInterstitialLoad(InterstitialAd interstitialAd) {
                 super.onInterstitialLoad(interstitialAd);
@@ -408,7 +407,7 @@ public class Admob {
 //        if (isShowLoadingSplash)
 //            return;
         isShowLoadingSplash = true;
-        getInterstitalAds(context, id, new AdCallback() {
+        getInterstitialAds(context, id, new AdCallback() {
             @Override
             public void onInterstitialLoad(InterstitialAd interstitialAd) {
                 super.onInterstitialLoad(interstitialAd);
@@ -587,7 +586,7 @@ public class Admob {
             return;
         }
         interstitialAd = null;
-        getInterstitalAds(context, id, new AdCallback() {
+        getInterstitialAds(context, id, new AdCallback() {
             @Override
             public void onInterstitialLoad(InterstitialAd interstitialAd) {
                 Admob.this.interstitialAd = interstitialAd;
@@ -662,7 +661,7 @@ public class Admob {
      * @param id
      * @return
      */
-    public void getInterstitalAds(Context context, String id, AdCallback adCallback) {
+    public void getInterstitialAds(Context context, String id, AdCallback adCallback) {
         if (Arrays.asList(context.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
             showTestIdAlert(context, INTERS_ADS, id);
         }

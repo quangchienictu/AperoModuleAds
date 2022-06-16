@@ -12,6 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ads.control.ads.AperoAd;
+import com.ads.control.ads.AperoAdCallback;
+import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.util.AdjustApero;
 import com.ads.control.admob.Admob;
 import com.ads.control.billing.AppPurchase;
@@ -40,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private InterstitialAd mInterstitialAd;
 
     private boolean isShowDialogExit = false;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         frAds = findViewById(R.id.fr_ads);
 
         Admob.getInstance().initRewardAds(this,getString(R.string.admod_app_reward_id));
+
 
 
         Admob.getInstance().setNumToShowAds(4,3);
@@ -147,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadAdInterstial() {
 
-        Admob.getInstance().getInterstitalAds(this, getString(R.string.admod_interstitial_id), new AdCallback() {
+        Admob.getInstance().getInterstitialAds(this, getString(R.string.admod_interstitial_id), new AdCallback() {
 
             @Override
             public void onInterstitialLoad(InterstitialAd interstitialAd) {

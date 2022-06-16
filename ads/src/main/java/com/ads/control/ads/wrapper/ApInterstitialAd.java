@@ -7,6 +7,9 @@ public class ApInterstitialAd {
     private InterstitialAd interstitialAd;
     private MaxInterstitialAd maxInterstitialAd;
 
+    public ApInterstitialAd() {
+    }
+
     public ApInterstitialAd(MaxInterstitialAd maxInterstitialAd) {
         this.maxInterstitialAd = maxInterstitialAd;
     }
@@ -15,9 +18,26 @@ public class ApInterstitialAd {
         this.interstitialAd = interstitialAd;
     }
 
+
+    public void setInterstitialAd(InterstitialAd interstitialAd) {
+        this.interstitialAd = interstitialAd;
+    }
+
+    public void setMaxInterstitialAd(MaxInterstitialAd maxInterstitialAd) {
+        this.maxInterstitialAd = maxInterstitialAd;
+    }
+
     public Boolean isReady(){
         if (maxInterstitialAd!=null && maxInterstitialAd.isReady())
             return true;
         return interstitialAd != null;
+    }
+
+    public InterstitialAd getInterstitialAd() {
+        return interstitialAd;
+    }
+
+    public MaxInterstitialAd getMaxInterstitialAd() {
+        return maxInterstitialAd;
     }
 }

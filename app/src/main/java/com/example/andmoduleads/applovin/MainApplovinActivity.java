@@ -1,18 +1,22 @@
 package com.example.andmoduleads.applovin;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import com.ads.control.ads.AperoAd;
+import com.ads.control.ads.AperoAdCallback;
+import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.applovin.AppLovin;
 import com.ads.control.applovin.AppLovinCallback;
 import com.ads.control.funtion.AdCallback;
-import com.applovin.mediation.ads.MaxInterstitialAd;
 import com.applovin.mediation.ads.MaxRewardedAd;
 import com.example.andmoduleads.R;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -21,18 +25,29 @@ public class MainApplovinActivity extends AppCompatActivity {
 
     private FrameLayout frAds;
     private ShimmerFrameLayout shimmerFrameLayout;
-    private MaxInterstitialAd interstitialAd;
     private Button btnLoadReward;
     private MaxRewardedAd maxRewardedAd;
-
+    ApInterstitialAd apInterstitialAd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_applovin);
         frAds = findViewById(R.id.fl_adplaceholder);
         shimmerFrameLayout = findViewById(R.id.shimmer_container_native);
-        interstitialAd = AppLovin.getInstance().getInterstitialAds(this, getString(R.string.admod_interstitial_id));
         AppLovin.getInstance().loadBanner(this, getString(R.string.applovin_test_banner));
+        apInterstitialAd =  AperoAd.getInstance().getInterstitialAds(this, getString(R.string.applovin_test_inter), new AperoAdCallback(){
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+            }
+
+            @Override
+            public void onInterstitialLoad(@Nullable ApInterstitialAd interstitialAd) {
+                super.onInterstitialLoad(interstitialAd);
+                Log.e("TAG", "AperoAd onInterstitialLoad: " + apInterstitialAd.isReady() );
+            }
+        });
+        Log.e("TAG", "AperoAd load inter : " + apInterstitialAd.isReady() );
 
         //load reward ad
         btnLoadReward = findViewById(R.id.btnLoadReward);
@@ -58,8 +73,10 @@ public class MainApplovinActivity extends AppCompatActivity {
         findViewById(R.id.btnLoadInter).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (interstitialAd.isReady()) {
-                    AppLovin.getInstance().forceShowInterstitial(MainApplovinActivity.this, interstitialAd, new AdCallback() {
+                Log.e("TAG", "AperoAd onInterstitialLoad: " + apInterstitialAd.isReady() );
+
+                if (apInterstitialAd.isReady()) {
+                    AperoAd.getInstance().forceShowInterstitial(MainApplovinActivity.this, apInterstitialAd, new AperoAdCallback() {
                         @Override
                         public void onAdClosed() {
                             super.onAdClosed();

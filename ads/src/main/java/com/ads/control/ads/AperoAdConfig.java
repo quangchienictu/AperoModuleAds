@@ -8,13 +8,13 @@ import java.util.List;
 public class AperoAdConfig {
 
     //switch mediation use for app
-    public static final String MEDIATION_ADMOB = "Admob";
-    public static final String MEDIATION_MAX = "max";
+    public static final int MEDIATION_ADMOB = 0;
+    public static final int MEDIATION_MAX = 1;
 
     /**
      * config ad mediation using for app
      */
-    private String mediationProvider =MEDIATION_ADMOB;
+    private int mediationProvider =MEDIATION_ADMOB;
 
     private boolean isVariantDev = false;
     private boolean enableAdjust = false;
@@ -33,7 +33,7 @@ public class AperoAdConfig {
     private boolean enableAdResume = false;
 
 
-    public void setMediationProvider(String mediationProvider){
+    public void setMediationProvider(int mediationProvider){
         this.mediationProvider = mediationProvider;
     }
 
@@ -66,7 +66,7 @@ public class AperoAdConfig {
 
 
 
-    public String getMediationProvider() {
+    public int getMediationProvider() {
         return mediationProvider;
     }
 

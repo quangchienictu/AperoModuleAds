@@ -15,6 +15,7 @@ import com.ads.control.ads.AperoAdCallback;
 import com.ads.control.ads.AperoAdConfig;
 import com.ads.control.ads.AperoInitCallback;
 import com.ads.control.ads.wrapper.ApAdError;
+import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.applovin.AppLovin;
 import com.ads.control.applovin.AppLovinCallback;
 import com.ads.control.funtion.AdCallback;
@@ -100,6 +101,8 @@ public class SplashActivity extends AppCompatActivity {
                 AperoAd.getInstance().loadSplashInterstitialAds(SplashActivity.this, idAdSplash, 30000, 5000, true, adCallback);
             }
         });
+
+
     }
 
 

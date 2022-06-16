@@ -41,7 +41,7 @@ public class BlankFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         button =    view.findViewById(R.id.btnNextFragment);
         button.setEnabled(false);
-        Admob.getInstance().getInterstitalAds(getContext(), getString(R.string.admod_interstitial_id), new AdCallback() {
+        Admob.getInstance().getInterstitialAds(getContext(), getString(R.string.admod_interstitial_id), new AdCallback() {
             @Override
             public void onInterstitialLoad(InterstitialAd interstitialAd) {
                 super.onInterstitialLoad(interstitialAd);
