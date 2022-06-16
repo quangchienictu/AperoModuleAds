@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAttribution;
@@ -21,11 +24,15 @@ import com.adjust.sdk.OnSessionTrackingFailedListener;
 import com.adjust.sdk.OnSessionTrackingSucceededListener;
 import com.ads.control.admob.Admob;
 import com.ads.control.admob.AppOpenManager;
+import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.applovin.AppLovin;
 import com.ads.control.applovin.AppLovinCallback;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.util.AdjustApero;
 import com.ads.control.util.AppUtil;
+import com.applovin.mediation.MaxError;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.LoadAdError;
 
 public class AperoAd {
     public static final String TAG_ADJUST = "AperoAdjust";
@@ -93,68 +100,6 @@ public class AperoAd {
         this.initCallback = initCallback;
         if (initAdSuccess)
             initCallback.initAdSuccess();
-    }
-
-    public void loadSplashInterstitialAds(final Context context, String id, long timeOut, long timeDelay, AperoAdCallback adListener) {
-        loadSplashInterstitialAds(context, id, timeOut, timeDelay, true, adListener);
-    }
-
-    public void loadSplashInterstitialAds(final Context context, String id, long timeOut, long timeDelay, boolean showSplashIfReady, AperoAdCallback adListener) {
-        switch (adConfig.getMediationProvider()) {
-            case AperoAdConfig.MEDIATION_ADMOB:
-                Admob.getInstance().loadSplashInterstitalAds(context, id, timeOut, timeDelay, showSplashIfReady, new AdCallback() {
-                    @Override
-                    public void onAdClosed() {
-                        super.onAdClosed();
-                        adListener.onAdClosed();
-                    }
-
-                    @Override
-                    public void onAdLoaded() {
-                        super.onAdLoaded();
-                        adListener.onAdLoaded();
-                    }
-
-                    @Override
-                    public void onAdSplashReady() {
-                        super.onAdSplashReady();
-                        adListener.onAdSplashReady();
-                    }
-
-                    @Override
-                    public void onAdClosedByUser() {
-                        super.onAdClosedByUser();
-                        adListener.onAdClosedByUser();
-                    }
-                });
-                break;
-            case AperoAdConfig.MEDIATION_MAX:
-                AppLovin.getInstance().loadSplashInterstitialAds(context, id, timeOut, timeDelay, showSplashIfReady, new AppLovinCallback() {
-                    @Override
-                    public void onAdClosed() {
-                        super.onAdClosed();
-                        adListener.onAdClosed();
-                    }
-
-                    @Override
-                    public void onAdLoaded() {
-                        super.onAdLoaded();
-                        adListener.onAdLoaded();
-                    }
-
-                    @Override
-                    public void onAdSplashReady() {
-                        super.onAdSplashReady();
-                        adListener.onAdSplashReady();
-                    }
-
-                    @Override
-                    public void onAdClosedByUser() {
-                        super.onAdClosedByUser();
-                        adListener.onAdClosedByUser();
-                    }
-                });
-        }
     }
 
     private void setupAdjust(Boolean buildDebug, String adjustToken) {
@@ -246,5 +191,144 @@ public class AperoAd {
         }
     }
 
+    public void loadSplashInterstitialAds(final Context context, String id, long timeOut, long timeDelay, AperoAdCallback adListener) {
+        loadSplashInterstitialAds(context, id, timeOut, timeDelay, true, adListener);
+    }
+
+    public void loadSplashInterstitialAds(final Context context, String id, long timeOut, long timeDelay, boolean showSplashIfReady, AperoAdCallback adListener) {
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.MEDIATION_ADMOB:
+                Admob.getInstance().loadSplashInterstitalAds(context, id, timeOut, timeDelay, showSplashIfReady, new AdCallback() {
+                    @Override
+                    public void onAdClosed() {
+                        super.onAdClosed();
+                        adListener.onAdClosed();
+                    }
+
+                    @Override
+                    public void onAdLoaded() {
+                        super.onAdLoaded();
+                        adListener.onAdLoaded();
+                    }
+
+                    @Override
+                    public void onAdSplashReady() {
+                        super.onAdSplashReady();
+                        adListener.onAdSplashReady();
+                    }
+
+                    @Override
+                    public void onAdClosedByUser() {
+                        super.onAdClosedByUser();
+                        adListener.onAdClosedByUser();
+                    }
+                });
+                break;
+            case AperoAdConfig.MEDIATION_MAX:
+                AppLovin.getInstance().loadSplashInterstitialAds(context, id, timeOut, timeDelay, showSplashIfReady, new AppLovinCallback() {
+                    @Override
+                    public void onAdClosed() {
+                        super.onAdClosed();
+                        adListener.onAdClosed();
+                    }
+
+                    @Override
+                    public void onAdLoaded() {
+                        super.onAdLoaded();
+                        adListener.onAdLoaded();
+                    }
+
+                    @Override
+                    public void onAdSplashReady() {
+                        super.onAdSplashReady();
+                        adListener.onAdSplashReady();
+                    }
+
+                    @Override
+                    public void onAdClosedByUser() {
+                        super.onAdClosedByUser();
+                        adListener.onAdClosedByUser();
+                    }
+                });
+        }
+    }
+
+
+    /**
+     * Called  on Resume - SplashActivity
+     * It call reshow ad splash when ad splash show fail in background
+     * @param activity
+     * @param callback
+     * @param timeDelay
+     */
+    public void onCheckShowSplashWhenFail(Activity activity, AperoAdCallback callback, int timeDelay) {
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.MEDIATION_ADMOB:
+                Admob.getInstance().onCheckShowSplashWhenFail(activity, new AdCallback(){
+                    @Override
+                    public void onAdClosed() {
+                        super.onAdClosed();
+                        callback.onAdClosed();
+                    }
+
+                    @Override
+                    public void onAdClosedByUser() {
+                        super.onAdClosedByUser();
+                        callback.onAdClosedByUser();
+                    }
+
+                    @Override
+                    public void onAdLoaded() {
+                        super.onAdLoaded();
+                        callback.onAdLoaded();
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                        super.onAdFailedToLoad(i);
+                        callback.onAdFailedToLoad(new ApAdError(i));
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@Nullable AdError adError) {
+                        super.onAdFailedToShow(adError);
+                        callback.onAdFailedToShow(new ApAdError(adError));
+                    }
+                }, timeDelay);
+                break;
+            case AperoAdConfig.MEDIATION_MAX:
+                AppLovin.getInstance().onCheckShowSplashWhenFail(activity, new AppLovinCallback(){
+                    @Override
+                    public void onAdClosed() {
+                        super.onAdClosed();
+                        callback.onAdClosed();
+                    }
+
+                    @Override
+                    public void onAdClosedByUser() {
+                        super.onAdClosedByUser();
+                        callback.onAdClosedByUser();
+                    }
+
+                    @Override
+                    public void onAdLoaded() {
+                        super.onAdLoaded();
+                        callback.onAdLoaded();
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@Nullable MaxError i) {
+                        super.onAdFailedToLoad(i);
+                        callback.onAdFailedToLoad(new ApAdError(i));
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@Nullable MaxError adError) {
+                        super.onAdFailedToShow(adError);
+                        callback.onAdFailedToShow(new ApAdError(adError));
+                    }
+                }, timeDelay);
+        }
+    }
 
 }

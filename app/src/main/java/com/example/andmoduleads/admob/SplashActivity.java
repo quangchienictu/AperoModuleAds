@@ -144,7 +144,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-//        AppLovin.getInstance().onCheckShowSplashWhenFail(this, adCallback, 1000);
+        AperoAd.getInstance().onCheckShowSplashWhenFail(this, adCallback, 1000);
     }
 
     @Override

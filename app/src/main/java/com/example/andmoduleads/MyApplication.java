@@ -43,7 +43,7 @@ public class MyApplication extends AdsMultiDexApplication {
         super.onCreate();
         context = this;
 //        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 5000);
-//        AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
+        AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
 
         Admob.getInstance().setNumToShowAds(0);
 
