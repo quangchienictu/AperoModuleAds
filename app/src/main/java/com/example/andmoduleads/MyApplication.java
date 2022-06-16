@@ -20,6 +20,9 @@ import java.util.List;
 
 public class MyApplication extends AdsMultiDexApplication {
 
+    private final String ADJUST_TOKEN = "cc4jvudppczk";
+    private final String EVENT_PURCHASE_ADJUST = "gzel1k";
+
     protected StorageCommon storageCommon;
     private static MyApplication context;
 
@@ -33,14 +36,15 @@ public class MyApplication extends AdsMultiDexApplication {
 
 
 
+
+
     @Override
     public void onCreate() {
         super.onCreate();
         context = this;
-        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 5000);
+//        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 5000);
 //        AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
 
-//        Admob.getInstance().setOpenActivityAfterShowInterAds(true);
         Admob.getInstance().setNumToShowAds(0);
 
 //        AdjustApero.setEventNamePurchase("gzel1k");
@@ -50,10 +54,10 @@ public class MyApplication extends AdsMultiDexApplication {
     }
 
     private void initAds() {
-        aperoAdConfig.enableAdjust("cc4jvudppczk","gzel1k");
-        aperoAdConfig.setMediationProvider(AperoAdConfig.MEDIATION_MAX);
-        aperoAdConfig.setIdAdResume(AppOpenManager.AD_UNIT_ID_TEST);
+        aperoAdConfig.setMediationProvider(AperoAdConfig.MEDIATION_ADMOB);
         aperoAdConfig.setVariant(BuildConfig.DEBUG);
+        aperoAdConfig.enableAdjust(ADJUST_TOKEN,EVENT_PURCHASE_ADJUST);
+        aperoAdConfig.setIdAdResume(AppOpenManager.AD_UNIT_ID_TEST);
         listTestDevice.add("EC25F576DA9B6CE74778B268CB87E431");
         aperoAdConfig.setListDeviceTest(listTestDevice);
 

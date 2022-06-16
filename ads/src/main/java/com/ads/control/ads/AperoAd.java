@@ -245,4 +245,6 @@ public class AperoAd {
         public void onActivityStarted(Activity activity) {
         }
     }
+
+
 }

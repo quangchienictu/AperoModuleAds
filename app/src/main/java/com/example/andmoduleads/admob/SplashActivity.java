@@ -40,8 +40,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-//        idAdSplash =  getString(R.string.admod_interstitial_id);
-        idAdSplash = getString(R.string.applovin_test_inter);
+        idAdSplash =  getString(R.string.admod_interstitial_id);
+//        idAdSplash = getString(R.string.applovin_test_inter);
         AppPurchase.getInstance().setBillingListener(new BillingListener() {
             @Override
             public void onInitBillingListener(int code) {
