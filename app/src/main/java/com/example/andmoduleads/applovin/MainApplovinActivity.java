@@ -1,5 +1,6 @@
 package com.example.andmoduleads.applovin;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdCallback;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
+import com.ads.control.ads.wrapper.ApNativeAd;
 import com.ads.control.applovin.AppLovin;
 import com.ads.control.applovin.AppLovinCallback;
 import com.ads.control.funtion.AdCallback;
@@ -101,17 +103,27 @@ public class MainApplovinActivity extends AppCompatActivity {
             }
         });*/
 
+        ShimmerFrameLayout shimmerFrameLayout =  findViewById(R.id.shimmer_container_native) ;
+        FrameLayout flParentNative = findViewById(R.id.fl_adplaceholder);
+        AperoAd.getInstance().loadNativeAd(this,getString(R.string.admod_native_id),R.layout.native_admob_ad,new AperoAdCallback(){
+            @Override
+            public void onNativeAdLoaded(@NonNull ApNativeAd nativeAd) {
+                super.onNativeAdLoaded(nativeAd);
+                AperoAd.getInstance().populateNativeAdView(MainApplovinActivity.this,nativeAd,flParentNative,shimmerFrameLayout);
+            }
+        });
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        AppLovin.getInstance().loadNativeAd(
-                this,
-                shimmerFrameLayout,
-                frAds,
-                getString(R.string.applovin_test_native),
-                com.ads.control.R.layout.max_native_custom_ad_view
-        );
+//        AppLovin.getInstance().loadNativeAd(
+//                this,
+//                shimmerFrameLayout,
+//                frAds,
+//                getString(R.string.applovin_test_native),
+//                com.ads.control.R.layout.max_native_custom_ad_view
+//        );
     }
 }

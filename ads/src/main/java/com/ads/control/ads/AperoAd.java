@@ -1,12 +1,16 @@
 package com.ads.control.ads;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.adjust.sdk.Adjust;
@@ -26,6 +30,7 @@ import com.ads.control.admob.Admob;
 import com.ads.control.admob.AppOpenManager;
 import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
+import com.ads.control.ads.wrapper.ApNativeAd;
 import com.ads.control.applovin.AppLovin;
 import com.ads.control.applovin.AppLovinCallback;
 import com.ads.control.funtion.AdCallback;
@@ -35,9 +40,13 @@ import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdListener;
 import com.applovin.mediation.MaxError;
 import com.applovin.mediation.ads.MaxInterstitialAd;
+import com.applovin.mediation.nativeAds.MaxNativeAdView;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdView;
 
 public class AperoAd {
     public static final String TAG_ADJUST = "AperoAdjust";
@@ -80,7 +89,7 @@ public class AperoAd {
             setupAdjust(adConfig.isVariantDev(), adConfig.getAdjustToken());
         }
         switch (adConfig.getMediationProvider()) {
-            case AperoAdConfig.MEDIATION_MAX:
+            case AperoAdConfig.PROVIDER_MAX:
                 AppLovin.getInstance().init(context, new AppLovinCallback() {
                     @Override
                     public void initAppLovinSuccess() {
@@ -91,7 +100,7 @@ public class AperoAd {
                     }
                 }, enableDebugMediation);
                 break;
-            case AperoAdConfig.MEDIATION_ADMOB:
+            case AperoAdConfig.PROVIDER_ADMOB:
                 Admob.getInstance().init(context);
                 if (adConfig.isEnableAdResume())
                     AppOpenManager.getInstance().init(adConfig.getApplication(), adConfig.getIdAdResume());
@@ -204,7 +213,7 @@ public class AperoAd {
 
     public void loadSplashInterstitialAds(final Context context, String id, long timeOut, long timeDelay, boolean showSplashIfReady, AperoAdCallback adListener) {
         switch (adConfig.getMediationProvider()) {
-            case AperoAdConfig.MEDIATION_ADMOB:
+            case AperoAdConfig.PROVIDER_ADMOB:
                 Admob.getInstance().loadSplashInterstitalAds(context, id, timeOut, timeDelay, showSplashIfReady, new AdCallback() {
                     @Override
                     public void onAdClosed() {
@@ -231,7 +240,7 @@ public class AperoAd {
                     }
                 });
                 break;
-            case AperoAdConfig.MEDIATION_MAX:
+            case AperoAdConfig.PROVIDER_MAX:
                 AppLovin.getInstance().loadSplashInterstitialAds(context, id, timeOut, timeDelay, showSplashIfReady, new AppLovinCallback() {
                     @Override
                     public void onAdClosed() {
@@ -267,11 +276,11 @@ public class AperoAd {
      *
      * @param activity
      * @param callback
-     * @param timeDelay
+     * @param timeDelay time delay before call show ad splash (ms)
      */
     public void onCheckShowSplashWhenFail(Activity activity, AperoAdCallback callback, int timeDelay) {
         switch (adConfig.getMediationProvider()) {
-            case AperoAdConfig.MEDIATION_ADMOB:
+            case AperoAdConfig.PROVIDER_ADMOB:
                 Admob.getInstance().onCheckShowSplashWhenFail(activity, new AdCallback() {
                     @Override
                     public void onAdClosed() {
@@ -304,7 +313,7 @@ public class AperoAd {
                     }
                 }, timeDelay);
                 break;
-            case AperoAdConfig.MEDIATION_MAX:
+            case AperoAdConfig.PROVIDER_MAX:
                 AppLovin.getInstance().onCheckShowSplashWhenFail(activity, new AppLovinCallback() {
                     @Override
                     public void onAdClosed() {
@@ -343,13 +352,13 @@ public class AperoAd {
      * Result a ApInterstitialAd in onInterstitialLoad
      *
      * @param context
-     * @param id
+     * @param id         admob or max mediation
      * @param adListener
      */
     public ApInterstitialAd getInterstitialAds(Context context, String id, AperoAdCallback adListener) {
         ApInterstitialAd apInterstitialAd = new ApInterstitialAd();
         switch (adConfig.getMediationProvider()) {
-            case AperoAdConfig.MEDIATION_ADMOB:
+            case AperoAdConfig.PROVIDER_ADMOB:
                 Admob.getInstance().getInterstitialAds(context, id, new AdCallback() {
                     @Override
                     public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
@@ -374,7 +383,7 @@ public class AperoAd {
                 });
                 return apInterstitialAd;
 
-            case AperoAdConfig.MEDIATION_MAX:
+            case AperoAdConfig.PROVIDER_MAX:
                 MaxInterstitialAd maxInterstitialAd = AppLovin.getInstance().getInterstitialAds(context, id);
                 maxInterstitialAd.setListener(new MaxAdListener() {
 
@@ -412,7 +421,8 @@ public class AperoAd {
                 });
                 apInterstitialAd.setMaxInterstitialAd(maxInterstitialAd);
                 return apInterstitialAd;
-            default: return apInterstitialAd;
+            default:
+                return apInterstitialAd;
         }
     }
 
@@ -424,39 +434,8 @@ public class AperoAd {
      * @param callback
      */
     public void forceShowInterstitial(Context context, ApInterstitialAd mInterstitialAd, final AperoAdCallback callback) {
-        switch (adConfig.getMediationProvider()) {
-            case AperoAdConfig.MEDIATION_ADMOB:
-                Admob.getInstance().forceShowInterstitial(context, mInterstitialAd.getInterstitialAd(), new AdCallback(){
-                    @Override
-                    public void onAdClosed() {
-                        super.onAdClosed();
-                        callback.onAdClosed();
-                    }
-
-                    @Override
-                    public void onAdFailedToShow(@Nullable AdError adError) {
-                        super.onAdFailedToShow(adError);
-                        callback.onAdFailedToShow(new ApAdError(adError));
-                    }
-                });
-                break;
-            case AperoAdConfig.MEDIATION_MAX:
-                AppLovin.getInstance().forceShowInterstitial(context, mInterstitialAd.getMaxInterstitialAd(),  new AdCallback(){
-                    @Override
-                    public void onAdClosed() {
-                        super.onAdClosed();
-                        callback.onAdClosed();
-                    }
-
-                    @Override
-                    public void onAdFailedToShow(@Nullable AdError adError) {
-                        super.onAdFailedToShow(adError);
-                        callback.onAdFailedToShow(new ApAdError(adError));
-                    }
-                },false);
-        }
+        forceShowInterstitial(context, mInterstitialAd, callback, false);
     }
-
 
     /**
      * Called force show ApInterstitialAd when ready
@@ -464,18 +443,18 @@ public class AperoAd {
      * @param context
      * @param mInterstitialAd
      * @param callback
-     * @param shouldReloadAds
+     * @param shouldReloadAds auto reload ad when ad close
      */
-    public void forceShowInterstitial(Context context, ApInterstitialAd mInterstitialAd, final AperoAdCallback callback,  boolean shouldReloadAds) {
+    public void forceShowInterstitial(Context context, ApInterstitialAd mInterstitialAd, final AperoAdCallback callback, boolean shouldReloadAds) {
         switch (adConfig.getMediationProvider()) {
-            case AperoAdConfig.MEDIATION_ADMOB:
-                AdCallback adCallback =  new AdCallback(){
+            case AperoAdConfig.PROVIDER_ADMOB:
+                AdCallback adCallback = new AdCallback() {
                     @Override
                     public void onAdClosed() {
                         super.onAdClosed();
                         Log.d(TAG, "onAdClosed: ");
                         callback.onAdClosed();
-                        if (shouldReloadAds){
+                        if (shouldReloadAds) {
                             Admob.getInstance().getInterstitialAds(context, mInterstitialAd.getInterstitialAd().getAdUnitId(), new AdCallback() {
                                 @Override
                                 public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
@@ -500,11 +479,12 @@ public class AperoAd {
                             });
                         }
                     }
+
                     @Override
                     public void onAdFailedToShow(@Nullable AdError adError) {
                         super.onAdFailedToShow(adError);
                         callback.onAdFailedToShow(new ApAdError(adError));
-                        if (shouldReloadAds){
+                        if (shouldReloadAds) {
                             Admob.getInstance().getInterstitialAds(context, mInterstitialAd.getInterstitialAd().getAdUnitId(), new AdCallback() {
                                 @Override
                                 public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
@@ -530,10 +510,10 @@ public class AperoAd {
                         }
                     }
                 };
-                Admob.getInstance().forceShowInterstitial(context, mInterstitialAd.getInterstitialAd(),adCallback);
+                Admob.getInstance().forceShowInterstitial(context, mInterstitialAd.getInterstitialAd(), adCallback);
                 break;
-            case AperoAdConfig.MEDIATION_MAX:
-                AppLovin.getInstance().forceShowInterstitial(context, mInterstitialAd.getMaxInterstitialAd(),  new AdCallback(){
+            case AperoAdConfig.PROVIDER_MAX:
+                AppLovin.getInstance().forceShowInterstitial(context, mInterstitialAd.getMaxInterstitialAd(), new AdCallback() {
                     @Override
                     public void onAdClosed() {
                         super.onAdClosed();
@@ -557,7 +537,65 @@ public class AperoAd {
                             mInterstitialAd.getMaxInterstitialAd().loadAd();
                     }
 
-                },false);
+                }, false);
+        }
+    }
+
+    public void loadNativeAd(final Activity activity, String id, int layoutCustomNative, AperoAdCallback callback) {
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.PROVIDER_ADMOB:
+                Admob.getInstance().loadNativeAd(((Context) activity), id, new AdCallback() {
+                    @Override
+                    public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
+                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                        callback.onNativeAdLoaded(new ApNativeAd(layoutCustomNative, unifiedNativeAd));
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                        super.onAdFailedToLoad(i);
+                        callback.onAdFailedToLoad(new ApAdError(i));
+                    }
+                });
+                break;
+            case AperoAdConfig.PROVIDER_MAX:
+                AppLovin.getInstance().loadNativeAd(activity, id, layoutCustomNative, new AppLovinCallback() {
+                    @Override
+                    public void onUnifiedNativeAdLoaded(MaxNativeAdView unifiedNativeAd) {
+                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                        callback.onNativeAdLoaded(new ApNativeAd(layoutCustomNative, unifiedNativeAd));
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@Nullable MaxError i) {
+                        super.onAdFailedToLoad(i);
+                        callback.onAdFailedToLoad(new ApAdError(i));
+                    }
+                });
+                break;
+        }
+    }
+
+    public void populateNativeAdView(Activity activity, ApNativeAd apNativeAd, FrameLayout layoutParentNative, ShimmerFrameLayout containerShimmerLoading) {
+        if (apNativeAd.getAdmobNativeAd() == null && apNativeAd.getNativeView() == null) {
+            containerShimmerLoading.setVisibility(View.GONE);
+            Log.e(TAG, "populateNativeAdView failed : native is not loaded ");
+            return;
+        }
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.PROVIDER_ADMOB:
+                @SuppressLint("InflateParams") NativeAdView adView = (NativeAdView) LayoutInflater.from(activity).inflate(apNativeAd.getLayoutCustomNative(), null);
+                containerShimmerLoading.stopShimmer();
+                containerShimmerLoading.setVisibility(View.GONE);
+                layoutParentNative.setVisibility(View.VISIBLE);
+                Admob.getInstance().populateUnifiedNativeAdView(apNativeAd.getAdmobNativeAd(), adView);
+                layoutParentNative.removeAllViews();
+                layoutParentNative.addView(adView);
+                break;
+            case AperoAdConfig.PROVIDER_MAX:
+                layoutParentNative.setVisibility(View.VISIBLE);
+                containerShimmerLoading.setVisibility(View.GONE);
+                layoutParentNative.addView(apNativeAd.getNativeView());
         }
     }
 }

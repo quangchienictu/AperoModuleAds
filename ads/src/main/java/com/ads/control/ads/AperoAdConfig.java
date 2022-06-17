@@ -8,13 +8,13 @@ import java.util.List;
 public class AperoAdConfig {
 
     //switch mediation use for app
-    public static final int MEDIATION_ADMOB = 0;
-    public static final int MEDIATION_MAX = 1;
+    public static final int PROVIDER_ADMOB = 0;
+    public static final int PROVIDER_MAX = 1;
 
     /**
      * config ad mediation using for app
      */
-    private int mediationProvider =MEDIATION_ADMOB;
+    private int mediationProvider = PROVIDER_ADMOB;
 
     private boolean isVariantDev = false;
     private boolean enableAdjust = false;

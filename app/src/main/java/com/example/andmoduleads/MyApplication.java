@@ -1,20 +1,15 @@
 package com.example.andmoduleads;
 
-import androidx.multidex.MultiDexApplication;
-
 import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdConfig;
 import com.ads.control.application.AdsMultiDexApplication;
 import com.ads.control.billing.AppPurchase;
-import com.ads.control.util.AdjustApero;
 import com.ads.control.admob.Admob;
 import com.ads.control.admob.AppOpenManager;
-import com.applovin.impl.sdk.c;
 import com.example.andmoduleads.admob.MainActivity;
 import com.example.andmoduleads.admob.SplashActivity;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -54,7 +49,7 @@ public class MyApplication extends AdsMultiDexApplication {
     }
 
     private void initAds() {
-        aperoAdConfig.setMediationProvider(AperoAdConfig.MEDIATION_MAX);
+        aperoAdConfig.setMediationProvider(AperoAdConfig.PROVIDER_ADMOB);
         aperoAdConfig.setVariant(BuildConfig.DEBUG);
         aperoAdConfig.enableAdjust(ADJUST_TOKEN,EVENT_PURCHASE_ADJUST);
         aperoAdConfig.setIdAdResume(AppOpenManager.AD_UNIT_ID_TEST);
