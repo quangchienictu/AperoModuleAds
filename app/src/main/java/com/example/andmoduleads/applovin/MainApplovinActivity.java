@@ -21,6 +21,7 @@ import com.ads.control.applovin.AppLovinCallback;
 import com.ads.control.funtion.AdCallback;
 import com.applovin.mediation.ads.MaxRewardedAd;
 import com.example.andmoduleads.R;
+import com.example.andmoduleads.admob.ContentActivity;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
 public class MainApplovinActivity extends AppCompatActivity {
@@ -37,11 +38,7 @@ public class MainApplovinActivity extends AppCompatActivity {
         frAds = findViewById(R.id.fl_adplaceholder);
         shimmerFrameLayout = findViewById(R.id.shimmer_container_native);
         AppLovin.getInstance().loadBanner(this, getString(R.string.applovin_test_banner));
-        apInterstitialAd =  AperoAd.getInstance().getInterstitialAds(this, getString(R.string.applovin_test_inter), new AperoAdCallback(){
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-            }
+        apInterstitialAd =  AperoAd.getInstance().getInterstitialAds(this, getString(R.string.admod_interstitial_id), new AperoAdCallback(){
 
             @Override
             public void onInterstitialLoad(@Nullable ApInterstitialAd interstitialAd) {
@@ -49,7 +46,7 @@ public class MainApplovinActivity extends AppCompatActivity {
                 Log.e("TAG", "AperoAd onInterstitialLoad: " + apInterstitialAd.isReady() );
             }
         });
-        Log.e("TAG", "AperoAd load inter : " + apInterstitialAd.isReady() );
+
 
         //load reward ad
         btnLoadReward = findViewById(R.id.btnLoadReward);
@@ -82,12 +79,12 @@ public class MainApplovinActivity extends AppCompatActivity {
                         @Override
                         public void onAdClosed() {
                             super.onAdClosed();
-                            startActivity(new Intent(MainApplovinActivity.this, SimpleListActivity.class));
+                            startActivity(new Intent(MainApplovinActivity.this, ContentActivity.class));
                         }
                     }, true);
                 } else {
                     Toast.makeText(MainApplovinActivity.this, "interstitial not loaded", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(MainApplovinActivity.this, SimpleListActivity.class));
+                    startActivity(new Intent(MainApplovinActivity.this, ContentActivity.class));
                 }
             }
         });
@@ -105,7 +102,7 @@ public class MainApplovinActivity extends AppCompatActivity {
 
         ShimmerFrameLayout shimmerFrameLayout =  findViewById(R.id.shimmer_container_native) ;
         FrameLayout flParentNative = findViewById(R.id.fl_adplaceholder);
-        AperoAd.getInstance().loadNativeAd(this,getString(R.string.admod_native_id),R.layout.native_admob_ad,new AperoAdCallback(){
+        AperoAd.getInstance().loadNativeAd(this,getString(R.string.applovin_test_native),R.layout.max_native_custom_ad_view,new AperoAdCallback(){
             @Override
             public void onNativeAdLoaded(@NonNull ApNativeAd nativeAd) {
                 super.onNativeAdLoaded(nativeAd);

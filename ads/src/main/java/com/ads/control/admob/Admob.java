@@ -1213,7 +1213,7 @@ public class Admob {
                             AdjustApero.pushTrackEventAdmod(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
-                                    "",
+                                    id,
                                     "native");
                         });
                     }
@@ -1277,7 +1277,7 @@ public class Admob {
                             AdjustApero.pushTrackEventAdmod(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
-                                    "",
+                                    id,
                                     "native");
                         });
                         populateUnifiedNativeAdView(nativeAd, adView);
@@ -1345,7 +1345,7 @@ public class Admob {
                             AdjustApero.pushTrackEventAdmod(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
-                                    "",
+                                    id,
                                     "native");
                         });
                         populateUnifiedNativeAdView(nativeAd, adView);
@@ -1542,8 +1542,8 @@ public class Admob {
                     AdjustApero.pushTrackEventAdmod(adValue);
                     FirebaseAnalyticsUtil.logPaidAdImpression(context,
                             adValue,
-                            "",
-                            "native");
+                            rewardedAd.getAdUnitId(),
+                            "rewardedAd");
                 });
             }
 
@@ -1582,8 +1582,8 @@ public class Admob {
                     AdjustApero.pushTrackEventAdmod(adValue);
                     FirebaseAnalyticsUtil.logPaidAdImpression(context,
                             adValue,
-                            "",
-                            "native");
+                            rewardedAd.getAdUnitId(),
+                            "rewardedAd");
                 });
 
             }

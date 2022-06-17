@@ -10,11 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 
 import com.ads.control.admob.Admob;
+import com.ads.control.ads.AperoAd;
 import com.ads.control.funtion.AdCallback;
 import com.example.andmoduleads.admob.ContentActivity;
 import com.example.andmoduleads.R;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 
 
@@ -60,6 +63,9 @@ public class BlankFragment extends Fragment {
             });
         });
 
-        Admob.getInstance().loadNativeFragment(getActivity(),getString(R.string.admod_native_id),view);
+//        Admob.getInstance().loadNativeFragment(getActivity(),getString(R.string.admod_native_id),view);
+        FrameLayout flPlaceHolder = view.findViewById(R.id.fl_adplaceholder);
+        ShimmerFrameLayout shimmerFrameLayout = view.findViewById(R.id.shimmer_container_native);
+        AperoAd.getInstance().loadNativeAd(requireActivity(),getString(R.string.admod_native_id),R.layout.native_admob_ad,flPlaceHolder,shimmerFrameLayout);
     }
 }

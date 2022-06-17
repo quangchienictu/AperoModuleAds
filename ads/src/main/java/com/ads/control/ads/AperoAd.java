@@ -541,6 +541,40 @@ public class AperoAd {
         }
     }
 
+
+    public void loadNativeAd(final Activity activity, String id, int layoutCustomNative,  FrameLayout adPlaceHolder, ShimmerFrameLayout containerShimmerLoading) {
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.PROVIDER_ADMOB:
+                Admob.getInstance().loadNativeAd(((Context) activity), id, new AdCallback() {
+                    @Override
+                    public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
+                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                        populateNativeAdView(activity,new ApNativeAd(layoutCustomNative,unifiedNativeAd),adPlaceHolder,containerShimmerLoading);
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                        super.onAdFailedToLoad(i);
+                    }
+                });
+                break;
+            case AperoAdConfig.PROVIDER_MAX:
+                AppLovin.getInstance().loadNativeAd(activity, id, layoutCustomNative, new AppLovinCallback() {
+                    @Override
+                    public void onUnifiedNativeAdLoaded(MaxNativeAdView unifiedNativeAd) {
+                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                        populateNativeAdView(activity,new ApNativeAd(layoutCustomNative,unifiedNativeAd),adPlaceHolder,containerShimmerLoading);
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@Nullable MaxError i) {
+                        super.onAdFailedToLoad(i);
+                    }
+                });
+                break;
+        }
+    }
+
     public void loadNativeAd(final Activity activity, String id, int layoutCustomNative, AperoAdCallback callback) {
         switch (adConfig.getMediationProvider()) {
             case AperoAdConfig.PROVIDER_ADMOB:
@@ -576,7 +610,7 @@ public class AperoAd {
         }
     }
 
-    public void populateNativeAdView(Activity activity, ApNativeAd apNativeAd, FrameLayout layoutParentNative, ShimmerFrameLayout containerShimmerLoading) {
+    public void populateNativeAdView(Activity activity, ApNativeAd apNativeAd, FrameLayout adPlaceHolder, ShimmerFrameLayout containerShimmerLoading) {
         if (apNativeAd.getAdmobNativeAd() == null && apNativeAd.getNativeView() == null) {
             containerShimmerLoading.setVisibility(View.GONE);
             Log.e(TAG, "populateNativeAdView failed : native is not loaded ");
@@ -587,15 +621,15 @@ public class AperoAd {
                 @SuppressLint("InflateParams") NativeAdView adView = (NativeAdView) LayoutInflater.from(activity).inflate(apNativeAd.getLayoutCustomNative(), null);
                 containerShimmerLoading.stopShimmer();
                 containerShimmerLoading.setVisibility(View.GONE);
-                layoutParentNative.setVisibility(View.VISIBLE);
+                adPlaceHolder.setVisibility(View.VISIBLE);
                 Admob.getInstance().populateUnifiedNativeAdView(apNativeAd.getAdmobNativeAd(), adView);
-                layoutParentNative.removeAllViews();
-                layoutParentNative.addView(adView);
+                adPlaceHolder.removeAllViews();
+                adPlaceHolder.addView(adView);
                 break;
             case AperoAdConfig.PROVIDER_MAX:
-                layoutParentNative.setVisibility(View.VISIBLE);
+                adPlaceHolder.setVisibility(View.VISIBLE);
                 containerShimmerLoading.setVisibility(View.GONE);
-                layoutParentNative.addView(apNativeAd.getNativeView());
+                adPlaceHolder.addView(apNativeAd.getNativeView());
         }
     }
 }
