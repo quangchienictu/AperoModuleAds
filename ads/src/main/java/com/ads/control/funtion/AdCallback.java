@@ -8,6 +8,7 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.rewarded.RewardedAd;
 
 public class AdCallback {
 
@@ -43,6 +44,9 @@ public class AdCallback {
     }
 
     public void onAdImpression() {
+    }
+
+    public void onRewardAdLoaded(RewardedAd rewardedAd) {
     }
 
 

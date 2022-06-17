@@ -31,15 +31,20 @@ import com.ads.control.admob.AppOpenManager;
 import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.ads.wrapper.ApNativeAd;
+import com.ads.control.ads.wrapper.ApRewardAd;
+import com.ads.control.ads.wrapper.ApRewardItem;
 import com.ads.control.applovin.AppLovin;
 import com.ads.control.applovin.AppLovinCallback;
 import com.ads.control.funtion.AdCallback;
+import com.ads.control.funtion.RewardCallback;
 import com.ads.control.util.AdjustApero;
 import com.ads.control.util.AppUtil;
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdListener;
 import com.applovin.mediation.MaxError;
+import com.applovin.mediation.MaxReward;
 import com.applovin.mediation.ads.MaxInterstitialAd;
+import com.applovin.mediation.ads.MaxRewardedAd;
 import com.applovin.mediation.nativeAds.MaxNativeAdView;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdError;
@@ -47,6 +52,8 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
 
 public class AperoAd {
     public static final String TAG_ADJUST = "AperoAdjust";
@@ -542,14 +549,14 @@ public class AperoAd {
     }
 
 
-    public void loadNativeAd(final Activity activity, String id, int layoutCustomNative,  FrameLayout adPlaceHolder, ShimmerFrameLayout containerShimmerLoading) {
+    public void loadNativeAd(final Activity activity, String id, int layoutCustomNative, FrameLayout adPlaceHolder, ShimmerFrameLayout containerShimmerLoading) {
         switch (adConfig.getMediationProvider()) {
             case AperoAdConfig.PROVIDER_ADMOB:
                 Admob.getInstance().loadNativeAd(((Context) activity), id, new AdCallback() {
                     @Override
                     public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
                         super.onUnifiedNativeAdLoaded(unifiedNativeAd);
-                        populateNativeAdView(activity,new ApNativeAd(layoutCustomNative,unifiedNativeAd),adPlaceHolder,containerShimmerLoading);
+                        populateNativeAdView(activity, new ApNativeAd(layoutCustomNative, unifiedNativeAd), adPlaceHolder, containerShimmerLoading);
                     }
 
                     @Override
@@ -563,7 +570,7 @@ public class AperoAd {
                     @Override
                     public void onUnifiedNativeAdLoaded(MaxNativeAdView unifiedNativeAd) {
                         super.onUnifiedNativeAdLoaded(unifiedNativeAd);
-                        populateNativeAdView(activity,new ApNativeAd(layoutCustomNative,unifiedNativeAd),adPlaceHolder,containerShimmerLoading);
+                        populateNativeAdView(activity, new ApNativeAd(layoutCustomNative, unifiedNativeAd), adPlaceHolder, containerShimmerLoading);
                     }
 
                     @Override
@@ -610,6 +617,14 @@ public class AperoAd {
         }
     }
 
+    /**
+     * Populate Unified Native Ad to View
+     *
+     * @param activity
+     * @param apNativeAd
+     * @param adPlaceHolder
+     * @param containerShimmerLoading
+     */
     public void populateNativeAdView(Activity activity, ApNativeAd apNativeAd, FrameLayout adPlaceHolder, ShimmerFrameLayout containerShimmerLoading) {
         if (apNativeAd.getAdmobNativeAd() == null && apNativeAd.getNativeView() == null) {
             containerShimmerLoading.setVisibility(View.GONE);
@@ -630,6 +645,112 @@ public class AperoAd {
                 adPlaceHolder.setVisibility(View.VISIBLE);
                 containerShimmerLoading.setVisibility(View.GONE);
                 adPlaceHolder.addView(apNativeAd.getNativeView());
+        }
+    }
+
+
+    public ApRewardAd getRewardAd(Activity activity, String id) {
+        ApRewardAd apRewardAd = new ApRewardAd();
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.PROVIDER_ADMOB:
+                Admob.getInstance().initRewardAds(activity, id, new AdCallback() {
+                    @Override
+                    public void onAdLoaded() {
+                        super.onAdLoaded();
+                        apRewardAd.setAdmobReward(Admob.getInstance().getRewardedAd());
+
+                    }
+                });
+                break;
+            case AperoAdConfig.PROVIDER_MAX:
+                MaxRewardedAd maxRewardedAd = AppLovin.getInstance().getRewardAd(activity, id, new AppLovinCallback() {
+                    @Override
+                    public void onAdLoaded() {
+                        super.onAdLoaded();
+                    }
+                });
+                apRewardAd.setMaxReward(maxRewardedAd);
+        }
+        return apRewardAd;
+    }
+
+    public ApRewardAd getRewardAd(Activity activity, String id, AperoAdCallback callback) {
+        ApRewardAd apRewardAd = new ApRewardAd();
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.PROVIDER_ADMOB:
+                Admob.getInstance().initRewardAds(activity, id, new AdCallback() {
+                    @Override
+                    public void onRewardAdLoaded(RewardedAd rewardedAd) {
+                        super.onRewardAdLoaded(rewardedAd);
+                        apRewardAd.setAdmobReward(rewardedAd);
+                        callback.onAdLoaded();
+                    }
+                });
+                return apRewardAd;
+            case AperoAdConfig.PROVIDER_MAX:
+                MaxRewardedAd maxRewardedAd = AppLovin.getInstance().getRewardAd(activity, id, new AppLovinCallback() {
+                    @Override
+                    public void onAdLoaded() {
+                        super.onAdLoaded();
+                        callback.onAdLoaded();
+                    }
+                });
+                apRewardAd.setMaxReward(maxRewardedAd);
+                return apRewardAd;
+        }
+        return apRewardAd;
+    }
+
+    public void forceShowRewardAd(Activity activity, ApRewardAd apRewardAd, AperoAdCallback callback) {
+        if (!apRewardAd.isReady()) {
+            Log.e(TAG, "forceShowRewardAd fail: reward ad not ready");
+            callback.onAdClosed();
+            return;
+        }
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.PROVIDER_ADMOB:
+                Admob.getInstance().showRewardAds(activity, apRewardAd.getAdmobReward(), new RewardCallback() {
+
+                    @Override
+                    public void onUserEarnedReward(RewardItem var1) {
+                        callback.onUserEarnedReward(new ApRewardItem(var1));
+                    }
+
+                    @Override
+                    public void onRewardedAdClosed() {
+                        apRewardAd.clean();
+                        callback.onAdClosed();
+                    }
+
+                    @Override
+                    public void onRewardedAdFailedToShow(int codeError) {
+                        apRewardAd.clean();
+                        callback.onAdFailedToShow(new ApAdError(new AdError(codeError, "note msg", "Reward")));
+                    }
+                });
+                break;
+            case AperoAdConfig.PROVIDER_MAX:
+                AppLovin.getInstance().showRewardAd(activity, apRewardAd.getMaxReward(), new AppLovinCallback() {
+                    @Override
+                    public void onUserRewarded(MaxReward reward) {
+                        super.onUserRewarded(reward);
+                        callback.onUserEarnedReward(new ApRewardItem(reward));
+                    }
+
+                    @Override
+                    public void onAdClosed() {
+                        super.onAdClosed();
+                        apRewardAd.clean();
+                        callback.onAdClosed();
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@Nullable MaxError adError) {
+                        super.onAdFailedToShow(adError);
+                        apRewardAd.clean();
+                        callback.onAdFailedToShow(new ApAdError(adError));
+                    }
+                });
         }
     }
 }

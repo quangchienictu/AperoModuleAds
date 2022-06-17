@@ -1575,7 +1575,7 @@ public class Admob {
         RewardedAd.load(context, id, getAdRequest(), new RewardedAdLoadCallback() {
             @Override
             public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
-                callback.onAdLoaded();
+                callback.onRewardAdLoaded(rewardedAd);
                 Admob.this.rewardedAd = rewardedAd;
                 Admob.this.rewardedAd.setOnPaidEventListener(adValue -> {
                     Log.d(TAG, "OnPaidEvent Reward:" + adValue.getValueMicros());
@@ -1648,6 +1648,71 @@ public class Admob {
                     }
                     initRewardAds(context, nativeId);
                     rewardedAd = null;
+                }
+
+                public void onAdClicked() {
+                    super.onAdClicked();
+                    FirebaseAnalyticsUtil.logClickAdsEvent(context, rewardedAd.getAdUnitId());
+                }
+            });
+            rewardedAd.show(context, new OnUserEarnedRewardListener() {
+                @Override
+                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                    if (adCallback != null) {
+                        adCallback.onUserEarnedReward(rewardItem);
+
+                    }
+                }
+            });
+        }
+    }
+
+
+    /**
+     * Show quảng cáo reward và nhận kết quả trả về
+     *
+     * @param context
+     * @param adCallback
+     */
+
+    public void showRewardAds(final Activity context,RewardedAd rewardedAd, final RewardCallback adCallback) {
+        if (AppPurchase.getInstance().isPurchased(context)) {
+            adCallback.onUserEarnedReward(null);
+            return;
+        }
+        if (rewardedAd == null) {
+            initRewardAds(context, nativeId);
+
+            adCallback.onRewardedAdFailedToShow(0);
+            return;
+        } else {
+             rewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    super.onAdDismissedFullScreenContent();
+                    if (adCallback != null)
+                        adCallback.onRewardedAdClosed();
+
+                    if (AppOpenManager.getInstance().isInitialized()) {
+                        AppOpenManager.getInstance().enableAppResume();
+                    }
+
+                }
+
+                @Override
+                public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                    super.onAdFailedToShowFullScreenContent(adError);
+                    if (adCallback != null)
+                        adCallback.onRewardedAdFailedToShow(adError.getCode());
+                }
+
+                @Override
+                public void onAdShowedFullScreenContent() {
+                    super.onAdShowedFullScreenContent();
+                    if (AppOpenManager.getInstance().isInitialized()) {
+                        AppOpenManager.getInstance().disableAppResume();
+                    }
+                    initRewardAds(context, nativeId);
                 }
 
                 public void onAdClicked() {

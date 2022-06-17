@@ -16,10 +16,9 @@ import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdCallback;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.ads.wrapper.ApNativeAd;
+import com.ads.control.ads.wrapper.ApRewardAd;
 import com.ads.control.applovin.AppLovin;
 import com.ads.control.applovin.AppLovinCallback;
-import com.ads.control.funtion.AdCallback;
-import com.applovin.mediation.ads.MaxRewardedAd;
 import com.example.andmoduleads.R;
 import com.example.andmoduleads.admob.ContentActivity;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -29,7 +28,7 @@ public class MainApplovinActivity extends AppCompatActivity {
     private FrameLayout frAds;
     private ShimmerFrameLayout shimmerFrameLayout;
     private Button btnLoadReward;
-    private MaxRewardedAd maxRewardedAd;
+    private ApRewardAd apRewardAd;
     ApInterstitialAd apInterstitialAd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +50,8 @@ public class MainApplovinActivity extends AppCompatActivity {
         //load reward ad
         btnLoadReward = findViewById(R.id.btnLoadReward);
         btnLoadReward.setOnClickListener(view -> {
-            if (maxRewardedAd != null && maxRewardedAd.isReady()) {
-                AppLovin.getInstance().showRewardAd(this, maxRewardedAd);
-            } else {
-                maxRewardedAd = AppLovin.getInstance().getRewardAd(this, getString(R.string.applovin_test_reward), new AppLovinCallback() {
+            if (apRewardAd != null && apRewardAd.isReady()) {
+                AperoAd.getInstance().forceShowRewardAd(this, apRewardAd, new AperoAdCallback(){
                     @Override
                     public void onAdLoaded() {
                         Toast.makeText(MainApplovinActivity.this, "reward loaded", Toast.LENGTH_SHORT).show();
@@ -63,6 +60,19 @@ public class MainApplovinActivity extends AppCompatActivity {
 
                     @Override
                     public void onAdClosed() {
+                        startActivity(new Intent(MainApplovinActivity.this, SimpleListActivity.class));
+                    }
+                });
+            } else {
+                apRewardAd = AperoAd.getInstance().getRewardAd(this, getString(R.string.admod_app_reward_id), new AperoAdCallback() {
+                    @Override
+                    public void onAdLoaded() {
+                        Toast.makeText(MainApplovinActivity.this, "reward loaded", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onAdClosed() {
+
                         startActivity(new Intent(MainApplovinActivity.this, SimpleListActivity.class));
                     }
                 });
@@ -88,17 +98,6 @@ public class MainApplovinActivity extends AppCompatActivity {
                 }
             }
         });
-        //get native and add to view
-/*        AppLovin.getInstance().loadNativeAd(this, "c810c577b4c36ee5", com.ads.control.R.layout.max_native_custom_ad_view, new AppLovinCallback() {
-            @Override
-            public void onUnifiedNativeAdLoaded(MaxNativeAdView unifiedNativeAd) {
-                super.onUnifiedNativeAdLoaded(unifiedNativeAd);
-                findViewById(R.id.shimmer_container_native).setVisibility(View.GONE);
-                FrameLayout fl = findViewById(R.id.fl_adplaceholder);
-                fl.setVisibility(View.VISIBLE);
-                fl.addView(unifiedNativeAd);
-            }
-        });*/
 
         ShimmerFrameLayout shimmerFrameLayout =  findViewById(R.id.shimmer_container_native) ;
         FrameLayout flParentNative = findViewById(R.id.fl_adplaceholder);
