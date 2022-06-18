@@ -214,6 +214,34 @@ public class AperoAd {
         }
     }
 
+    public void loadBanner(final Activity mActivity, String id ) {
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.PROVIDER_ADMOB:
+                Admob.getInstance().loadBanner(mActivity, id );
+                break;
+            case AperoAdConfig.PROVIDER_MAX:
+                AppLovin.getInstance().loadBanner(mActivity, id);
+        }
+    }
+
+//    public void loadBanner(final Activity mActivity, String id, final AperoAdCallback callback) {
+//        switch (adConfig.getMediationProvider()) {
+//            case AperoAdConfig.PROVIDER_ADMOB:
+//                Admob.getInstance().loadBanner(mActivity, id , new AdCallback(){
+//                    @Override
+//                    public void onAdClicked() {
+//                        super.onAdClicked();
+//                        callback.onAdClicked();
+//                    }
+//                });
+//                break;
+//            case AperoAdConfig.PROVIDER_MAX:
+//                AppLovin.getInstance().loadBanner(mActivity, id, new AppLovinCallback(){
+//
+//                });
+//        }
+//    }
+
     public void loadSplashInterstitialAds(final Context context, String id, long timeOut, long timeDelay, AperoAdCallback adListener) {
         loadSplashInterstitialAds(context, id, timeOut, timeDelay, true, adListener);
     }

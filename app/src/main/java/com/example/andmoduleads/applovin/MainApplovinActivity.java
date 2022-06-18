@@ -36,7 +36,7 @@ public class MainApplovinActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_applovin);
         frAds = findViewById(R.id.fl_adplaceholder);
         shimmerFrameLayout = findViewById(R.id.shimmer_container_native);
-        AppLovin.getInstance().loadBanner(this, getString(R.string.applovin_test_banner));
+        AperoAd.getInstance().loadBanner(this, getString(R.string.admod_banner_id));
         apInterstitialAd =  AperoAd.getInstance().getInterstitialAds(this, getString(R.string.admod_interstitial_id), new AperoAdCallback(){
 
             @Override
