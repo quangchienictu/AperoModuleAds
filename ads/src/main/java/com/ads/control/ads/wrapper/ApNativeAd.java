@@ -8,8 +8,6 @@ public class ApNativeAd {
    private int layoutCustomNative;
    private View nativeView;
    private NativeAd admobNativeAd;
-
-
    public ApNativeAd(int layoutCustomNative, View nativeView) {
       this.layoutCustomNative = layoutCustomNative;
       this.nativeView = nativeView;
