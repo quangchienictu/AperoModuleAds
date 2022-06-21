@@ -866,6 +866,7 @@ public class Admob {
                     if (dialog != null && dialog.isShowing())
                         dialog.dismiss();
                     dialog = new PrepareLoadingAdsDialog(context);
+                    dialog.setCancelable(false);
                     try {
                         dialog.show();
                     } catch (Exception e) {
@@ -1686,7 +1687,7 @@ public class Admob {
             adCallback.onRewardedAdFailedToShow(0);
             return;
         } else {
-             rewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+            rewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                 @Override
                 public void onAdDismissedFullScreenContent() {
                     super.onAdDismissedFullScreenContent();
