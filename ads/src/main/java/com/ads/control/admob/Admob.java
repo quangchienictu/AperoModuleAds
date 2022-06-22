@@ -237,7 +237,7 @@ public class Admob {
         }
     }
 
-    public boolean interstialSplashLoead() {
+    public boolean interstitialSplashLoaded() {
         return mInterstitialSplash != null;
     }
 
@@ -570,7 +570,8 @@ public class Admob {
         new Handler(activity.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (interstialSplashLoead() && !isShowLoadingSplash()) {
+                if (interstitialSplashLoaded() && !isShowLoadingSplash()) {
+                    Log.i(TAG, "show ad splash when show fail in background");
                     Admob.getInstance().onShowSplash(activity, callback);
                 }
             }

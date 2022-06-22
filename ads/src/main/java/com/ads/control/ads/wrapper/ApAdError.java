@@ -23,7 +23,7 @@ public class ApAdError {
         this.maxError = maxError;
     }
 
-    private String getMessage(){
+    public String getMessage(){
         if (maxError!=null)
             return maxError.getMessage();
         if (loadAdError!=null)

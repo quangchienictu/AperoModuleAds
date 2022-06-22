@@ -431,8 +431,13 @@ public class AppLovin {
         new Handler(activity.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (AppLovin.getInstance().getInterstitialSplash() != null && AppLovin.getInstance().getInterstitialSplash().isReady() && !AppLovin.getInstance().isShowLoadingSplash) {
-                    AppLovin.getInstance().onShowSplash(activity, callback);
+                if (AppLovin.getInstance().getInterstitialSplash() != null && !AppLovin.getInstance().isShowLoadingSplash) {
+                    if (AppLovin.getInstance().getInterstitialSplash().isReady()) {
+                        Log.i(TAG, "show ad splash when show fail in background");
+                        AppLovin.getInstance().onShowSplash(activity, callback);
+                    } else {
+                        callback.onAdClosed();
+                    }
                 }
             }
         }, timeDelay);
@@ -684,7 +689,7 @@ public class AppLovin {
 
             @Override
             public void onAdLoadFailed(String adUnitId, MaxError error) {
-                Log.e(TAG, "onAdLoadFailed: banner " + error.getMessage() + "   code:"+error.getCode());
+                Log.e(TAG, "onAdLoadFailed: banner " + error.getMessage() + "   code:" + error.getCode());
                 containerShimmer.stopShimmer();
                 adContainer.setVisibility(View.GONE);
                 containerShimmer.setVisibility(View.GONE);
@@ -934,14 +939,14 @@ public class AppLovin {
         return rewardedAd;
     }
 
-    public MaxRewardedAd getRewardAd(Activity activity, String id ) {
+    public MaxRewardedAd getRewardAd(Activity activity, String id) {
         MaxRewardedAd rewardedAd = MaxRewardedAd.getInstance(id, activity);
         rewardedAd.loadAd();
         return rewardedAd;
     }
 
-    public void showRewardAd(Activity activity, MaxRewardedAd maxRewardedAd,AppLovinCallback callback) {
-        if (maxRewardedAd.isReady()){
+    public void showRewardAd(Activity activity, MaxRewardedAd maxRewardedAd, AppLovinCallback callback) {
+        if (maxRewardedAd.isReady()) {
             maxRewardedAd.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, activity));
             maxRewardedAd.setListener(new MaxRewardedAdListener() {
                 @Override
@@ -995,18 +1000,18 @@ public class AppLovin {
                 }
             });
             maxRewardedAd.showAd();
-        }else {
-            Log.e(TAG, "showRewardAd error -  reward ad not ready" );
+        } else {
+            Log.e(TAG, "showRewardAd error -  reward ad not ready");
             callback.onAdFailedToShow(null);
         }
     }
 
-    public void showRewardAd(Activity activity, MaxRewardedAd maxRewardedAd ) {
-        if (maxRewardedAd.isReady()){
+    public void showRewardAd(Activity activity, MaxRewardedAd maxRewardedAd) {
+        if (maxRewardedAd.isReady()) {
             maxRewardedAd.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, activity));
             maxRewardedAd.showAd();
         } else {
-            Log.e(TAG, "showRewardAd error -  reward ad not ready" );
+            Log.e(TAG, "showRewardAd error -  reward ad not ready");
         }
     }
 }
