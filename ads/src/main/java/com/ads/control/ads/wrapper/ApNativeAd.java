@@ -2,12 +2,21 @@ package com.ads.control.ads.wrapper;
 
 import android.view.View;
 
+import com.ads.control.ads.nativeAds.StatusNative;
 import com.google.android.gms.ads.nativead.NativeAd;
 
 public class ApNativeAd {
     private int layoutCustomNative;
     private View nativeView;
     private NativeAd admobNativeAd;
+    private StatusNative status ;
+
+
+    public ApNativeAd(StatusNative status) {
+        this.status = status;
+    }
+
+
 
     public ApNativeAd(int layoutCustomNative, View nativeView) {
         this.layoutCustomNative = layoutCustomNative;
@@ -28,6 +37,14 @@ public class ApNativeAd {
     }
 
     public ApNativeAd() {
+    }
+
+    public StatusNative getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusNative status) {
+        this.status = status;
     }
 
     public int getLayoutCustomNative() {

@@ -24,6 +24,7 @@ import com.ads.control.funtion.BillingListener;
 import com.applovin.mediation.MaxError;
 import com.example.andmoduleads.R;
 import com.example.andmoduleads.applovin.MainApplovinActivity;
+import com.example.andmoduleads.applovin.SimpleListActivity;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
@@ -74,8 +75,8 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         public void onAdFailedToLoad(@Nullable ApAdError i) {
             super.onAdFailedToLoad(i);
-            startActivity(new Intent(SplashActivity.this, MainApplovinActivity.class));
-            finish();
+
+            startMain();
         }
 
         @Override
@@ -88,8 +89,8 @@ public class SplashActivity extends AppCompatActivity {
         public void onAdClosed() {
             super.onAdClosed();
             Log.d(TAG, "onAdClosed");
-            startActivity(new Intent(SplashActivity.this, MainApplovinActivity.class));
-            finish();
+            startMain();
+
         }
     };
 
@@ -140,7 +141,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void startMain() {
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, SimpleListActivity.class));
         finish();
     }
 

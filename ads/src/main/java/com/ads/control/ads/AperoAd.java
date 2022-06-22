@@ -108,7 +108,7 @@ public class AperoAd {
                 }, enableDebugMediation);
                 break;
             case AperoAdConfig.PROVIDER_ADMOB:
-                Admob.getInstance().init(context);
+                Admob.getInstance().init(context, adConfig.getListDeviceTest());
                 if (adConfig.isEnableAdResume())
                     AppOpenManager.getInstance().init(adConfig.getApplication(), adConfig.getIdAdResume());
 

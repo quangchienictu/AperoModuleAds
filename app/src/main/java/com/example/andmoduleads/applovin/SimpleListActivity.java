@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.ads.control.ads.nativeAds.AperoAdPlacerSettings;
+import com.ads.control.ads.nativeAds.AperoRecyclerAdapter;
 import com.ads.control.applovin.AppLovin;
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.nativeAds.adPlacer.MaxAdPlacer;
@@ -16,6 +18,7 @@ import com.example.andmoduleads.R;
 public class SimpleListActivity extends AppCompatActivity {
     private static final String TAG = "SimpleListActivity";
     MaxRecyclerAdapter  adAdapter;
+    AperoRecyclerAdapter aperoRecyclerAdapter;
 
     MaxAdPlacer.Listener listener =   new MaxAdPlacer.Listener() {
             @Override
@@ -50,11 +53,16 @@ public class SimpleListActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //init max recycle view
-        adAdapter = AppLovin.getInstance().getNativeRepeatAdapter(this, getString(R.string.applovin_test_native), R.layout.max_native_custom_ad_small,
-                originalAdapter, listener,5);
+//        adAdapter = AppLovin.getInstance().getNativeRepeatAdapter(this, getString(R.string.applovin_test_native), R.layout.max_native_custom_ad_small,
+//                originalAdapter, listener,5);
 
-        recyclerView.setAdapter(adAdapter);
-        adAdapter.loadAds();
+
+        AperoAdPlacerSettings settings = new AperoAdPlacerSettings();
+        settings.setAdUnitId(getString(R.string.admod_native_id));
+        settings.setRepeatingInterval(3);
+        aperoRecyclerAdapter = new AperoRecyclerAdapter(settings,originalAdapter,this);
+        recyclerView.setAdapter(aperoRecyclerAdapter);
+//        adAdapter.loadAds();
     }
 
     @Override
