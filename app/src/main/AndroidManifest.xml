@@ -14,7 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndModuleAds">
         <activity
-            android:name=".applovin.SimpleListActivity"
+            android:name=".admob.AdmobSimpleListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".applovin.MaxSimpleListActivity"
             android:exported="false" />
         <activity
             android:name=".applovin.MainApplovinActivity"

@@ -1241,6 +1241,58 @@ public class Admob {
                 .build();
         adLoader.loadAd(getAdRequest());
     }
+    public void loadNativeAds(Context context, String id, final AdCallback callback, int countAd) {
+        if (Arrays.asList(context.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
+            showTestIdAlert(context, NATIVE_ADS, id);
+        }
+        if (AppPurchase.getInstance().isPurchased(context)) {
+            callback.onAdClosed();
+            return;
+        }
+        VideoOptions videoOptions = new VideoOptions.Builder()
+                .setStartMuted(true)
+                .build();
+
+        NativeAdOptions adOptions = new NativeAdOptions.Builder()
+                .setVideoOptions(videoOptions)
+                .build();
+        AdLoader adLoader = new AdLoader.Builder(context, id)
+                .forNativeAd(new NativeAd.OnNativeAdLoadedListener() {
+
+                    @Override
+                    public void onNativeAdLoaded(@NonNull NativeAd nativeAd) {
+                        callback.onUnifiedNativeAdLoaded(nativeAd);
+                        nativeAd.setOnPaidEventListener(adValue -> {
+                            Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
+                            AdjustApero.pushTrackEventAdmod(adValue);
+                            FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                                    adValue,
+                                    id,
+                                    "native");
+                        });
+                    }
+                })
+                .withAdListener(new AdListener() {
+                    @Override
+                    public void onAdFailedToLoad(LoadAdError error) {
+                        Log.e(TAG, "NativeAd onAdFailedToLoad: " + error.getMessage());
+                        callback.onAdFailedToLoad(error);
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
+                        if (callback != null) {
+                            callback.onAdClicked();
+                            Log.d(TAG, "onAdClicked");
+                        }
+                    }
+                })
+                .withNativeAdOptions(adOptions)
+                .build();
+        adLoader.loadAds(getAdRequest(),countAd);
+    }
 
     private void loadNative(final Context context, final ShimmerFrameLayout containerShimmer, final FrameLayout frameLayout, final String id, final int layout) {
         if (Arrays.asList(context.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
@@ -1461,39 +1513,38 @@ public class Admob {
             e.printStackTrace();
         }
 
-        try {
-            if (nativeAd.getPrice() == null) {
-                Objects.requireNonNull(adView.getPriceView()).setVisibility(View.INVISIBLE);
-            } else {
-                Objects.requireNonNull(adView.getPriceView()).setVisibility(View.VISIBLE);
-                ((TextView) adView.getPriceView()).setText(nativeAd.getPrice());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            if (nativeAd.getStore() == null) {
-                Objects.requireNonNull(adView.getStoreView()).setVisibility(View.INVISIBLE);
-            } else {
-                Objects.requireNonNull(adView.getStoreView()).setVisibility(View.VISIBLE);
-                ((TextView) adView.getStoreView()).setText(nativeAd.getStore());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            if (nativeAd.getStarRating() == null) {
-                Objects.requireNonNull(adView.getStarRatingView()).setVisibility(View.INVISIBLE);
-            } else {
-                ((RatingBar) Objects.requireNonNull(adView.getStarRatingView()))
-                        .setRating(nativeAd.getStarRating().floatValue());
-                adView.getStarRatingView().setVisibility(View.VISIBLE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            if (nativeAd.getPrice() == null) {
+//                Objects.requireNonNull(adView.getPriceView()).setVisibility(View.INVISIBLE);
+//            } else {
+//                Objects.requireNonNull(adView.getPriceView()).setVisibility(View.VISIBLE);
+//                ((TextView) adView.getPriceView()).setText(nativeAd.getPrice());
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            if (nativeAd.getStore() == null) {
+//                Objects.requireNonNull(adView.getStoreView()).setVisibility(View.INVISIBLE);
+//            } else {
+//                Objects.requireNonNull(adView.getStoreView()).setVisibility(View.VISIBLE);
+//                ((TextView) adView.getStoreView()).setText(nativeAd.getStore());
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        try {
+//            if (nativeAd.getStarRating() == null) {
+//                Objects.requireNonNull(adView.getStarRatingView()).setVisibility(View.INVISIBLE);
+//            } else {
+//                ((RatingBar) Objects.requireNonNull(adView.getStarRatingView())).setRating(nativeAd.getStarRating().floatValue());
+//                adView.getStarRatingView().setVisibility(View.VISIBLE);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         try {
             if (nativeAd.getAdvertiser() == null) {

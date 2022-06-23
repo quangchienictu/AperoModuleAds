@@ -1,16 +1,21 @@
 package com.ads.control.ads.nativeAds;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ads.control.R;
 import com.ads.control.admob.Admob;
 import com.ads.control.ads.wrapper.ApNativeAd;
 import com.ads.control.funtion.AdCallback;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
 
@@ -20,11 +25,12 @@ import java.util.List;
 
 public class AperoAdPlacer {
     String TAG = "AperoAdPlacer";
-    private HashMap<Integer,ApNativeAd> listAd = new HashMap<>();
+    private HashMap<Integer, ApNativeAd> listAd = new HashMap<>();
+    private List<Integer> listPositionAd = new ArrayList<>();
     private AperoAdPlacerSettings settings;
-    private  RecyclerView.Adapter adapterOriginal;
+    private RecyclerView.Adapter adapterOriginal;
     private Activity activity;
-
+    private int countLoadAd = 0;
 
     public AperoAdPlacer(AperoAdPlacerSettings settings, RecyclerView.Adapter adapterOriginal, Activity activity) {
         this.settings = settings;
@@ -33,46 +39,99 @@ public class AperoAdPlacer {
         configData();
     }
 
-    private void configData(){
-        if (settings.isRepeatingAd()){
+    private void configData() {
+        if (settings.isRepeatingAd()) {
             int posAddAd = 0;
-            while (posAddAd<adapterOriginal.getItemCount()-settings.getPositionFixAd()){
+            int countNewAdapter = adapterOriginal.getItemCount();
+            while (posAddAd < countNewAdapter - settings.getPositionFixAd()) {
                 posAddAd += settings.getPositionFixAd();
-                listAd.put(posAddAd,new ApNativeAd(StatusNative.AD_LOADING));
+                listAd.put(posAddAd, new ApNativeAd(StatusNative.AD_INIT));
+                listPositionAd.add(posAddAd);
+                posAddAd++;
+                countNewAdapter++;
             }
-        }else {
-            listAd.put(settings.getPositionFixAd(),new ApNativeAd(StatusNative.AD_LOADING));
+        } else {
+            listAd.put(settings.getPositionFixAd(), new ApNativeAd(StatusNative.AD_INIT));
         }
     }
 
-    public void renderAd(int pos, NativeAdView adPlace){
-        ApNativeAd nativeAd = listAd.get(pos);
-        if (nativeAd.getAdmobNativeAd()==null){
-            Admob.getInstance().loadNativeAd(activity, settings.getAdUnitId(),new AdCallback(){
-                @Override
-                public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
-                    super.onUnifiedNativeAdLoaded(unifiedNativeAd);
-                    Log.e(TAG, "native loaded in pos: " + pos );
+    public void renderAd(int pos, RecyclerView.ViewHolder holder) {
 
-                    ApNativeAd nativeAd = new ApNativeAd(settings.getLayoutCustomAd(),unifiedNativeAd);
-                    nativeAd.setStatus(StatusNative.AD_LOADED);
-                    listAd.put(pos,nativeAd);
-                    Admob.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, adPlace);
-                }
+        if (listAd.get(pos).getAdmobNativeAd() == null && listAd.get(pos).getStatus() != StatusNative.AD_LOADING) {
+            holder.itemView.post(() -> {
+                ApNativeAd nativeAd =  new ApNativeAd(StatusNative.AD_LOADING);
+                listAd.put(pos, nativeAd);
+                Admob.getInstance().loadNativeAd(activity, settings.getAdUnitId(), new AdCallback() {
+                    @Override
+                    public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
+                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                        Log.i(TAG, "native ad in recycle loaded position: " + pos);
+
+                        NativeAdView nativeAdView = (NativeAdView) LayoutInflater.from(activity)
+                                .inflate(settings.getLayoutCustomAd(), null);
+                        FrameLayout adPlaceHolder = holder.itemView.findViewById(R.id.fl_adplaceholder);
+                        ShimmerFrameLayout containerShimmer = holder.itemView.findViewById(R.id.shimmer_container_small_native);
+
+                        nativeAd.setAdmobNativeAd(unifiedNativeAd);
+                        nativeAd.setStatus(StatusNative.AD_LOADED);
+                        listAd.put(pos, nativeAd);
+
+                        containerShimmer.stopShimmer();
+                        containerShimmer.setVisibility(View.GONE);
+                        adPlaceHolder.setVisibility(View.VISIBLE);
+                        Admob.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, nativeAdView);
+                        adPlaceHolder.removeAllViews();
+                        adPlaceHolder.addView(nativeAdView);
+                    }
+                });
             });
-        }else {
-            Log.e(TAG, "reload ad pos: " + pos );
-            Admob.getInstance().populateUnifiedNativeAdView(nativeAd.getAdmobNativeAd(), adPlace);
+        } else {
+//            if (nativeAd.getStatus() == StatusNative.AD_LOADED) {
+//                //ad native loaded not attach view
+//                Log.i(TAG, "ad native render position: " + pos);
+//                containerShimmer.stopShimmer();
+//                containerShimmer.setVisibility(View.GONE);
+//                adPlaceHolder.setVisibility(View.VISIBLE);
+//                Admob.getInstance().populateUnifiedNativeAdView(nativeAd.getAdmobNativeAd(), nativeAdView);
+//                adPlaceHolder.removeAllViews();
+//                adPlaceHolder.addView(nativeAdView);
+//
+//                nativeAd.setStatus(StatusNative.AD_RENDER_SUCCESS);
+//                listAd.put(pos, nativeAd);
+//            }
         }
+    }
 
+    public void loadAds() {
+        countLoadAd = 0;
+        Admob.getInstance().loadNativeAds(activity, settings.getAdUnitId(), new AdCallback() {
+            @Override
+            public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
+                super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                ApNativeAd nativeAd = new ApNativeAd(settings.getLayoutCustomAd(), unifiedNativeAd);
+                nativeAd.setStatus(StatusNative.AD_LOADED);
+                listAd.put(listPositionAd.get(countLoadAd), nativeAd);
+                Log.i(TAG, "native ad in recycle loaded: " + countLoadAd);
+                countLoadAd++;
+            }
+        }, Math.min(listAd.size(), 3));
     }
 
     public boolean isAdPosition(int pos) {
         ApNativeAd nativeAd = listAd.get(pos);
-        return nativeAd!=null;
+        return nativeAd != null;
     }
 
-    public int getAdjustedCount(){
-        return adapterOriginal.getItemCount()+ listAd.size();
+    public int getOriginalPosition(int posAdAdapter) {
+        int countAd = 0;
+        for (int i = 0; i < posAdAdapter; i++) {
+            if (listAd.get(i) != null)
+                countAd++;
+        }
+        return posAdAdapter - countAd;
+    }
+
+    public int getAdjustedCount() {
+        return adapterOriginal.getItemCount() + listAd.size();
     }
 }

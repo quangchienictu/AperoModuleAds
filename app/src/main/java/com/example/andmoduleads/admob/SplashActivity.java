@@ -8,26 +8,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.ads.control.admob.Admob;
 import com.ads.control.admob.AppOpenManager;
 import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdCallback;
-import com.ads.control.ads.AperoAdConfig;
 import com.ads.control.ads.AperoInitCallback;
 import com.ads.control.ads.wrapper.ApAdError;
-import com.ads.control.ads.wrapper.ApInterstitialAd;
-import com.ads.control.applovin.AppLovin;
-import com.ads.control.applovin.AppLovinCallback;
-import com.ads.control.funtion.AdCallback;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.funtion.BillingListener;
-import com.applovin.mediation.MaxError;
 import com.example.andmoduleads.R;
 import com.example.andmoduleads.applovin.MainApplovinActivity;
-import com.example.andmoduleads.applovin.SimpleListActivity;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,7 +132,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void startMain() {
-        startActivity(new Intent(this, SimpleListActivity.class));
+        startActivity(new Intent(this, MainApplovinActivity.class));
         finish();
     }
 
