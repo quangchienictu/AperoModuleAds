@@ -22,7 +22,6 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,7 +30,11 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.ads.control.ads.nativeAds.AperoAdPlacer;
+import com.ads.control.ads.nativeAds.AperoAdPlacerSettings;
+import com.ads.control.ads.nativeAds.AdmobRecyclerAdapter;
 import com.ads.control.util.AdjustApero;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.R;
@@ -1784,6 +1787,29 @@ public class Admob {
             });
         }
     }
+
+
+    public AdmobRecyclerAdapter getNativeRepeatAdapter(Activity activity, String id, int layoutCustomNative, int layoutAdPlaceHolder, RecyclerView.Adapter originalAdapter,
+                                                                                AperoAdPlacer.Listener listener, int repeatingInterval) {
+        AperoAdPlacerSettings settings = new AperoAdPlacerSettings(layoutCustomNative,layoutAdPlaceHolder);
+        settings.setAdUnitId(id);
+        settings.setListener(listener);
+        settings.setRepeatingInterval(repeatingInterval);
+        AdmobRecyclerAdapter adAdapter =  new AdmobRecyclerAdapter(settings,originalAdapter,activity);
+        return adAdapter;
+    }
+
+    public AdmobRecyclerAdapter getNativeFixedPositionAdapter(Activity activity, String id, int layoutCustomNative, int layoutAdPlaceHolder, RecyclerView.Adapter originalAdapter,
+                                                                                AperoAdPlacer.Listener listener, int repeatingInterval) {
+        //seting max
+        AperoAdPlacerSettings settings = new AperoAdPlacerSettings(layoutCustomNative,layoutAdPlaceHolder);
+        settings.setAdUnitId(id);
+        settings.setListener(listener);
+        settings.setRepeatingInterval(repeatingInterval);
+        AdmobRecyclerAdapter adAdapter =  new AdmobRecyclerAdapter(settings,originalAdapter,activity);
+        return adAdapter;
+    }
+
 
 
     @SuppressLint("HardwareIds")

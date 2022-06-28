@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.adjust.sdk.Adjust;
 import com.adjust.sdk.AdjustAttribution;
@@ -28,7 +29,10 @@ import com.adjust.sdk.OnSessionTrackingFailedListener;
 import com.adjust.sdk.OnSessionTrackingSucceededListener;
 import com.ads.control.admob.Admob;
 import com.ads.control.admob.AppOpenManager;
+import com.ads.control.ads.nativeAds.AperoAdPlacer;
+import com.ads.control.ads.nativeAds.AperoAdAdapter;
 import com.ads.control.ads.wrapper.ApAdError;
+import com.ads.control.ads.wrapper.ApAdValue;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.ads.wrapper.ApNativeAd;
 import com.ads.control.ads.wrapper.ApRewardAd;
@@ -46,6 +50,8 @@ import com.applovin.mediation.MaxReward;
 import com.applovin.mediation.ads.MaxInterstitialAd;
 import com.applovin.mediation.ads.MaxRewardedAd;
 import com.applovin.mediation.nativeAds.MaxNativeAdView;
+import com.applovin.mediation.nativeAds.adPlacer.MaxAdPlacer;
+import com.applovin.mediation.nativeAds.adPlacer.MaxRecyclerAdapter;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.LoadAdError;
@@ -117,6 +123,10 @@ public class AperoAd {
                     initCallback.initAdSuccess();
                 break;
         }
+    }
+
+    public int getMediationProvider(){
+        return adConfig.getMediationProvider();
     }
 
     public void setInitCallback(AperoInitCallback initCallback) {
@@ -911,6 +921,76 @@ public class AperoAd {
                         callback.onAdFailedToShow(new ApAdError(adError));
                     }
                 });
+        }
+    }
+
+    public AperoAdAdapter getNativeRepeatAdapter(Activity activity, String id, int layoutCustomNative, int layoutAdPlaceHolder, RecyclerView.Adapter originalAdapter,
+                                                 AperoAdPlacer.Listener listener, int repeatingInterval) {
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.PROVIDER_MAX:
+                MaxAdPlacer.Listener maxListener = new MaxAdPlacer.Listener() {
+                    @Override
+                    public void onAdLoaded(int i) {
+                        listener.onAdLoaded(i);
+                    }
+
+                    @Override
+                    public void onAdRemoved(int i) {
+                        listener.onAdRemoved(i);
+                    }
+
+                    @Override
+                    public void onAdClicked(MaxAd maxAd) {
+                        listener.onAdClicked();
+                    }
+
+                    @Override
+                    public void onAdRevenuePaid(MaxAd maxAd) {
+                        listener.onAdRevenuePaid(new ApAdValue(maxAd));
+                    }
+                };
+                MaxRecyclerAdapter adAdapter = AppLovin.getInstance().getNativeRepeatAdapter(activity, id, layoutCustomNative,
+                        originalAdapter, maxListener, repeatingInterval);
+                adAdapter.loadAds();
+                return new AperoAdAdapter(adAdapter);
+            default:
+                return new AperoAdAdapter(Admob.getInstance().getNativeRepeatAdapter(activity, id, layoutCustomNative, layoutAdPlaceHolder,
+                        originalAdapter, listener, repeatingInterval));
+        }
+
+    }
+    public AperoAdAdapter getNativeFixedPositionAdapter(Activity activity, String id, int layoutCustomNative, int layoutAdPlaceHolder, RecyclerView.Adapter originalAdapter,
+                                                        AperoAdPlacer.Listener listener, int position) {
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.PROVIDER_MAX:
+                MaxAdPlacer.Listener maxListener = new MaxAdPlacer.Listener() {
+                    @Override
+                    public void onAdLoaded(int i) {
+                        listener.onAdLoaded(i);
+                    }
+
+                    @Override
+                    public void onAdRemoved(int i) {
+                        listener.onAdRemoved(i);
+                    }
+
+                    @Override
+                    public void onAdClicked(MaxAd maxAd) {
+                        listener.onAdClicked();
+                    }
+
+                    @Override
+                    public void onAdRevenuePaid(MaxAd maxAd) {
+                        listener.onAdRevenuePaid(new ApAdValue(maxAd));
+                    }
+                };
+                MaxRecyclerAdapter adAdapter = AppLovin.getInstance().getNativeFixedPositionAdapter(activity, id, layoutCustomNative,
+                        originalAdapter, maxListener, position);
+                adAdapter.loadAds();
+                return new AperoAdAdapter(adAdapter);
+            default:
+                return new AperoAdAdapter(Admob.getInstance().getNativeFixedPositionAdapter(activity, id, layoutCustomNative, layoutAdPlaceHolder,
+                        originalAdapter, listener, position));
         }
     }
 }

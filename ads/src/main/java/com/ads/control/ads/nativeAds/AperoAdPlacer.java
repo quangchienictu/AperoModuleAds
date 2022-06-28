@@ -13,9 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ads.control.R;
 import com.ads.control.admob.Admob;
+import com.ads.control.ads.wrapper.ApAdValue;
 import com.ads.control.ads.wrapper.ApNativeAd;
 import com.ads.control.funtion.AdCallback;
+import com.applovin.mediation.MaxAd;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.ads.AdValue;
+import com.google.android.gms.ads.OnPaidEventListener;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
 
@@ -66,7 +70,14 @@ public class AperoAdPlacer {
                     public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
                         super.onUnifiedNativeAdLoaded(unifiedNativeAd);
                         Log.i(TAG, "native ad in recycle loaded position: " + pos);
+                        unifiedNativeAd.setOnPaidEventListener(new OnPaidEventListener() {
+                            @Override
+                            public void onPaidEvent(@NonNull AdValue adValue) {
+                                AperoAdPlacer.this.onAdRevenuePaid(new ApAdValue(adValue));
+                            }
+                        });
 
+                        AperoAdPlacer.this.onAdLoaded(pos);
                         NativeAdView nativeAdView = (NativeAdView) LayoutInflater.from(activity)
                                 .inflate(settings.getLayoutCustomAd(), null);
                         FrameLayout adPlaceHolder = holder.itemView.findViewById(R.id.fl_adplaceholder);
@@ -83,6 +94,13 @@ public class AperoAdPlacer {
                         adPlaceHolder.removeAllViews();
                         adPlaceHolder.addView(nativeAdView);
                     }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        AperoAdPlacer.this.onAdClicked();
+                    }
+
                 });
             });
         } else {
@@ -114,7 +132,7 @@ public class AperoAdPlacer {
                 Log.i(TAG, "native ad in recycle loaded: " + countLoadAd);
                 countLoadAd++;
             }
-        }, Math.min(listAd.size(), 3));
+        }, Math.min(listAd.size(), settings.getPositionFixAd()));
     }
 
     public boolean isAdPosition(int pos) {
@@ -133,5 +151,39 @@ public class AperoAdPlacer {
 
     public int getAdjustedCount() {
         return adapterOriginal.getItemCount() + listAd.size();
+    }
+
+    public interface Listener {
+        void onAdLoaded(int position);
+
+        void onAdRemoved(int position);
+
+        void onAdClicked();
+
+        void onAdRevenuePaid(ApAdValue adValue );
+    }
+
+    public void onAdLoaded(int position){
+        Log.i(TAG, "Ad native loaded in pos: "+position);
+        if (settings.getListener()!=null)
+            settings.getListener().onAdLoaded(position);
+    }
+
+    public void onAdRemoved(int position){
+        Log.i(TAG, "Ad native removed in pos: "+position);
+        if (settings.getListener()!=null)
+            settings.getListener().onAdRemoved(position);
+    }
+
+    public void onAdClicked(){
+        Log.i(TAG, "Ad native clicked ");
+        if (settings.getListener()!=null)
+            settings.getListener().onAdClicked();
+    }
+
+    public void onAdRevenuePaid(ApAdValue adValue){
+        Log.i(TAG, "Ad native revenue paid ");
+        if (settings.getListener()!=null)
+            settings.getListener().onAdRevenuePaid(adValue);
     }
 }

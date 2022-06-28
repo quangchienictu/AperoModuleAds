@@ -7,40 +7,41 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.ads.control.ads.nativeAds.AperoAdPlacerSettings;
-import com.ads.control.ads.nativeAds.AperoRecyclerAdapter;
-import com.ads.control.applovin.AppLovin;
-import com.applovin.mediation.MaxAd;
-import com.applovin.mediation.nativeAds.adPlacer.MaxAdPlacer;
-import com.applovin.mediation.nativeAds.adPlacer.MaxRecyclerAdapter;
+import com.ads.control.ads.AperoAd;
+import com.ads.control.ads.AperoAdConfig;
+import com.ads.control.ads.nativeAds.AperoAdPlacer;
+import com.ads.control.ads.nativeAds.AperoAdAdapter;
+import com.ads.control.ads.wrapper.ApAdValue;
 import com.example.andmoduleads.R;
 
 public class MaxSimpleListActivity extends AppCompatActivity {
     private static final String TAG = "SimpleListActivity";
-    MaxRecyclerAdapter  adAdapter;
-    AperoRecyclerAdapter aperoRecyclerAdapter;
+    AperoAdAdapter adAdapter;
+    int layoutCustomNative = com.ads.control.R.layout.small_native_admod_ad;
+    String idNative = "";
+    AperoAdPlacer.Listener listener = new AperoAdPlacer.Listener() {
+        @Override
+        public void onAdLoaded(int i) {
+            Log.i(TAG, "onAdLoaded native list: " + i);
+        }
 
-    MaxAdPlacer.Listener listener =   new MaxAdPlacer.Listener() {
-            @Override
-            public void onAdLoaded(int i) {
-                Log.i(TAG, "onAdLoaded native list: "+ i);
-            }
+        @Override
+        public void onAdRemoved(int i) {
+            Log.i(TAG, "onAdRemoved: " + i);
+        }
 
-            @Override
-            public void onAdRemoved(int i) {
-                Log.i(TAG, "onAdRemoved: "+ i);
-            }
+        @Override
+        public void onAdClicked() {
 
-            @Override
-            public void onAdClicked(MaxAd maxAd) {
+        }
 
-            }
+        @Override
+        public void onAdRevenuePaid(ApAdValue adValue) {
 
-            @Override
-            public void onAdRevenuePaid(MaxAd maxAd) {
+        }
 
-            }
-        };
+
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,16 +53,22 @@ public class MaxSimpleListActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.rvListSimple);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        //init max recycle view
-        adAdapter = AppLovin.getInstance().getNativeRepeatAdapter(this, getString(R.string.applovin_test_native), R.layout.max_native_custom_ad_small,
-                originalAdapter, listener,5);
-        recyclerView.setAdapter(adAdapter);
-        adAdapter.loadAds();
+        if (AperoAd.getInstance().getMediationProvider() == AperoAdConfig.PROVIDER_ADMOB) {
+            layoutCustomNative = com.ads.control.R.layout.small_native_admod_ad;
+            idNative = getString(R.string.admod_native_id);
+        } else {
+            layoutCustomNative = R.layout.max_native_custom_ad_small;
+            idNative = getString(R.string.applovin_test_native);
+        }
+
+        adAdapter = AperoAd.getInstance().getNativeRepeatAdapter(this,idNative, layoutCustomNative, com.ads.control.R.layout.layout_small_native_control,
+                originalAdapter, listener, 5);
+
+        recyclerView.setAdapter(adAdapter.getAdapter());
     }
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         adAdapter.destroy();
         super.onDestroy();
     }

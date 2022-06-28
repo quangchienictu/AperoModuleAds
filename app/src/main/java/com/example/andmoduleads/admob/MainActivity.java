@@ -57,14 +57,15 @@ public class MainActivity extends AppCompatActivity {
 
         Admob.getInstance().setNumToShowAds(4,3);
 //        Admod.getInstance().setNumToShowAds(3);
-        Admob.getInstance().loadNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {
-            @Override
-            public void onUnifiedNativeAdLoaded(NativeAd unifiedNativeAd) {
-                @SuppressLint("InflateParams") NativeAdView adView = ( NativeAdView) LayoutInflater.from(MainActivity.this).inflate(R.layout.custom_native, null);
-                frAds.addView(adView);
-                Admob.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, adView);
-            }
-        });
+
+//        Admob.getInstance().loadNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {
+//            @Override
+//            public void onUnifiedNativeAdLoaded(NativeAd unifiedNativeAd) {
+//                @SuppressLint("InflateParams") NativeAdView adView = ( NativeAdView) LayoutInflater.from(MainActivity.this).inflate(R.layout.custom_native, null);
+//                frAds.addView(adView);
+//                Admob.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, adView);
+//            }
+//        });
 
         AppPurchase.getInstance().setPurchaseListioner(new PurchaseListioner() {
             @Override
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Admob.getInstance().loadBanner(this, getString(R.string.admod_banner_id));
+//        Admob.getInstance().loadBanner(this, getString(R.string.admod_banner_id));
 //        Admod.getInstance().loadNative(this, getString(R.string.admod_native_id));
 
         loadAdInterstial();
