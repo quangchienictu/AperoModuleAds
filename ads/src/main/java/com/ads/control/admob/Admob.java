@@ -1800,12 +1800,12 @@ public class Admob {
     }
 
     public AdmobRecyclerAdapter getNativeFixedPositionAdapter(Activity activity, String id, int layoutCustomNative, int layoutAdPlaceHolder, RecyclerView.Adapter originalAdapter,
-                                                                                AperoAdPlacer.Listener listener, int repeatingInterval) {
-        //seting max
+                                                                                AperoAdPlacer.Listener listener, int position) {
+
         AperoAdPlacerSettings settings = new AperoAdPlacerSettings(layoutCustomNative,layoutAdPlaceHolder);
         settings.setAdUnitId(id);
         settings.setListener(listener);
-        settings.setRepeatingInterval(repeatingInterval);
+        settings.setFixedPosition(position);
         AdmobRecyclerAdapter adAdapter =  new AdmobRecyclerAdapter(settings,originalAdapter,activity);
         return adAdapter;
     }
