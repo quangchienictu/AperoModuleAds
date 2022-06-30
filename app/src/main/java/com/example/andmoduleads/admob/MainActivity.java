@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ads.control.admob.AppOpenManager;
 import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdCallback;
 import com.ads.control.ads.AperoAdConfig;
@@ -95,6 +96,10 @@ public class MainActivity extends AppCompatActivity {
                     loadAdInterstitial();
                 }
             });
+        });
+
+        findViewById(R.id.btForceShowAds).setOnClickListener(v -> {
+            AppOpenManager.getInstance().disableAdResumeByClickAction();
         });
 
 

@@ -64,7 +64,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     private boolean isAppResumeEnabled = true;
     private boolean isInterstitialShowing = false;
     private boolean enableScreenContentCallback = false; // default =  true when use splash & false after show splash
-
+    private boolean disableAdResumeByClickAction = false;
     private final List<Class> disabledAppOpenList;
     private Class splashActivity;
 
@@ -107,6 +107,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
      */
     public void init(Application application, String appOpenAdId) {
         isInitialized = true;
+        disableAdResumeByClickAction = false;
         this.myApplication = application;
         this.myApplication.registerActivityLifecycleCallbacks(this);
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
@@ -136,6 +137,17 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
     public void setInterstitialShowing(boolean interstitialShowing) {
         isInterstitialShowing = interstitialShowing;
+    }
+
+    /**
+     * Call disable ad resume when click a button, auto enable ad resume in next start
+     */
+    public void disableAdResumeByClickAction(){
+        disableAdResumeByClickAction = true;
+    }
+
+    public void setDisableAdResumeByClickAction(boolean disableAdResumeByClickAction) {
+        this.disableAdResumeByClickAction = disableAdResumeByClickAction;
     }
 
     /**
@@ -646,6 +658,12 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
         if (isInterstitialShowing){
             Log.d(TAG, "onResume: interstitial is showing");
+            return;
+        }
+
+        if (disableAdResumeByClickAction){
+            Log.d(TAG, "onResume:ad resume disable ad by action");
+            disableAdResumeByClickAction = false;
             return;
         }
 
