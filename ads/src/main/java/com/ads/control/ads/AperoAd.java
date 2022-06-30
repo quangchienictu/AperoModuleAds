@@ -719,7 +719,12 @@ public class AperoAd {
         }
     }
 
-
+    /**
+     * Load native ad and auto populate ad to view in activity
+     * @param activity
+     * @param id
+     * @param layoutCustomNative
+     */
     public void loadNativeAd(final Activity activity, String id,
                              int layoutCustomNative) {
         FrameLayout adPlaceHolder = activity.findViewById(R.id.fl_adplaceholder);
@@ -756,6 +761,14 @@ public class AperoAd {
         }
     }
 
+    /**
+     *  Load native ad and auto populate ad to adPlaceHolder and hide containerShimmerLoading
+     * @param activity
+     * @param id
+     * @param layoutCustomNative
+     * @param adPlaceHolder
+     * @param containerShimmerLoading
+     */
     public void loadNativeAd(final Activity activity, String id,
                              int layoutCustomNative, FrameLayout adPlaceHolder, ShimmerFrameLayout
                                      containerShimmerLoading) {
@@ -791,6 +804,13 @@ public class AperoAd {
         }
     }
 
+    /**
+     * Result a ApNativeAd in onUnifiedNativeAdLoaded when native ad loaded
+     * @param activity
+     * @param id
+     * @param layoutCustomNative
+     * @param callback
+     */
     public void loadNativeAdResultCallback(final Activity activity, String id,
                                            int layoutCustomNative, AperoAdCallback callback) {
         switch (adConfig.getMediationProvider()) {
@@ -966,6 +986,17 @@ public class AperoAd {
         }
     }
 
+    /**
+     * Result a AperoAdAdapter with ad native repeating interval
+     * @param activity
+     * @param id
+     * @param layoutCustomNative
+     * @param layoutAdPlaceHolder
+     * @param originalAdapter
+     * @param listener
+     * @param repeatingInterval
+     * @return
+     */
     public AperoAdAdapter getNativeRepeatAdapter(Activity activity, String id, int layoutCustomNative, int layoutAdPlaceHolder, RecyclerView.Adapter originalAdapter,
                                                  AperoAdPlacer.Listener listener, int repeatingInterval) {
         switch (adConfig.getMediationProvider()) {
@@ -1002,6 +1033,17 @@ public class AperoAd {
 
     }
 
+    /**
+     * Result a AperoAdAdapter with ad native fixed in position
+     * @param activity
+     * @param id
+     * @param layoutCustomNative
+     * @param layoutAdPlaceHolder
+     * @param originalAdapter
+     * @param listener
+     * @param position
+     * @return
+     */
     public AperoAdAdapter getNativeFixedPositionAdapter(Activity activity, String id, int layoutCustomNative, int layoutAdPlaceHolder, RecyclerView.Adapter originalAdapter,
                                                         AperoAdPlacer.Listener listener, int position) {
         switch (adConfig.getMediationProvider()) {
