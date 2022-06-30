@@ -99,14 +99,13 @@ public class MainApplovinActivity extends AppCompatActivity {
 
         ShimmerFrameLayout shimmerFrameLayout =  findViewById(R.id.shimmer_container_native) ;
         FrameLayout flParentNative = findViewById(R.id.fl_adplaceholder);
-        AperoAd.getInstance().loadNativeAdResultCallback(this,getString(R.string.applovin_test_native),R.layout.custom_native_max_full,new AperoAdCallback(){
+        AperoAd.getInstance().loadNativeAdResultCallback(this,getString(R.string.applovin_test_native), com.ads.control.R.layout.custom_native_max_small,new AperoAdCallback(){
             @Override
             public void onNativeAdLoaded(@NonNull ApNativeAd nativeAd) {
                 super.onNativeAdLoaded(nativeAd);
                 AperoAd.getInstance().populateNativeAdView(MainApplovinActivity.this,nativeAd,flParentNative,shimmerFrameLayout);
             }
         });
-
     }
 
     @Override

@@ -62,6 +62,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
     private boolean isInitialized = false;// on  - off ad resume on app
     private boolean isAppResumeEnabled = true;
+    private boolean isInterstitialShowing = false;
     private boolean enableScreenContentCallback = false; // default =  true when use splash & false after show splash
 
     private final List<Class> disabledAppOpenList;
@@ -127,6 +128,14 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
     public void setEnableScreenContentCallback(boolean enableScreenContentCallback) {
         this.enableScreenContentCallback = enableScreenContentCallback;
+    }
+
+    public boolean isInterstitialShowing() {
+        return isInterstitialShowing;
+    }
+
+    public void setInterstitialShowing(boolean interstitialShowing) {
+        isInterstitialShowing = interstitialShowing;
     }
 
     /**
@@ -634,6 +643,12 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             Log.d(TAG, "onResume: app resume is disabled");
             return;
         }
+
+        if (isInterstitialShowing){
+            Log.d(TAG, "onResume: interstitial is showing");
+            return;
+        }
+
         for (Class activity : disabledAppOpenList) {
             if (activity.getName().equals(currentActivity.getClass().getName())) {
                 Log.d(TAG, "onStart: activity is disabled");

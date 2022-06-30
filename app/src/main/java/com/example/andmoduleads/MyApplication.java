@@ -63,7 +63,7 @@ public class MyApplication extends AdsMultiDexApplication {
         List<String> listINAPId = new ArrayList<>();
         listINAPId.add(MainActivity.PRODUCT_ID);
         List<String> listSubsId = new ArrayList<>();
-
+        Admob.getInstance().setOpenActivityAfterShowInterAds(true);
         AppPurchase.getInstance().initBilling(getApplication(),listINAPId,listSubsId);
 //        AppPurchase.getInstance().addProductId(MainActivity.PRODUCT_ID);
 

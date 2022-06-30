@@ -80,7 +80,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Admob {
-    private static final String TAG = "Admod";
+    private static final String TAG = "AperoAdmob";
     private static Admob instance;
     private int currentClicked = 0;
     private String nativeId;
@@ -478,14 +478,15 @@ public class Admob {
         mInterstitialSplash.setFullScreenContentCallback(new FullScreenContentCallback() {
             @Override
             public void onAdShowedFullScreenContent() {
+                Log.d(TAG, " Splash:onAdShowedFullScreenContent ");
+                AppOpenManager.getInstance().setInterstitialShowing(true);
                 isShowLoadingSplash = false;
             }
 
             @Override
             public void onAdDismissedFullScreenContent() {
-                if (AppOpenManager.getInstance().isInitialized()) {
-                    AppOpenManager.getInstance().enableAppResume();
-                }
+                Log.d(TAG, " Splash:onAdDismissedFullScreenContent ");
+                AppOpenManager.getInstance().setInterstitialShowing(false);
                 if (adListener != null) {
                     if (!openActivityAfterShowInterAds) {
                         adListener.onAdClosed();
@@ -540,9 +541,8 @@ public class Admob {
                 e.printStackTrace();
             }
             new Handler().postDelayed(() -> {
-                if (AppOpenManager.getInstance().isInitialized()) {
-                    AppOpenManager.getInstance().disableAppResume();
-                }
+
+                AppOpenManager.getInstance().setInterstitialShowing(true);
 
                 if (openActivityAfterShowInterAds && adListener != null) {
                     adListener.onAdClosed();
@@ -775,9 +775,8 @@ public class Admob {
             public void onAdDismissedFullScreenContent() {
                 super.onAdDismissedFullScreenContent();
                 // Called when fullscreen content is dismissed.
-                if (AppOpenManager.getInstance().isInitialized()) {
-                    AppOpenManager.getInstance().enableAppResume();
-                }
+
+                AppOpenManager.getInstance().setInterstitialShowing(false);
                 if (callback != null) {
                     if (!openActivityAfterShowInterAds) {
                         callback.onAdClosed();
@@ -798,6 +797,7 @@ public class Admob {
                 super.onAdFailedToShowFullScreenContent(adError);
                 Log.e(TAG, "onAdFailedToShowFullScreenContent: " + adError.getMessage());
                 // Called when fullscreen content failed to show.
+                AppOpenManager.getInstance().setInterstitialShowing(false);
                 if (callback != null) {
                     if (!openActivityAfterShowInterAds) {
                         callback.onAdClosed();
@@ -812,6 +812,7 @@ public class Admob {
             @Override
             public void onAdShowedFullScreenContent() {
                 super.onAdShowedFullScreenContent();
+                AppOpenManager.getInstance().setInterstitialShowing(true);
                 // Called when fullscreen content is shown.
             }
 
@@ -882,9 +883,8 @@ public class Admob {
                     e.printStackTrace();
                 }
                 new Handler().postDelayed(() -> {
-                    if (AppOpenManager.getInstance().isInitialized()) {
-                        AppOpenManager.getInstance().disableAppResume();
-                    }
+
+                    AppOpenManager.getInstance().setInterstitialShowing(true);
 
                     if (openActivityAfterShowInterAds && callback != null) {
                         callback.onAdClosed();
@@ -1683,9 +1683,8 @@ public class Admob {
                     if (adCallback != null)
                         adCallback.onRewardedAdClosed();
 
-                    if (AppOpenManager.getInstance().isInitialized()) {
-                        AppOpenManager.getInstance().enableAppResume();
-                    }
+
+                    AppOpenManager.getInstance().setInterstitialShowing(false);
 
                 }
 
@@ -1699,9 +1698,8 @@ public class Admob {
                 @Override
                 public void onAdShowedFullScreenContent() {
                     super.onAdShowedFullScreenContent();
-                    if (AppOpenManager.getInstance().isInitialized()) {
-                        AppOpenManager.getInstance().disableAppResume();
-                    }
+
+                    AppOpenManager.getInstance().setInterstitialShowing(true);
                     initRewardAds(context, nativeId);
                     rewardedAd = null;
                 }
@@ -1749,9 +1747,8 @@ public class Admob {
                     if (adCallback != null)
                         adCallback.onRewardedAdClosed();
 
-                    if (AppOpenManager.getInstance().isInitialized()) {
-                        AppOpenManager.getInstance().enableAppResume();
-                    }
+
+                    AppOpenManager.getInstance().setInterstitialShowing(false);
 
                 }
 
@@ -1765,9 +1762,8 @@ public class Admob {
                 @Override
                 public void onAdShowedFullScreenContent() {
                     super.onAdShowedFullScreenContent();
-                    if (AppOpenManager.getInstance().isInitialized()) {
-                        AppOpenManager.getInstance().disableAppResume();
-                    }
+
+                    AppOpenManager.getInstance().setInterstitialShowing(true);
                     initRewardAds(context, nativeId);
                 }
 

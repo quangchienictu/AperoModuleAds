@@ -105,7 +105,17 @@
             app:layout_constraintEnd_toEndOf="@+id/ad_body"
             app:layout_constraintStart_toStartOf="@+id/ad_body" />
 
-
+        <FrameLayout
+            android:id="@+id/ad_options_view"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/ad_advertiser"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/ad_headline"
+            app:layout_constraintTop_toTopOf="parent" />
         <TextView
             android:id="@+id/textView3"
             style="@style/AppTheme.Ads"
