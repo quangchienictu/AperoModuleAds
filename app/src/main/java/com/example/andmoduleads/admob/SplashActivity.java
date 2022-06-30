@@ -132,7 +132,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void startMain() {
-        startActivity(new Intent(this, MainApplovinActivity.class));
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 

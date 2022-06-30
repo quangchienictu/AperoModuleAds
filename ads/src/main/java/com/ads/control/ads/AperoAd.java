@@ -27,6 +27,7 @@ import com.adjust.sdk.OnEventTrackingFailedListener;
 import com.adjust.sdk.OnEventTrackingSucceededListener;
 import com.adjust.sdk.OnSessionTrackingFailedListener;
 import com.adjust.sdk.OnSessionTrackingSucceededListener;
+import com.ads.control.R;
 import com.ads.control.admob.Admob;
 import com.ads.control.admob.AppOpenManager;
 import com.ads.control.ads.nativeAds.AperoAdPlacer;
@@ -125,7 +126,7 @@ public class AperoAd {
         }
     }
 
-    public int getMediationProvider(){
+    public int getMediationProvider() {
         return adConfig.getMediationProvider();
     }
 
@@ -617,6 +618,11 @@ public class AperoAd {
      */
     public void forceShowInterstitial(Context context, ApInterstitialAd mInterstitialAd,
                                       final AperoAdCallback callback, boolean shouldReloadAds) {
+        if (mInterstitialAd.isNotReady()) {
+            Log.e(TAG, "forceShowInterstitial: ApInterstitialAd is not ready");
+            callback.onAdFailedToShow(new ApAdError("ApInterstitialAd is not ready"));
+            return;
+        }
         switch (adConfig.getMediationProvider()) {
             case AperoAdConfig.PROVIDER_ADMOB:
                 AdCallback adCallback = new AdCallback() {
@@ -715,6 +721,42 @@ public class AperoAd {
 
 
     public void loadNativeAd(final Activity activity, String id,
+                             int layoutCustomNative) {
+        FrameLayout adPlaceHolder = activity.findViewById(R.id.fl_adplaceholder);
+        ShimmerFrameLayout containerShimmerLoading = activity.findViewById(R.id.shimmer_container_native);
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.PROVIDER_ADMOB:
+                Admob.getInstance().loadNativeAd(((Context) activity), id, new AdCallback() {
+                    @Override
+                    public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
+                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                        populateNativeAdView(activity, new ApNativeAd(layoutCustomNative, unifiedNativeAd), adPlaceHolder, containerShimmerLoading);
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                        super.onAdFailedToLoad(i);
+                    }
+                });
+                break;
+            case AperoAdConfig.PROVIDER_MAX:
+                AppLovin.getInstance().loadNativeAd(activity, id, layoutCustomNative, new AppLovinCallback() {
+                    @Override
+                    public void onUnifiedNativeAdLoaded(MaxNativeAdView unifiedNativeAd) {
+                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                        populateNativeAdView(activity, new ApNativeAd(layoutCustomNative, unifiedNativeAd), adPlaceHolder, containerShimmerLoading);
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@Nullable MaxError i) {
+                        super.onAdFailedToLoad(i);
+                    }
+                });
+                break;
+        }
+    }
+
+    public void loadNativeAd(final Activity activity, String id,
                              int layoutCustomNative, FrameLayout adPlaceHolder, ShimmerFrameLayout
                                      containerShimmerLoading) {
         switch (adConfig.getMediationProvider()) {
@@ -749,8 +791,8 @@ public class AperoAd {
         }
     }
 
-    public void loadNativeAd(final Activity activity, String id,
-                             int layoutCustomNative, AperoAdCallback callback) {
+    public void loadNativeAdResultCallback(final Activity activity, String id,
+                                           int layoutCustomNative, AperoAdCallback callback) {
         switch (adConfig.getMediationProvider()) {
             case AperoAdConfig.PROVIDER_ADMOB:
                 Admob.getInstance().loadNativeAd(((Context) activity), id, new AdCallback() {
@@ -959,6 +1001,7 @@ public class AperoAd {
         }
 
     }
+
     public AperoAdAdapter getNativeFixedPositionAdapter(Activity activity, String id, int layoutCustomNative, int layoutAdPlaceHolder, RecyclerView.Adapter originalAdapter,
                                                         AperoAdPlacer.Listener listener, int position) {
         switch (adConfig.getMediationProvider()) {

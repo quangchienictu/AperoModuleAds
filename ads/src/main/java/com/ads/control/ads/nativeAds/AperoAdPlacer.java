@@ -1,11 +1,9 @@
 package com.ads.control.ads.nativeAds;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -16,7 +14,6 @@ import com.ads.control.admob.Admob;
 import com.ads.control.ads.wrapper.ApAdValue;
 import com.ads.control.ads.wrapper.ApNativeAd;
 import com.ads.control.funtion.AdCallback;
-import com.applovin.mediation.MaxAd;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdValue;
 import com.google.android.gms.ads.OnPaidEventListener;
@@ -41,6 +38,7 @@ public class AperoAdPlacer {
         this.adapterOriginal = adapterOriginal;
         this.activity = activity;
         configData();
+
     }
 
     private void configData() {
@@ -48,7 +46,7 @@ public class AperoAdPlacer {
             int posAddAd = 0;
             int countNewAdapter = adapterOriginal.getItemCount();
             while (posAddAd < countNewAdapter - settings.getPositionFixAd()) {
-                posAddAd += settings.getPositionFixAd();
+                posAddAd += settings.getPositionFixAd()-1;
                 listAd.put(posAddAd, new ApNativeAd(StatusNative.AD_INIT));
                 listPositionAd.add(posAddAd);
                 posAddAd++;
@@ -81,7 +79,7 @@ public class AperoAdPlacer {
                         NativeAdView nativeAdView = (NativeAdView) LayoutInflater.from(activity)
                                 .inflate(settings.getLayoutCustomAd(), null);
                         FrameLayout adPlaceHolder = holder.itemView.findViewById(R.id.fl_adplaceholder);
-                        ShimmerFrameLayout containerShimmer = holder.itemView.findViewById(R.id.shimmer_container_small_native);
+                        ShimmerFrameLayout containerShimmer = holder.itemView.findViewById(R.id.shimmer_container_native);
 
                         nativeAd.setAdmobNativeAd(unifiedNativeAd);
                         nativeAd.setStatus(StatusNative.AD_LOADED);

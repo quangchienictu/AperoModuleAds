@@ -26,7 +26,7 @@ public class AdmobSimpleListActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.rvListSimple);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        AperoAdPlacerSettings settings = new AperoAdPlacerSettings(com.ads.control.R.layout.small_native_admod_ad,com.ads.control.R.layout.layout_small_native_control);
+        AperoAdPlacerSettings settings = new AperoAdPlacerSettings(com.ads.control.R.layout.custom_native_admod_medium,com.ads.control.R.layout.layout_native_medium);
         settings.setAdUnitId(getString(R.string.admod_native_id));
         settings.setRepeatingInterval(3);
         aperoRecyclerAdapter = new AdmobRecyclerAdapter(settings,originalAdapter,this);

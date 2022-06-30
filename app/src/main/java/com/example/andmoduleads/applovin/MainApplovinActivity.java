@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdCallback;
@@ -19,7 +18,6 @@ import com.ads.control.ads.wrapper.ApNativeAd;
 import com.ads.control.ads.wrapper.ApRewardAd;
 import com.example.andmoduleads.R;
 import com.example.andmoduleads.admob.AdmobSimpleListActivity;
-import com.example.andmoduleads.admob.ContentActivity;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
 public class MainApplovinActivity extends AppCompatActivity {
@@ -101,7 +99,7 @@ public class MainApplovinActivity extends AppCompatActivity {
 
         ShimmerFrameLayout shimmerFrameLayout =  findViewById(R.id.shimmer_container_native) ;
         FrameLayout flParentNative = findViewById(R.id.fl_adplaceholder);
-        AperoAd.getInstance().loadNativeAd(this,getString(R.string.applovin_test_native),R.layout.max_native_custom_ad_view,new AperoAdCallback(){
+        AperoAd.getInstance().loadNativeAdResultCallback(this,getString(R.string.applovin_test_native),R.layout.custom_native_max_full,new AperoAdCallback(){
             @Override
             public void onNativeAdLoaded(@NonNull ApNativeAd nativeAd) {
                 super.onNativeAdLoaded(nativeAd);

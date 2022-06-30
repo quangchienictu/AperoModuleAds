@@ -33,6 +33,10 @@ public class ApInterstitialAd {
         return interstitialAd != null;
     }
 
+    public Boolean isNotReady(){
+        return !isReady();
+    }
+
     public InterstitialAd getInterstitialAd() {
         return interstitialAd;
     }

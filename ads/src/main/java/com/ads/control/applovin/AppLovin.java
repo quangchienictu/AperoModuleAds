@@ -707,25 +707,25 @@ public class AppLovin {
     public void loadNative(final Activity mActivity, String adUnitId) {
         final FrameLayout frameLayout = mActivity.findViewById(R.id.fl_adplaceholder);
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_native);
-        loadNativeAd(mActivity, containerShimmer, frameLayout, adUnitId, R.layout.max_native_custom_ad_view);
+        loadNativeAd(mActivity, containerShimmer, frameLayout, adUnitId, R.layout.custom_native_max_free_size);
     }
 
     public void loadNativeSmall(final Activity mActivity, String adUnitId) {
         final FrameLayout frameLayout = mActivity.findViewById(R.id.fl_adplaceholder);
-        final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_small_native);
-        loadNativeAd(mActivity, containerShimmer, frameLayout, adUnitId, R.layout.max_native_custom_ad_small);
+        final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_native);
+        loadNativeAd(mActivity, containerShimmer, frameLayout, adUnitId, R.layout.custom_native_max_medium);
     }
 
     public void loadNativeFragment(final Activity mActivity, String adUnitId, View parent) {
         final FrameLayout frameLayout = parent.findViewById(R.id.fl_adplaceholder);
         final ShimmerFrameLayout containerShimmer = parent.findViewById(R.id.shimmer_container_native);
-        loadNativeAd(mActivity, containerShimmer, frameLayout, adUnitId, R.layout.max_native_custom_ad_view);
+        loadNativeAd(mActivity, containerShimmer, frameLayout, adUnitId, R.layout.custom_native_max_free_size);
     }
 
     public void loadNativeSmallFragment(final Activity mActivity, String adUnitId, View parent) {
         final FrameLayout frameLayout = parent.findViewById(R.id.fl_adplaceholder);
-        final ShimmerFrameLayout containerShimmer = parent.findViewById(R.id.shimmer_container_small_native);
-        loadNativeAd(mActivity, containerShimmer, frameLayout, adUnitId, R.layout.max_native_custom_ad_small);
+        final ShimmerFrameLayout containerShimmer = parent.findViewById(R.id.shimmer_container_native);
+        loadNativeAd(mActivity, containerShimmer, frameLayout, adUnitId, R.layout.custom_native_max_medium);
     }
 
 

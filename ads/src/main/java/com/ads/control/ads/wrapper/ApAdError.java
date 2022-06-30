@@ -9,7 +9,7 @@ public class ApAdError {
     private MaxError maxError;
     private LoadAdError loadAdError;
     private AdError adError;
-
+    private String message = "";
 
     public ApAdError(AdError adError) {
         this.adError = adError;
@@ -23,6 +23,14 @@ public class ApAdError {
         this.maxError = maxError;
     }
 
+    public ApAdError(String message) {
+        this.message = message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public String getMessage(){
         if (maxError!=null)
             return maxError.getMessage();
@@ -30,6 +38,8 @@ public class ApAdError {
             return loadAdError.getMessage();
         if (adError!=null)
             return adError.getMessage();
+        if (!message.isEmpty())
+            return message;
         return "unknown error";
     }
 }

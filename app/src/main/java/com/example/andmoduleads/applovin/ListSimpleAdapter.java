@@ -12,6 +12,7 @@ import com.example.andmoduleads.R;
 
 public class ListSimpleAdapter extends RecyclerView.Adapter<ListSimpleAdapter.ViewHolder> {
 
+    int itemCount = 30;
 
     @NonNull
     @Override
@@ -27,7 +28,15 @@ public class ListSimpleAdapter extends RecyclerView.Adapter<ListSimpleAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return 30;
+        return itemCount;
+    }
+
+    public void removeItem(int pos){
+        itemCount--;
+    }
+
+    public void addItem(int pos){
+        itemCount++;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
