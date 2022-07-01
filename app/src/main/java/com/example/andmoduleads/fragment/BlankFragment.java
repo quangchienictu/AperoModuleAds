@@ -10,11 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 
-import com.ads.control.ads.Admod;
+import com.ads.control.admob.Admob;
+import com.ads.control.ads.AperoAd;
 import com.ads.control.funtion.AdCallback;
 import com.example.andmoduleads.admob.ContentActivity;
 import com.example.andmoduleads.R;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 
 
@@ -41,18 +44,17 @@ public class BlankFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         button =    view.findViewById(R.id.btnNextFragment);
         button.setEnabled(false);
-        Admod.getInstance().getInterstitalAds(getContext(), getString(R.string.admod_interstitial_id), new AdCallback() {
-            @Override
-            public void onInterstitialLoad(InterstitialAd interstitialAd) {
-                super.onInterstitialLoad(interstitialAd);
-                mInterstitialAd = interstitialAd;
-//                Toast.makeText(getContext(), "ad loaded", Toast.LENGTH_SHORT).show();
-                button.setEnabled(true);
-            }
-        });
+//        Admob.getInstance().getInterstitialAds(getContext(), getString(R.string.admod_interstitial_id), new AdCallback() {
+//            @Override
+//            public void onInterstitialLoad(InterstitialAd interstitialAd) {
+//                super.onInterstitialLoad(interstitialAd);
+//                mInterstitialAd = interstitialAd;
+//                button.setEnabled(true);
+//            }
+//        });
 
         button.setOnClickListener(v -> {
-            Admod.getInstance().forceShowInterstitial(getActivity(), mInterstitialAd, new AdCallback() {
+            Admob.getInstance().forceShowInterstitial(getActivity(), mInterstitialAd, new AdCallback() {
                 @Override
                 public void onAdClosed() {
                     ((ContentActivity)getActivity()).showFragment(new InlineBannerFragment(),"BlankFragment2");
@@ -60,6 +62,9 @@ public class BlankFragment extends Fragment {
             });
         });
 
-        Admod.getInstance().loadNativeFragment(getActivity(),getString(R.string.admod_native_id),view);
+//        Admob.getInstance().loadNativeFragment(getActivity(),getString(R.string.admod_native_id),view);
+        FrameLayout flPlaceHolder = view.findViewById(R.id.fl_adplaceholder);
+        ShimmerFrameLayout shimmerFrameLayout = view.findViewById(R.id.shimmer_container_native);
+        AperoAd.getInstance().loadNativeAd(requireActivity(),getString(R.string.admod_native_id),R.layout.custom_native_admob_free_size,flPlaceHolder,shimmerFrameLayout);
     }
 }

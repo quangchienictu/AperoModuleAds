@@ -1,4 +1,4 @@
-package com.ads.control.ads.application;
+package com.ads.control.application;
 
 import android.app.Activity;
 import android.app.Application;
@@ -19,8 +19,8 @@ import com.adjust.sdk.OnEventTrackingSucceededListener;
 import com.adjust.sdk.OnSessionTrackingFailedListener;
 import com.adjust.sdk.OnSessionTrackingSucceededListener;
 import com.ads.control.util.AdjustApero;
-import com.ads.control.ads.AppOpenManager;
-import com.ads.control.ads.Admod;
+import com.ads.control.admob.AppOpenManager;
+import com.ads.control.admob.Admob;
 import com.ads.control.util.AppUtil;
 
 import java.util.List;
@@ -30,9 +30,9 @@ public abstract class AdsApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        AppUtil.BUILD_DEBUG = buildDebug();
-        Log.i("Application", " run debug: " + AppUtil.BUILD_DEBUG);
-        Admod.getInstance().init(this, getListTestDeviceId());
+        AppUtil.VARIANT_DEV = buildDebug();
+        Log.i("Application", " run debug: " + AppUtil.VARIANT_DEV);
+        Admob.getInstance().init(this, getListTestDeviceId());
 
         if (enableAdsResume()) {
             AppOpenManager.getInstance().init(this, getOpenAppAdId());

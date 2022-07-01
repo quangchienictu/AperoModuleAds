@@ -1,10 +1,8 @@
 package com.example.andmoduleads.admob;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -12,20 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ads.control.admob.AppOpenManager;
+import com.ads.control.ads.AperoAd;
+import com.ads.control.ads.AperoAdCallback;
+import com.ads.control.ads.AperoAdConfig;
+import com.ads.control.ads.wrapper.ApAdError;
+import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.util.AdjustApero;
-import com.ads.control.ads.Admod;
+import com.ads.control.admob.Admob;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.dialog.DialogExitApp1;
 import com.ads.control.dialog.InAppDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.PurchaseListioner;
-import com.ads.control.funtion.RewardCallback;
 import com.example.andmoduleads.R;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.nativead.NativeAd;
-import com.google.android.gms.ads.nativead.NativeAdView;
-import com.google.android.gms.ads.rewarded.RewardItem;
 
 public class MainActivity extends AppCompatActivity {
     public static final String PRODUCT_ID = "android.test.purchased";
@@ -37,28 +37,27 @@ public class MainActivity extends AppCompatActivity {
 
     private FrameLayout frAds;
     private NativeAd unifiedNativeAd;
-    private InterstitialAd mInterstitialAd;
+    private ApInterstitialAd mInterstitialAd;
 
     private boolean isShowDialogExit = false;
+
+    private String idBanner = "";
+    private String idNative = "";
+    private String idInter = "";
+
+    private int layoutNativeCustom;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        frAds = findViewById(R.id.fr_ads);
+        frAds = findViewById(R.id.fl_adplaceholder);
+        configMediationProvider();
+//        Admob.getInstance().initRewardAds(this,getString(R.string.admod_app_reward_id));
 
-        Admod.getInstance().initRewardAds(this,getString(R.string.admod_app_reward_id));
+        Admob.getInstance().setNumToShowAds(4,3);
 
-
-        Admod.getInstance().setNumToShowAds(4,3);
-//        Admod.getInstance().setNumToShowAds(3);
-        Admod.getInstance().loadNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {
-            @Override
-            public void onUnifiedNativeAdLoaded(NativeAd unifiedNativeAd) {
-                @SuppressLint("InflateParams") NativeAdView adView = ( NativeAdView) LayoutInflater.from(MainActivity.this).inflate(R.layout.custom_native, null);
-                frAds.addView(adView);
-                Admod.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, adView);
-            }
-        });
+        AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom );
 
         AppPurchase.getInstance().setPurchaseListioner(new PurchaseListioner() {
             @Override
@@ -80,55 +79,38 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Admod.getInstance().loadBanner(this, getString(R.string.admod_banner_id));
-//        Admod.getInstance().loadNative(this, getString(R.string.admod_native_id));
+        AperoAd.getInstance().loadBanner(this,idBanner);
 
-        loadAdInterstial();
+        loadAdInterstitial();
 
 
 //        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 //            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
 //        }
+
+
         findViewById(R.id.btShowAds).setOnClickListener(v -> {
-            Admod.getInstance().showInterstitialAdByTimes(this, mInterstitialAd, new AdCallback() {
-                @Override
-                public void onAdClosed() {
-                    startActivity(new Intent(MainActivity.this, ContentActivity.class));
-                    loadAdInterstial();
-                }
-            });
+            if (mInterstitialAd.isReady()) {
+                AperoAd.getInstance().forceShowInterstitial(this, mInterstitialAd, new AperoAdCallback() {
+                    @Override
+                    public void onAdClosed() {
+                        Log.i("MAIN_TEST", "onAdClosed: start content and finish main");
+                        startActivity(new Intent(MainActivity.this, ContentActivity.class));
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@Nullable ApAdError adError) {
+                        super.onAdFailedToShow(adError);
+//                        startActivity(new Intent(MainActivity.this, ContentActivity.class));
+                    }
+                }, false);
+            }else {
+                loadAdInterstitial();
+            }
         });
+
         findViewById(R.id.btForceShowAds).setOnClickListener(v -> {
-
-
-            Admod.getInstance().forceShowInterstitial(this, mInterstitialAd, new AdCallback() {
-                @Override
-                public void onAdClosed() {
-                    startActivity(new Intent(MainActivity.this, ContentActivity.class));
-                    loadAdInterstial();
-                }
-            });
-        });
-
-        findViewById(R.id.btnShowReward).setOnClickListener(v -> {
-
-            Admod.getInstance().showRewardAds(this, new RewardCallback() {
-                @Override
-                public void onUserEarnedReward(RewardItem var1) {
-
-                }
-
-                @Override
-                public void onRewardedAdClosed() {
-                    startActivity(new Intent(MainActivity.this, ContentActivity.class));
-                    Log.e("TAG", "onRewardedAdClosed ");
-                }
-
-                @Override
-                public void onRewardedAdFailedToShow(int codeError) {
-
-                }
-            });
+            AppOpenManager.getInstance().disableAdResumeByClickAction();
         });
 
         findViewById(R.id.btIap).setOnClickListener(v -> {
@@ -145,16 +127,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void loadAdInterstial() {
+    private void configMediationProvider() {
+        if (AperoAd.getInstance().getMediationProvider() == AperoAdConfig.PROVIDER_ADMOB) {
+            idBanner = getString(R.string.admod_banner_id);
+            idNative = getString(R.string.admod_native_id);
+            idInter = getString(R.string.admod_interstitial_id);
+            layoutNativeCustom = com.ads.control.R.layout.custom_native_admod_medium;
+        } else {
+            idBanner = getString(R.string.applovin_test_banner);
+            idNative = getString(R.string.applovin_test_native);
+            idInter = getString(R.string.applovin_test_inter);
+            layoutNativeCustom = com.ads.control.R.layout.custom_native_max_medium;
+        }
+    }
 
-        Admod.getInstance().getInterstitalAds(this, getString(R.string.admod_interstitial_id), new AdCallback() {
+    private void loadAdInterstitial() {
 
-            @Override
-            public void onInterstitialLoad(InterstitialAd interstitialAd) {
-                super.onInterstitialLoad(interstitialAd);
-                mInterstitialAd = interstitialAd;
-            }
-        });
+        mInterstitialAd = AperoAd.getInstance().getInterstitialAds(this, idInter);
     }
 
 
@@ -176,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadNativeExit() {
         if (unifiedNativeAd != null)
             return;
-        Admod.getInstance().loadNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {
+        Admob.getInstance().loadNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {
             @Override
             public void onUnifiedNativeAdLoaded(NativeAd unifiedNativeAd) {
                 MainActivity.this.unifiedNativeAd = unifiedNativeAd;

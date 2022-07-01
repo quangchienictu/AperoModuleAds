@@ -10,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.ads.control.ads.Admod;
+import com.ads.control.admob.Admob;
 import com.example.andmoduleads.R;
 
 /**
@@ -70,6 +70,6 @@ public class InlineBannerFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Admod.getInstance().loadBannerFragment(requireActivity(),getString(R.string.admod_banner_id),view,true);
+        Admob.getInstance().loadBannerFragment(requireActivity(),getString(R.string.admod_banner_id),view,true);
     }
 }

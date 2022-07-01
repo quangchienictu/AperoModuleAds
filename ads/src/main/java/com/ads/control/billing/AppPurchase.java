@@ -234,7 +234,7 @@ public class AppPurchase {
     public void initBilling(final Application application) {
         listSubcriptionId = new ArrayList<>();
         listINAPId = new ArrayList<>();
-        if (AppUtil.BUILD_DEBUG) {
+        if (AppUtil.VARIANT_DEV) {
             listINAPId.add(PRODUCT_ID_TEST);
         }
         billingClient = BillingClient.newBuilder(application)
@@ -249,7 +249,7 @@ public class AppPurchase {
         listSubcriptionId = listSubsId;
         this.listINAPId = listINAPId;
 
-        if (AppUtil.BUILD_DEBUG) {
+        if (AppUtil.VARIANT_DEV) {
             listINAPId.add(PRODUCT_ID_TEST);
         }
         billingClient = BillingClient.newBuilder(application)
@@ -405,7 +405,7 @@ public class AppPurchase {
                 purchaseListioner.displayErrorMessage("Billing error init");
             return "";
         }
-        if (AppUtil.BUILD_DEBUG) {
+        if (AppUtil.VARIANT_DEV) {
             // Dùng ID Purchase test khi debug
             productId = PRODUCT_ID_TEST;
         }
@@ -482,7 +482,7 @@ public class AppPurchase {
             return "";
         }
 
-        if (AppUtil.BUILD_DEBUG) {
+        if (AppUtil.VARIANT_DEV) {
             // sử dụng ID Purchase test
             purchase(activity, PRODUCT_ID_TEST);
             return "Billing test";

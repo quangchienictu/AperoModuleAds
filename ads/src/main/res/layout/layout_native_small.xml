@@ -7,12 +7,10 @@
     <FrameLayout
         android:id="@+id/fl_adplaceholder"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/height_native_ads"
+        android:layout_height="wrap_content"
         android:background="@drawable/bg_card_ads"
         android:orientation="vertical"
-        android:visibility="gone" >
+        android:visibility="gone" />
 
-    </FrameLayout>
-
-    <include layout="@layout/load_fb_native" />
+    <include layout="@layout/loading_native_small" />
 </LinearLayout>

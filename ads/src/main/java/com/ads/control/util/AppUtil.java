@@ -1,5 +1,5 @@
 package com.ads.control.util;
 
 public class AppUtil {
-    public static Boolean BUILD_DEBUG = true;
+    public static Boolean VARIANT_DEV = true;
 }

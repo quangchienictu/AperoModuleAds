@@ -1,4 +1,4 @@
-package com.ads.control.ads;
+package com.ads.control.admob;
 
 import android.app.Activity;
 import android.app.Application;
@@ -62,8 +62,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
     private boolean isInitialized = false;// on  - off ad resume on app
     private boolean isAppResumeEnabled = true;
+    private boolean isInterstitialShowing = false;
     private boolean enableScreenContentCallback = false; // default =  true when use splash & false after show splash
-
+    private boolean disableAdResumeByClickAction = false;
     private final List<Class> disabledAppOpenList;
     private Class splashActivity;
 
@@ -106,6 +107,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
      */
     public void init(Application application, String appOpenAdId) {
         isInitialized = true;
+        disableAdResumeByClickAction = false;
         this.myApplication = application;
         this.myApplication.registerActivityLifecycleCallbacks(this);
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
@@ -127,6 +129,25 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
     public void setEnableScreenContentCallback(boolean enableScreenContentCallback) {
         this.enableScreenContentCallback = enableScreenContentCallback;
+    }
+
+    public boolean isInterstitialShowing() {
+        return isInterstitialShowing;
+    }
+
+    public void setInterstitialShowing(boolean interstitialShowing) {
+        isInterstitialShowing = interstitialShowing;
+    }
+
+    /**
+     * Call disable ad resume when click a button, auto enable ad resume in next start
+     */
+    public void disableAdResumeByClickAction(){
+        disableAdResumeByClickAction = true;
+    }
+
+    public void setDisableAdResumeByClickAction(boolean disableAdResumeByClickAction) {
+        this.disableAdResumeByClickAction = disableAdResumeByClickAction;
     }
 
     /**
@@ -272,7 +293,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                     NotificationManager.IMPORTANCE_LOW);
             notificationManager.createNotificationChannel(channel);
         }
-        notificationManager.notify(isSplash ? Admod.SPLASH_ADS : Admod.RESUME_ADS, notification);
+        notificationManager.notify(isSplash ? Admob.SPLASH_ADS : Admob.RESUME_ADS, notification);
 //        if (!BuildConfig.DEBUG){
 //            throw new RuntimeException("Found test ad id on release");
 //        }
@@ -634,6 +655,18 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             Log.d(TAG, "onResume: app resume is disabled");
             return;
         }
+
+        if (isInterstitialShowing){
+            Log.d(TAG, "onResume: interstitial is showing");
+            return;
+        }
+
+        if (disableAdResumeByClickAction){
+            Log.d(TAG, "onResume:ad resume disable ad by action");
+            disableAdResumeByClickAction = false;
+            return;
+        }
+
         for (Class activity : disabledAppOpenList) {
             if (activity.getName().equals(currentActivity.getClass().getName())) {
                 Log.d(TAG, "onStart: activity is disabled");
@@ -651,7 +684,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             return;
         }
 
-        Log.d(TAG, "onStart: show resume ads");
+        Log.d(TAG, "onStart: show resume ads :"+ currentActivity.getClass().getName());
         showAdIfAvailable(false);
     }
 
@@ -659,6 +692,10 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     public void onStop() {
         Log.d(TAG, "onStop: app stop");
 
+    }
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    public void onPause() {
+        Log.d(TAG, "onPause");
     }
 
     private void dismissDialogLoading() {

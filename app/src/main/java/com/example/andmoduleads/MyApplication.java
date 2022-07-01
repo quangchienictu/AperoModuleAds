@@ -1,19 +1,22 @@
 package com.example.andmoduleads;
 
+import com.ads.control.ads.AperoAd;
+import com.ads.control.ads.AperoAdConfig;
+import com.ads.control.application.AdsMultiDexApplication;
 import com.ads.control.billing.AppPurchase;
-import com.ads.control.util.AdjustApero;
-import com.ads.control.ads.Admod;
-import com.ads.control.ads.application.AdsApplication;
-import com.ads.control.ads.AppOpenManager;
+import com.ads.control.admob.Admob;
+import com.ads.control.admob.AppOpenManager;
 import com.example.andmoduleads.admob.MainActivity;
 import com.example.andmoduleads.admob.SplashActivity;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
-public class MyApplication extends AdsApplication {
+public class MyApplication extends AdsMultiDexApplication {
+
+    private final String ADJUST_TOKEN = "cc4jvudppczk";
+    private final String EVENT_PURCHASE_ADJUST = "gzel1k";
 
     protected StorageCommon storageCommon;
     private static MyApplication context;
@@ -26,31 +29,48 @@ public class MyApplication extends AdsApplication {
         return storageCommon;
     }
 
+
+
+
+
     @Override
     public void onCreate() {
         super.onCreate();
         context = this;
-                AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 5000);
+//        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 5000);
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
-        Admod.getInstance().setOpenActivityAfterShowInterAds(true);
-        Admod.getInstance().setNumToShowAds(0);
-        AdjustApero.setEventNamePurchase("gzel1k");
-//        Admod.getInstance().setNumToShowAds(3,3);
+        Admob.getInstance().setNumToShowAds(0);
+
+//        AdjustApero.setEventNamePurchase("gzel1k");
         storageCommon = new StorageCommon();
         initBilling();
+        initAds();
     }
+
+    private void initAds() {
+        aperoAdConfig.setMediationProvider(AperoAdConfig.PROVIDER_ADMOB);
+        aperoAdConfig.setVariant(BuildConfig.DEBUG);
+        aperoAdConfig.enableAdjust(ADJUST_TOKEN,EVENT_PURCHASE_ADJUST);
+        aperoAdConfig.setIdAdResume(AppOpenManager.AD_UNIT_ID_TEST);
+        listTestDevice.add("EC25F576DA9B6CE74778B268CB87E431");
+        aperoAdConfig.setListDeviceTest(listTestDevice);
+
+        AperoAd.getInstance().init(this, aperoAdConfig, false);
+    }
+
     private void initBilling() {
         List<String> listINAPId = new ArrayList<>();
         listINAPId.add(MainActivity.PRODUCT_ID);
         List<String> listSubsId = new ArrayList<>();
-
+        Admob.getInstance().setOpenActivityAfterShowInterAds(true);
         AppPurchase.getInstance().initBilling(getApplication(),listINAPId,listSubsId);
 //        AppPurchase.getInstance().addProductId(MainActivity.PRODUCT_ID);
 
     }
-    @Override
+
+   /* @Override
     public boolean enableAdsResume() {
-        return true;
+        return false;
     }
 
     @Override
@@ -78,5 +98,5 @@ public class MyApplication extends AdsApplication {
     @Override
     public String getAdjustToken() {
         return "cc4jvudppczk";
-    }
+    }*/
 }
