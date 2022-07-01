@@ -44,15 +44,14 @@ public class BlankFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         button =    view.findViewById(R.id.btnNextFragment);
         button.setEnabled(false);
-        Admob.getInstance().getInterstitialAds(getContext(), getString(R.string.admod_interstitial_id), new AdCallback() {
-            @Override
-            public void onInterstitialLoad(InterstitialAd interstitialAd) {
-                super.onInterstitialLoad(interstitialAd);
-                mInterstitialAd = interstitialAd;
-//                Toast.makeText(getContext(), "ad loaded", Toast.LENGTH_SHORT).show();
-                button.setEnabled(true);
-            }
-        });
+//        Admob.getInstance().getInterstitialAds(getContext(), getString(R.string.admod_interstitial_id), new AdCallback() {
+//            @Override
+//            public void onInterstitialLoad(InterstitialAd interstitialAd) {
+//                super.onInterstitialLoad(interstitialAd);
+//                mInterstitialAd = interstitialAd;
+//                button.setEnabled(true);
+//            }
+//        });
 
         button.setOnClickListener(v -> {
             Admob.getInstance().forceShowInterstitial(getActivity(), mInterstitialAd, new AdCallback() {

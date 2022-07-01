@@ -14,6 +14,7 @@ import com.ads.control.admob.AppOpenManager;
 import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdCallback;
 import com.ads.control.ads.AperoAdConfig;
+import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.util.AdjustApero;
 import com.ads.control.admob.Admob;
@@ -89,19 +90,28 @@ public class MainActivity extends AppCompatActivity {
 
 
         findViewById(R.id.btShowAds).setOnClickListener(v -> {
-            AperoAd.getInstance().forceShowInterstitial(this, mInterstitialAd, new AperoAdCallback() {
-                @Override
-                public void onAdClosed() {
-                    startActivity(new Intent(MainActivity.this, ContentActivity.class));
-                    loadAdInterstitial();
-                }
-            });
+            if (mInterstitialAd.isReady()) {
+                AperoAd.getInstance().forceShowInterstitial(this, mInterstitialAd, new AperoAdCallback() {
+                    @Override
+                    public void onAdClosed() {
+                        Log.i("MAIN_TEST", "onAdClosed: start content and finish main");
+                        startActivity(new Intent(MainActivity.this, ContentActivity.class));
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@Nullable ApAdError adError) {
+                        super.onAdFailedToShow(adError);
+//                        startActivity(new Intent(MainActivity.this, ContentActivity.class));
+                    }
+                }, false);
+            }else {
+                loadAdInterstitial();
+            }
         });
 
         findViewById(R.id.btForceShowAds).setOnClickListener(v -> {
             AppOpenManager.getInstance().disableAdResumeByClickAction();
         });
-
 
         findViewById(R.id.btIap).setOnClickListener(v -> {
             AppPurchase.getInstance().consumePurchase(PRODUCT_ID);

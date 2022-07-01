@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.Lifecycle;
@@ -276,7 +277,7 @@ public class Admob {
                 //check delay show ad splash
                 if (mInterstitialSplash != null) {
                     Log.i(TAG, "loadSplashInterstitalAds:show ad on delay ");
-                    onShowSplash((Activity) context, adListener);
+                    onShowSplash((AppCompatActivity) context, adListener);
                     return;
                 }
                 Log.i(TAG, "loadSplashInterstitalAds: delay validate");
@@ -293,7 +294,7 @@ public class Admob {
                     isTimeout = true;
                     if (mInterstitialSplash != null) {
                         Log.i(TAG, "loadSplashInterstitalAds:show ad on timeout ");
-                        onShowSplash((Activity) context, adListener);
+                        onShowSplash((AppCompatActivity) context, adListener);
                         return;
                     }
                     if (adListener != null) {
@@ -305,8 +306,7 @@ public class Admob {
             handlerTimeout.postDelayed(rdTimeout, timeOut);
         }
 
-//        if (isShowLoadingSplash)
-//            return;
+
         isShowLoadingSplash = true;
         getInterstitialAds(context, id, new AdCallback() {
             @Override
@@ -318,7 +318,7 @@ public class Admob {
                 if (interstitialAd != null) {
                     mInterstitialSplash = interstitialAd;
                     if (isTimeDelay) {
-                        onShowSplash((Activity) context, adListener);
+                        onShowSplash((AppCompatActivity) context, adListener);
                         Log.i(TAG, "loadSplashInterstitalAds:show ad on loaded ");
                     }
                 }
@@ -373,7 +373,7 @@ public class Admob {
                 if (mInterstitialSplash != null) {
                     Log.i(TAG, "loadSplashInterstitalAds:show ad on delay ");
                     if (showSplashIfReady)
-                        onShowSplash((Activity) context, adListener);
+                        onShowSplash((AppCompatActivity) context, adListener);
                     else
                         adListener.onAdSplashReady();
                     return;
@@ -393,7 +393,7 @@ public class Admob {
                     if (mInterstitialSplash != null) {
                         Log.i(TAG, "loadSplashInterstitalAds:show ad on timeout ");
                         if (showSplashIfReady)
-                            onShowSplash((Activity) context, adListener);
+                            onShowSplash((AppCompatActivity) context, adListener);
                         else
                             adListener.onAdSplashReady();
                         return;
@@ -421,7 +421,7 @@ public class Admob {
                     mInterstitialSplash = interstitialAd;
                     if (isTimeDelay) {
                         if (showSplashIfReady)
-                            onShowSplash((Activity) context, adListener);
+                            onShowSplash((AppCompatActivity) context, adListener);
                         else
                             adListener.onAdSplashReady();
                         Log.i(TAG, "loadSplashInterstitalAds:show ad on loaded ");
@@ -448,7 +448,7 @@ public class Admob {
 
     }
 
-    public void onShowSplash(Activity activity, AdCallback adListener) {
+    public void onShowSplash(AppCompatActivity activity, AdCallback adListener) {
         isShowLoadingSplash = true;
         Log.d(TAG, "onShowSplash: ");
 
@@ -504,7 +504,7 @@ public class Admob {
 
             @Override
             public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
-                Log.e(TAG, "Splash onAdFailedToShowFullScreenContent: ");
+                Log.e(TAG, "Splash onAdFailedToShowFullScreenContent: " + adError.getMessage());
                 mInterstitialSplash = null;
                 isShowLoadingSplash = false;
                 if (adListener != null) {
@@ -541,25 +541,31 @@ public class Admob {
                 e.printStackTrace();
             }
             new Handler().postDelayed(() -> {
-
-                AppOpenManager.getInstance().setInterstitialShowing(true);
-
-                if (openActivityAfterShowInterAds && adListener != null) {
-                    adListener.onAdClosed();
-                    new Handler().postDelayed(() -> {
-                        if (dialog != null && dialog.isShowing() && !activity.isDestroyed())
-                            dialog.dismiss();
-                    }, 1500);
-                }
-                if (activity != null && mInterstitialSplash != null) {
-                    mInterstitialSplash.show(activity);
-                    isShowLoadingSplash = false;
-                } else if (adListener != null) {
-                    if (dialog != null) {
-                        dialog.dismiss();
+                if (activity.getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+                    if (openActivityAfterShowInterAds && adListener != null) {
+                        adListener.onAdClosed();
+                        new Handler().postDelayed(() -> {
+                            if (dialog != null && dialog.isShowing() && !activity.isDestroyed())
+                                dialog.dismiss();
+                        }, 1500);
                     }
-                    adListener.onAdClosed();
+                    if (activity != null && mInterstitialSplash != null) {
+                        Log.i(TAG, "start show InterstitialAd " + activity.getLifecycle().getCurrentState().name() +"/"+ProcessLifecycleOwner.get().getLifecycle().getCurrentState().name());
+                        mInterstitialSplash.show(activity);
+                        isShowLoadingSplash = false;
+                    } else if (adListener != null) {
+                        if (dialog != null) {
+                            dialog.dismiss();
+                        }
+                        adListener.onAdClosed();
+                        isShowLoadingSplash = false;
+                    }
+                } else {
+                    if (dialog != null && dialog.isShowing() && !activity.isDestroyed())
+                        dialog.dismiss();
                     isShowLoadingSplash = false;
+                    Log.e(TAG, "onShowSplash:   show fail in background after show loading ad");
+                    adListener.onAdFailedToShow(new AdError(0, " show fail in background after show loading ad", "AperoAd"));
                 }
             }, 800);
 
@@ -569,7 +575,7 @@ public class Admob {
         }
     }
 
-    public void onCheckShowSplashWhenFail(Activity activity, AdCallback callback, int timeDelay) {
+    public void onCheckShowSplashWhenFail(AppCompatActivity activity, AdCallback callback, int timeDelay) {
         new Handler(activity.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -693,7 +699,7 @@ public class Admob {
                                     interstitialAd.getResponseInfo()
                                             .getMediationAdapterClassName());
                         });
-                        Log.i(TAG, "onAdLoaded");
+                        Log.i(TAG, "InterstitialAds onAdLoaded");
                     }
 
                     @Override
@@ -710,19 +716,6 @@ public class Admob {
 
 
     /**
-     * Hiển thị ads theo số lần được xác định trước và callback result
-     * vd: click vào 3 lần thì show ads full.
-     * AdmodHelper.setupAdmodData(context) -> kiểm tra xem app đc hoạt động đc 1 ngày chưa nếu YES thì reset lại số lần click vào ads
-     *
-     * @param context
-     * @param mInterstitialAd
-     * @param callback
-     */
-    public void showInterstitialAdByTimes(final Context context, InterstitialAd mInterstitialAd, final AdCallback callback) {
-        showInterstitialAdByTimes(context, mInterstitialAd, callback, true);
-    }
-
-    /**
      * Hiển thị ads  timeout
      * Sử dụng khi reopen app in splash
      *
@@ -736,12 +729,12 @@ public class Admob {
             rdTimeout = new Runnable() {
                 @Override
                 public void run() {
-                    forceShowInterstitial(context, mInterstitialAd, callback, false);
+                    forceShowInterstitial(context, mInterstitialAd, callback);
                 }
             };
             handlerTimeout.postDelayed(rdTimeout, timeDelay);
         } else {
-            forceShowInterstitial(context, mInterstitialAd, callback, false);
+            forceShowInterstitial(context, mInterstitialAd, callback);
         }
     }
 
@@ -754,9 +747,8 @@ public class Admob {
      * @param context
      * @param mInterstitialAd
      * @param callback
-     * @param shouldReloadAds
      */
-    public void showInterstitialAdByTimes(final Context context, InterstitialAd mInterstitialAd, final AdCallback callback, final boolean shouldReloadAds) {
+    public void showInterstitialAdByTimes(final Context context, InterstitialAd mInterstitialAd, final AdCallback callback) {
         AdmodHelper.setupAdmodData(context);
         if (AppPurchase.getInstance().isPurchased(context)) {
             callback.onAdClosed();
@@ -797,7 +789,6 @@ public class Admob {
                 super.onAdFailedToShowFullScreenContent(adError);
                 Log.e(TAG, "onAdFailedToShowFullScreenContent: " + adError.getMessage());
                 // Called when fullscreen content failed to show.
-                AppOpenManager.getInstance().setInterstitialShowing(false);
                 if (callback != null) {
                     if (!openActivityAfterShowInterAds) {
                         callback.onAdClosed();
@@ -812,6 +803,7 @@ public class Admob {
             @Override
             public void onAdShowedFullScreenContent() {
                 super.onAdShowedFullScreenContent();
+                Log.e(TAG, "onAdShowedFullScreenContent ");
                 AppOpenManager.getInstance().setInterstitialShowing(true);
                 // Called when fullscreen content is shown.
             }
@@ -832,6 +824,7 @@ public class Admob {
         }
     }
 
+
     /**
      * Bắt buộc hiển thị  ads full và callback result
      *
@@ -840,20 +833,8 @@ public class Admob {
      * @param callback
      */
     public void forceShowInterstitial(Context context, InterstitialAd mInterstitialAd, final AdCallback callback) {
-        forceShowInterstitial(context, mInterstitialAd, callback, true);
-
-    }
-
-    /**
-     * Bắt buộc hiển thị  ads full và callback result
-     *
-     * @param context
-     * @param mInterstitialAd
-     * @param callback
-     */
-    public void forceShowInterstitial(Context context, InterstitialAd mInterstitialAd, final AdCallback callback, boolean shouldReload) {
         currentClicked = numShowAds;
-        showInterstitialAdByTimes(context, mInterstitialAd, callback, shouldReload);
+        showInterstitialAdByTimes(context, mInterstitialAd, callback);
     }
 
     /**
@@ -883,24 +864,26 @@ public class Admob {
                     e.printStackTrace();
                 }
                 new Handler().postDelayed(() -> {
-
-                    AppOpenManager.getInstance().setInterstitialShowing(true);
-
-                    if (openActivityAfterShowInterAds && callback != null) {
-                        callback.onAdClosed();
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (dialog != null && dialog.isShowing() && !((Activity) context).isDestroyed())
-                                    dialog.dismiss();
-                            }
-                        }, 1500);
+                    if (((AppCompatActivity) context).getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
+                        if (openActivityAfterShowInterAds && callback != null) {
+                            callback.onAdClosed();
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (dialog != null && dialog.isShowing() && !((Activity) context).isDestroyed())
+                                        dialog.dismiss();
+                                }
+                            }, 1500);
+                        }
+                        Log.i(TAG, "start show InterstitialAd " + ((AppCompatActivity) context).getLifecycle().getCurrentState().name() +"/"+ProcessLifecycleOwner.get().getLifecycle().getCurrentState().name());
+                        mInterstitialAd.show((Activity) context);
+                    } else {
+                        if (dialog != null && dialog.isShowing() && !((Activity) context).isDestroyed())
+                            dialog.dismiss();
+                        Log.e(TAG, "showInterstitialAd:   show fail in background after show loading ad");
+                        callback.onAdFailedToShow(new AdError(0, " show fail in background after show loading ad", "AperoAd"));
                     }
-
-                    mInterstitialAd.show((Activity) context);
-
                 }, 800);
-
             }
             currentClicked = 0;
         } else if (callback != null) {
@@ -1244,6 +1227,7 @@ public class Admob {
                 .build();
         adLoader.loadAd(getAdRequest());
     }
+
     public void loadNativeAds(Context context, String id, final AdCallback callback, int countAd) {
         if (Arrays.asList(context.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
             showTestIdAlert(context, NATIVE_ADS, id);
@@ -1294,7 +1278,7 @@ public class Admob {
                 })
                 .withNativeAdOptions(adOptions)
                 .build();
-        adLoader.loadAds(getAdRequest(),countAd);
+        adLoader.loadAds(getAdRequest(), countAd);
     }
 
     private void loadNative(final Context context, final ShimmerFrameLayout containerShimmer, final FrameLayout frameLayout, final String id, final int layout) {
@@ -1568,7 +1552,6 @@ public class Admob {
     }
 
 
-
     private RewardedAd rewardedAd;
 
     /**
@@ -1729,7 +1712,7 @@ public class Admob {
      * @param adCallback
      */
 
-    public void showRewardAds(final Activity context,RewardedAd rewardedAd, final RewardCallback adCallback) {
+    public void showRewardAds(final Activity context, RewardedAd rewardedAd, final RewardCallback adCallback) {
         if (AppPurchase.getInstance().isPurchased(context)) {
             adCallback.onUserEarnedReward(null);
             return;
@@ -1786,26 +1769,25 @@ public class Admob {
 
 
     public AdmobRecyclerAdapter getNativeRepeatAdapter(Activity activity, String id, int layoutCustomNative, int layoutAdPlaceHolder, RecyclerView.Adapter originalAdapter,
-                                                                                AperoAdPlacer.Listener listener, int repeatingInterval) {
-        AperoAdPlacerSettings settings = new AperoAdPlacerSettings(layoutCustomNative,layoutAdPlaceHolder);
+                                                       AperoAdPlacer.Listener listener, int repeatingInterval) {
+        AperoAdPlacerSettings settings = new AperoAdPlacerSettings(layoutCustomNative, layoutAdPlaceHolder);
         settings.setAdUnitId(id);
         settings.setListener(listener);
         settings.setRepeatingInterval(repeatingInterval);
-        AdmobRecyclerAdapter adAdapter =  new AdmobRecyclerAdapter(settings,originalAdapter,activity);
+        AdmobRecyclerAdapter adAdapter = new AdmobRecyclerAdapter(settings, originalAdapter, activity);
         return adAdapter;
     }
 
     public AdmobRecyclerAdapter getNativeFixedPositionAdapter(Activity activity, String id, int layoutCustomNative, int layoutAdPlaceHolder, RecyclerView.Adapter originalAdapter,
-                                                                                AperoAdPlacer.Listener listener, int position) {
+                                                              AperoAdPlacer.Listener listener, int position) {
 
-        AperoAdPlacerSettings settings = new AperoAdPlacerSettings(layoutCustomNative,layoutAdPlaceHolder);
+        AperoAdPlacerSettings settings = new AperoAdPlacerSettings(layoutCustomNative, layoutAdPlaceHolder);
         settings.setAdUnitId(id);
         settings.setListener(listener);
         settings.setFixedPosition(position);
-        AdmobRecyclerAdapter adAdapter =  new AdmobRecyclerAdapter(settings,originalAdapter,activity);
+        AdmobRecyclerAdapter adAdapter = new AdmobRecyclerAdapter(settings, originalAdapter, activity);
         return adAdapter;
     }
-
 
 
     @SuppressLint("HardwareIds")

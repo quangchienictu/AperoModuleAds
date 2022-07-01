@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.adjust.sdk.Adjust;
@@ -322,7 +323,7 @@ public class AperoAd {
     }
 
 
-    public void onShowSplash(Activity activity, AperoAdCallback adListener) {
+    public void onShowSplash(AppCompatActivity activity, AperoAdCallback adListener) {
         switch (adConfig.getMediationProvider()) {
             case AperoAdConfig.PROVIDER_ADMOB:
                 Admob.getInstance().onShowSplash(activity, new AdCallback() {
@@ -378,7 +379,7 @@ public class AperoAd {
      * @param callback
      * @param timeDelay time delay before call show ad splash (ms)
      */
-    public void onCheckShowSplashWhenFail(Activity activity, AperoAdCallback callback,
+    public void onCheckShowSplashWhenFail(AppCompatActivity activity, AperoAdCallback callback,
                                           int timeDelay) {
         switch (adConfig.getMediationProvider()) {
             case AperoAdConfig.PROVIDER_ADMOB:
@@ -655,12 +656,15 @@ public class AperoAd {
                                 }
 
                             });
+                        }else {
+                            mInterstitialAd.setInterstitialAd(null);
                         }
                     }
 
                     @Override
                     public void onAdFailedToShow(@Nullable AdError adError) {
                         super.onAdFailedToShow(adError);
+                        Log.d(TAG, "onAdFailedToShow: ");
                         callback.onAdFailedToShow(new ApAdError(adError));
                         if (shouldReloadAds) {
                             Admob.getInstance().getInterstitialAds(context, mInterstitialAd.getInterstitialAd().getAdUnitId(), new AdCallback() {
@@ -685,6 +689,8 @@ public class AperoAd {
                                 }
 
                             });
+                        }else {
+                            mInterstitialAd.setInterstitialAd(null);
                         }
                     }
                 };

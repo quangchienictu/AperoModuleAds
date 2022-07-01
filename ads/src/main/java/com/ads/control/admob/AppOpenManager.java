@@ -693,6 +693,10 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         Log.d(TAG, "onStop: app stop");
 
     }
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    public void onPause() {
+        Log.d(TAG, "onPause");
+    }
 
     private void dismissDialogLoading() {
         if (dialog != null && dialog.isShowing()) {
