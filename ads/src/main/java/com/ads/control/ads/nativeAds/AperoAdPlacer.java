@@ -43,16 +43,18 @@ public class AperoAdPlacer {
 
     private void configData() {
         if (settings.isRepeatingAd()) {
+            //calculator position add ad native to list
             int posAddAd = 0;
             int countNewAdapter = adapterOriginal.getItemCount();
             while (posAddAd < countNewAdapter - settings.getPositionFixAd()) {
-                posAddAd += settings.getPositionFixAd()-1;
+                posAddAd += settings.getPositionFixAd() ;
                 listAd.put(posAddAd, new ApNativeAd(StatusNative.AD_INIT));
                 listPositionAd.add(posAddAd);
                 posAddAd++;
                 countNewAdapter++;
             }
         } else {
+            listPositionAd.add(settings.getPositionFixAd());
             listAd.put(settings.getPositionFixAd(), new ApNativeAd(StatusNative.AD_INIT));
         }
     }
@@ -148,18 +150,17 @@ public class AperoAdPlacer {
     }
 
     public int getAdjustedCount() {
-        return adapterOriginal.getItemCount() + listAd.size();
+            int countMinAd ;
+        if (settings.isRepeatingAd()) {
+            countMinAd =   adapterOriginal.getItemCount() / settings.getPositionFixAd();
+        } else {
+            countMinAd = 1;
+        }
+
+        Log.e(TAG, "adapterOriginal size: "+ adapterOriginal.getItemCount()+"  min ads: "+countMinAd +" ===  ads size:" +  listAd.size() );
+        return  adapterOriginal.getItemCount() + Math.min(countMinAd, listAd.size());
     }
 
-    public interface Listener {
-        void onAdLoaded(int position);
-
-        void onAdRemoved(int position);
-
-        void onAdClicked();
-
-        void onAdRevenuePaid(ApAdValue adValue );
-    }
 
     public void onAdLoaded(int position){
         Log.i(TAG, "Ad native loaded in pos: "+position);
@@ -183,5 +184,16 @@ public class AperoAdPlacer {
         Log.i(TAG, "Ad native revenue paid ");
         if (settings.getListener()!=null)
             settings.getListener().onAdRevenuePaid(adValue);
+    }
+
+
+    public interface Listener {
+        void onAdLoaded(int position);
+
+        void onAdRemoved(int position);
+
+        void onAdClicked();
+
+        void onAdRevenuePaid(ApAdValue adValue );
     }
 }

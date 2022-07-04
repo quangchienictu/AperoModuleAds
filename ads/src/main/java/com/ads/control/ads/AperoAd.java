@@ -891,11 +891,12 @@ public class AperoAd {
         switch (adConfig.getMediationProvider()) {
             case AperoAdConfig.PROVIDER_ADMOB:
                 Admob.getInstance().initRewardAds(activity, id, new AdCallback() {
-                    @Override
-                    public void onAdLoaded() {
-                        super.onAdLoaded();
-                        apRewardAd.setAdmobReward(Admob.getInstance().getRewardedAd());
 
+                    @Override
+                    public void onRewardAdLoaded(RewardedAd rewardedAd) {
+                        super.onRewardAdLoaded(rewardedAd);
+                        Log.i(TAG, "getRewardAd AdLoaded: ");
+                        apRewardAd.setAdmobReward(rewardedAd);
                     }
                 });
                 break;
@@ -1030,7 +1031,7 @@ public class AperoAd {
                 };
                 MaxRecyclerAdapter adAdapter = AppLovin.getInstance().getNativeRepeatAdapter(activity, id, layoutCustomNative,
                         originalAdapter, maxListener, repeatingInterval);
-                adAdapter.loadAds();
+
                 return new AperoAdAdapter(adAdapter);
             default:
                 return new AperoAdAdapter(Admob.getInstance().getNativeRepeatAdapter(activity, id, layoutCustomNative, layoutAdPlaceHolder,

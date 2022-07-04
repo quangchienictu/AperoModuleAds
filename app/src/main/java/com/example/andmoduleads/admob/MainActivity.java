@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +17,8 @@ import com.ads.control.ads.AperoAdCallback;
 import com.ads.control.ads.AperoAdConfig;
 import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
+import com.ads.control.ads.wrapper.ApRewardAd;
+import com.ads.control.ads.wrapper.ApRewardItem;
 import com.ads.control.util.AdjustApero;
 import com.ads.control.admob.Admob;
 import com.ads.control.billing.AppPurchase;
@@ -25,6 +28,8 @@ import com.ads.control.dialog.InAppDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.PurchaseListioner;
 import com.example.andmoduleads.R;
+import com.example.andmoduleads.applovin.MainApplovinActivity;
+import com.example.andmoduleads.applovin.MaxSimpleListActivity;
 import com.google.android.gms.ads.nativead.NativeAd;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout frAds;
     private NativeAd unifiedNativeAd;
     private ApInterstitialAd mInterstitialAd;
+    private ApRewardAd rewardAd;
 
     private boolean isShowDialogExit = false;
 
@@ -55,16 +61,16 @@ public class MainActivity extends AppCompatActivity {
         configMediationProvider();
 //        Admob.getInstance().initRewardAds(this,getString(R.string.admod_app_reward_id));
 
-        Admob.getInstance().setNumToShowAds(4,3);
+        Admob.getInstance().setNumToShowAds(4, 3);
 
-        AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom );
+        AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom);
 
         AppPurchase.getInstance().setPurchaseListioner(new PurchaseListioner() {
             @Override
             public void onProductPurchased(String productId, String transactionDetails) {
                 Log.e("PurchaseListioner", "ProductPurchased:" + productId);
                 Log.e("PurchaseListioner", "transactionDetails:" + transactionDetails);
-                startActivity(new Intent(MainActivity.this,MainActivity.class));
+                startActivity(new Intent(MainActivity.this, MainActivity.class));
                 finish();
             }
 
@@ -79,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        AperoAd.getInstance().loadBanner(this,idBanner);
+        AperoAd.getInstance().loadBanner(this, idBanner);
 
         loadAdInterstitial();
 
@@ -104,14 +110,21 @@ public class MainActivity extends AppCompatActivity {
 //                        startActivity(new Intent(MainActivity.this, ContentActivity.class));
                     }
                 }, false);
-            }else {
+            } else {
                 loadAdInterstitial();
             }
         });
-
         findViewById(R.id.btForceShowAds).setOnClickListener(v -> {
-            AppOpenManager.getInstance().disableAdResumeByClickAction();
+            startActivity(new Intent(MainActivity.this, MaxSimpleListActivity.class));
         });
+        findViewById(R.id.btnShowReward).setOnClickListener(v -> {
+            if (rewardAd != null && rewardAd.isReady()) {
+                AperoAd.getInstance().forceShowRewardAd(this, rewardAd, new AperoAdCallback());
+                return;
+            }
+            rewardAd = AperoAd.getInstance().getRewardAd(this, getString(R.string.admod_app_reward_id));
+        });
+
 
         findViewById(R.id.btIap).setOnClickListener(v -> {
             AppPurchase.getInstance().consumePurchase(PRODUCT_ID);
@@ -175,14 +188,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (unifiedNativeAd==null)
+        if (unifiedNativeAd == null)
             return;
 
         DialogExitApp1 dialogExitApp1 = new DialogExitApp1(this, unifiedNativeAd, 1);
-        dialogExitApp1.setDialogExitListener(new DialogExitListener(){
+        dialogExitApp1.setDialogExitListener(new DialogExitListener() {
             @Override
             public void onExit(boolean exit) {
-                    MainActivity.super.onBackPressed();
+                MainActivity.super.onBackPressed();
             }
         });
         dialogExitApp1.setCancelable(false);

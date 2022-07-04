@@ -65,6 +65,6 @@ public class BlankFragment extends Fragment {
 //        Admob.getInstance().loadNativeFragment(getActivity(),getString(R.string.admod_native_id),view);
         FrameLayout flPlaceHolder = view.findViewById(R.id.fl_adplaceholder);
         ShimmerFrameLayout shimmerFrameLayout = view.findViewById(R.id.shimmer_container_native);
-        AperoAd.getInstance().loadNativeAd(requireActivity(),getString(R.string.admod_native_id),R.layout.custom_native_admob_free_size,flPlaceHolder,shimmerFrameLayout);
+        AperoAd.getInstance().loadNativeAd(requireActivity(),getString(R.string.admod_native_id),com.ads.control.R.layout.custom_native_admob_free_size,flPlaceHolder,shimmerFrameLayout);
     }
 }

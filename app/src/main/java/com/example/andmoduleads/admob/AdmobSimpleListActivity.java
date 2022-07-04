@@ -11,10 +11,12 @@ import com.ads.control.ads.nativeAds.AdmobRecyclerAdapter;
 import com.example.andmoduleads.R;
 import com.example.andmoduleads.applovin.ListSimpleAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AdmobSimpleListActivity extends AppCompatActivity {
     private static final String TAG = "SimpleListActivity";
     AdmobRecyclerAdapter aperoRecyclerAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,8 @@ public class AdmobSimpleListActivity extends AppCompatActivity {
         recyclerView.setAdapter(aperoRecyclerAdapter);
 //        aperoRecyclerAdapter.loadAds();
     }
+
+
 
     @Override
     public void onDestroy()
