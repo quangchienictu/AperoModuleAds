@@ -53,7 +53,7 @@ public class AperoAdPlacerSettings {
     }
 
     public void setRepeatingInterval(int positionAd){
-        positionFixAd = positionAd;
+        positionFixAd = positionAd-1;
         isRepeatingAd = true;
     }
 

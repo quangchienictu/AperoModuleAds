@@ -1,12 +1,16 @@
 package com.ads.control.ads.nativeAds;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.applovin.mediation.nativeAds.adPlacer.MaxRecyclerAdapter;
 
 public class AdmobRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -17,10 +21,11 @@ public class AdmobRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     private RecyclerView.Adapter adapterOriginal;
     private Activity activity;
     private AperoAdPlacer adPlacer;
-
+    private AdapterDataObserver adapterDataObserver = new AdapterDataObserver();
 
     public AdmobRecyclerAdapter(AperoAdPlacerSettings settings, RecyclerView.Adapter adapterOriginal, Activity activity) {
         this.adapterOriginal = adapterOriginal;
+        this.registerAdapterDataObserver(adapterDataObserver);
         this.activity = activity;
         this.settings = settings;
         adPlacer = new AperoAdPlacer(settings, adapterOriginal, activity);
@@ -40,9 +45,7 @@ public class AdmobRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (adPlacer.isAdPosition(position)) {
-
             adPlacer.renderAd(position,holder);
-
         } else {
             adapterOriginal.onBindViewHolder(holder, adPlacer.getOriginalPosition(position));
         }
@@ -61,6 +64,8 @@ public class AdmobRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
+
+
     @Override
     public int getItemCount() {
         return adPlacer.getAdjustedCount();
@@ -74,6 +79,37 @@ public class AdmobRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public void destroy(){
+        if (adapterOriginal!=null)
+            adapterOriginal.unregisterAdapterDataObserver(adapterDataObserver);
+    }
 
+    private class AdapterDataObserver extends RecyclerView.AdapterDataObserver {
+        private AdapterDataObserver() {
+        }
+
+        @SuppressLint({"NotifyDataSetChanged"})
+        public void onChanged() {
+            AdmobRecyclerAdapter.this.adPlacer.configData();
+            Log.d("AdapterDataObserver", "onChanged: ");
+        }
+
+        public void onItemRangeChanged(int var1, int var2) {
+            Log.d("AdapterDataObserver", "onItemRangeChanged: ");
+
+        }
+
+        public void onItemRangeInserted(int var1, int var2) {
+            Log.d("AdapterDataObserver", "onItemRangeInserted: ");
+        }
+
+        public void onItemRangeRemoved(int var1, int var2) {
+            Log.d("AdapterDataObserver", "onItemRangeRemoved: ");
+        }
+
+        @SuppressLint({"NotifyDataSetChanged"})
+        public void onItemRangeMoved(int var1, int var2, int var3) {
+            Log.d("AdapterDataObserver", "onItemRangeMoved: ");
+            notifyDataSetChanged();
+        }
     }
 }
