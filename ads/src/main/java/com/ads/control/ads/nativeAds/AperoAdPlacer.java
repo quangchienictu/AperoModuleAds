@@ -41,7 +41,7 @@ public class AperoAdPlacer {
 
     }
 
-    private void configData() {
+    public void configData() {
         if (settings.isRepeatingAd()) {
             //calculator position add ad native to list
             int posAddAd = 0;
@@ -49,6 +49,7 @@ public class AperoAdPlacer {
             while (posAddAd < countNewAdapter - settings.getPositionFixAd()) {
                 posAddAd += settings.getPositionFixAd() ;
                 listAd.put(posAddAd, new ApNativeAd(StatusNative.AD_INIT));
+                Log.i(TAG, "add native to list pos: "+ posAddAd);
                 listPositionAd.add(posAddAd);
                 posAddAd++;
                 countNewAdapter++;
@@ -157,7 +158,6 @@ public class AperoAdPlacer {
             countMinAd = 1;
         }
 
-        Log.e(TAG, "adapterOriginal size: "+ adapterOriginal.getItemCount()+"  min ads: "+countMinAd +" ===  ads size:" +  listAd.size() );
         return  adapterOriginal.getItemCount() + Math.min(countMinAd, listAd.size());
     }
 

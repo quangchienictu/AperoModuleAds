@@ -25,7 +25,7 @@ public class AdmobRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public AdmobRecyclerAdapter(AperoAdPlacerSettings settings, RecyclerView.Adapter adapterOriginal, Activity activity) {
         this.adapterOriginal = adapterOriginal;
-        this.adapterOriginal.registerAdapterDataObserver(adapterDataObserver);
+        this.registerAdapterDataObserver(adapterDataObserver);
         this.activity = activity;
         this.settings = settings;
         adPlacer = new AperoAdPlacer(settings, adapterOriginal, activity);
@@ -89,7 +89,7 @@ public class AdmobRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         @SuppressLint({"NotifyDataSetChanged"})
         public void onChanged() {
-            AdmobRecyclerAdapter.this.notifyDataSetChanged();
+            AdmobRecyclerAdapter.this.adPlacer.configData();
             Log.d("AdapterDataObserver", "onChanged: ");
         }
 

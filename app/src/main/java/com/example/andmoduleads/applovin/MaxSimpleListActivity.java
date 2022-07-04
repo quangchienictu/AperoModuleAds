@@ -47,7 +47,6 @@ public class MaxSimpleListActivity extends AppCompatActivity {
 
         }
 
-
     };
 
     private List<String> sampleData = new ArrayList<>();
