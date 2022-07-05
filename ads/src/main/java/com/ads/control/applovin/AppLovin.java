@@ -198,7 +198,7 @@ public class AppLovin {
 
             @Override
             public void onAdClicked(MaxAd ad) {
-
+                FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
             }
 
             @Override
@@ -314,7 +314,7 @@ public class AppLovin {
 
             @Override
             public void onAdClicked(MaxAd ad) {
-
+                FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
             }
 
             @Override
@@ -475,7 +475,7 @@ public class AppLovin {
 
             @Override
             public void onAdClicked(MaxAd ad) {
-
+                FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
             }
 
             @Override
@@ -562,7 +562,7 @@ public class AppLovin {
 
             @Override
             public void onAdClicked(MaxAd ad) {
-                FirebaseAnalyticsUtil.logClickAdsEvent(context, interstitialAd.getAdUnitId());
+                FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
             }
 
             @Override
@@ -684,7 +684,7 @@ public class AppLovin {
 
             @Override
             public void onAdClicked(MaxAd ad) {
-                FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
+                FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
             }
 
             @Override
@@ -825,6 +825,7 @@ public class AppLovin {
             @Override
             public void onNativeAdClicked(final MaxAd ad) {
                 Log.e(TAG, "onNativeAdClicked: ");
+                FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
                 callback.onAdClicked();
             }
         });
@@ -920,6 +921,7 @@ public class AppLovin {
 
             @Override
             public void onAdClicked(MaxAd ad) {
+                FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
                 callback.onAdClicked();
             }
 
@@ -984,6 +986,7 @@ public class AppLovin {
 
                 @Override
                 public void onAdClicked(MaxAd ad) {
+                    FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
                     callback.onAdClicked();
                 }
 
