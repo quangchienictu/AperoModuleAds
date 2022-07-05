@@ -45,7 +45,6 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void run() {
 //                        loadSplash();
-                        AppPurchase.getInstance().consumePurchase(AppPurchase.PRODUCT_ID_TEST);
                         loadSplash();
                     }
                 });
@@ -53,6 +52,7 @@ public class SplashActivity extends AppCompatActivity {
         }, 5000);
 
         initBilling();
+        AppPurchase.getInstance().setEventConsumePurchaseTest(findViewById(R.id.txtLoading));
     }
 
     private void initBilling() {

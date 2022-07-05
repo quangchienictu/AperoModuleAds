@@ -45,6 +45,7 @@ import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.RewardCallback;
 import com.ads.control.util.AdjustApero;
 import com.ads.control.util.AppUtil;
+import com.ads.control.util.FirebaseAnalyticsUtil;
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdListener;
 import com.applovin.mediation.MaxError;
@@ -1021,6 +1022,7 @@ public class AperoAd {
 
                     @Override
                     public void onAdClicked(MaxAd maxAd) {
+                        FirebaseAnalyticsUtil.logClickAdsEvent(activity, maxAd.getAdUnitId());
                         listener.onAdClicked();
                     }
 
@@ -1068,6 +1070,7 @@ public class AperoAd {
 
                     @Override
                     public void onAdClicked(MaxAd maxAd) {
+                        FirebaseAnalyticsUtil.logClickAdsEvent(activity, maxAd.getAdUnitId());
                         listener.onAdClicked();
                     }
 

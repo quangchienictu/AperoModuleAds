@@ -127,10 +127,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         findViewById(R.id.btIap).setOnClickListener(v -> {
-            AppPurchase.getInstance().consumePurchase(PRODUCT_ID);
             InAppDialog dialog = new InAppDialog(this);
             dialog.setCallback(() -> {
-                AppPurchase.getInstance().consumePurchase(PRODUCT_ID);
                 AppPurchase.getInstance().purchase(this, PRODUCT_ID);
                 dialog.dismiss();
 
