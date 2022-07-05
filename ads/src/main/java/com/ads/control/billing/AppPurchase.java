@@ -6,6 +6,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.IntDef;
@@ -95,6 +96,15 @@ public class AppPurchase {
 
     public Boolean getInitBillingFinish() {
         return isInitBillingFinish;
+    }
+
+    public void setEventConsumePurchaseTest(View view) {
+        view.setOnClickListener(view1 -> {
+            if (AppUtil.VARIANT_DEV) {
+                Log.d(TAG, "setEventConsumePurchaseTest: success");
+                AppPurchase.getInstance().consumePurchase(PRODUCT_ID_TEST);
+            }
+        });
     }
 
     /**
@@ -245,7 +255,8 @@ public class AppPurchase {
         billingClient.startConnection(purchaseClientStateListener);
     }
 
-    public void initBilling(final Application application, List<String> listINAPId, List<String> listSubsId) {
+    public void initBilling(final Application application, List<
+            String> listINAPId, List<String> listSubsId) {
         listSubcriptionId = listSubsId;
         this.listINAPId = listINAPId;
 

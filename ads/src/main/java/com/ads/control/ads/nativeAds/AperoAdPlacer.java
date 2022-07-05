@@ -46,7 +46,7 @@ public class AperoAdPlacer {
             //calculator position add ad native to list
             int posAddAd = 0;
             int countNewAdapter = adapterOriginal.getItemCount();
-            while (posAddAd < countNewAdapter - settings.getPositionFixAd()) {
+            while (posAddAd <= countNewAdapter - settings.getPositionFixAd()) {
                 posAddAd += settings.getPositionFixAd() ;
                 listAd.put(posAddAd, new ApNativeAd(StatusNative.AD_INIT));
                 Log.i(TAG, "add native to list pos: "+ posAddAd);
