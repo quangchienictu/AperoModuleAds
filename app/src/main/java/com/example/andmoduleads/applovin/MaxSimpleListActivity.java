@@ -95,7 +95,7 @@ public class MaxSimpleListActivity extends AppCompatActivity {
     }
 
     private void addSampleData() {
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 3; i++) {
             sampleData.add("Item " + i);
         }
     }

@@ -459,7 +459,7 @@ public class Admob {
 
         mInterstitialSplash.setOnPaidEventListener(adValue -> {
             Log.d(TAG, "OnPaidEvent splash:" + adValue.getValueMicros());
-            AdjustApero.pushTrackEventAdmod(adValue);
+            AdjustApero.pushTrackEventAdmob(adValue);
             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                     adValue,
                     mInterstitialSplash.getAdUnitId(),
@@ -622,7 +622,7 @@ public class Admob {
 
                 if (interstitialAd != null) {
                     interstitialAd.setOnPaidEventListener(adValue -> {
-                        AdjustApero.pushTrackEventAdmod(adValue);
+                        AdjustApero.pushTrackEventAdmob(adValue);
                         Log.d(TAG, "OnPaidEvent loadInterstitialAds:" + adValue.getValueMicros());
                         FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                 adValue,
@@ -692,7 +692,7 @@ public class Admob {
                         interstitialAd.setOnPaidEventListener(adValue -> {
 
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
-                            AdjustApero.pushTrackEventAdmod(adValue);
+                            AdjustApero.pushTrackEventAdmob(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     interstitialAd.getAdUnitId(),
@@ -1037,7 +1037,7 @@ public class Admob {
                     if (adView != null) {
                         adView.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
-                            AdjustApero.pushTrackEventAdmod(adValue);
+                            AdjustApero.pushTrackEventAdmob(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     adView.getAdUnitId(),
@@ -1097,7 +1097,7 @@ public class Admob {
                     if (adView != null) {
                         adView.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
-                            AdjustApero.pushTrackEventAdmod(adValue);
+                            AdjustApero.pushTrackEventAdmob(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     adView.getAdUnitId(),
@@ -1198,7 +1198,7 @@ public class Admob {
                         callback.onUnifiedNativeAdLoaded(nativeAd);
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
-                            AdjustApero.pushTrackEventAdmod(adValue);
+                            AdjustApero.pushTrackEventAdmob(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     id,
@@ -1251,7 +1251,7 @@ public class Admob {
                         callback.onUnifiedNativeAdLoaded(nativeAd);
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
-                            AdjustApero.pushTrackEventAdmod(adValue);
+                            AdjustApero.pushTrackEventAdmob(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     id,
@@ -1315,7 +1315,7 @@ public class Admob {
                                 .inflate(layout, null);
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent native:" + adValue.getValueMicros());
-                            AdjustApero.pushTrackEventAdmod(adValue);
+                            AdjustApero.pushTrackEventAdmob(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     id,
@@ -1383,7 +1383,7 @@ public class Admob {
                                 .inflate(layout, null);
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent Native:" + adValue.getValueMicros());
-                            AdjustApero.pushTrackEventAdmod(adValue);
+                            AdjustApero.pushTrackEventAdmob(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
                                     adValue,
                                     id,
@@ -1578,7 +1578,7 @@ public class Admob {
                 Admob.this.rewardedAd.setOnPaidEventListener(adValue -> {
 
                     Log.d(TAG, "OnPaidEvent Reward:" + adValue.getValueMicros());
-                    AdjustApero.pushTrackEventAdmod(adValue);
+                    AdjustApero.pushTrackEventAdmob(adValue);
                     FirebaseAnalyticsUtil.logPaidAdImpression(context,
                             adValue,
                             rewardedAd.getAdUnitId(),
@@ -1618,7 +1618,7 @@ public class Admob {
                 Admob.this.rewardedAd = rewardedAd;
                 Admob.this.rewardedAd.setOnPaidEventListener(adValue -> {
                     Log.d(TAG, "OnPaidEvent Reward:" + adValue.getValueMicros());
-                    AdjustApero.pushTrackEventAdmod(adValue);
+                    AdjustApero.pushTrackEventAdmob(adValue);
                     FirebaseAnalyticsUtil.logPaidAdImpression(context,
                             adValue,
                             rewardedAd.getAdUnitId(),

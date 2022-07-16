@@ -30,6 +30,7 @@ import com.ads.control.funtion.PurchaseListioner;
 import com.example.andmoduleads.R;
 import com.example.andmoduleads.applovin.MainApplovinActivity;
 import com.example.andmoduleads.applovin.MaxSimpleListActivity;
+import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
 
 public class MainActivity extends AppCompatActivity {
@@ -60,7 +61,15 @@ public class MainActivity extends AppCompatActivity {
         frAds = findViewById(R.id.fl_adplaceholder);
         configMediationProvider();
 //        Admob.getInstance().initRewardAds(this,getString(R.string.admod_app_reward_id));
+        AppOpenManager.getInstance().setEnableScreenContentCallback(true);
+        AppOpenManager.getInstance().setFullScreenContentCallback(new FullScreenContentCallback(){
+            @Override
+            public void onAdShowedFullScreenContent() {
+                super.onAdShowedFullScreenContent();
+                Log.e("AppOpenManager", "onAdShowedFullScreenContent: ");
 
+            }
+        });
         Admob.getInstance().setNumToShowAds(4, 3);
 
         AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom);

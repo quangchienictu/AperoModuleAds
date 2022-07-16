@@ -225,7 +225,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         if (!isSplash) {
                             AppOpenManager.this.appResumeAd = ad;
                             AppOpenManager.this.appResumeAd.setOnPaidEventListener(adValue -> {
-                                AdjustApero.pushTrackEventAdmod(adValue);
+                                AdjustApero.pushTrackEventAdmob(adValue);
                                 FirebaseAnalyticsUtil.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         ad.getAdUnitId(),
@@ -236,7 +236,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         } else {
                             AppOpenManager.this.splashAd = ad;
                             AppOpenManager.this.splashAd.setOnPaidEventListener(adValue -> {
-                                AdjustApero.pushTrackEventAdmod(adValue);
+                                AdjustApero.pushTrackEventAdmob(adValue);
                                 FirebaseAnalyticsUtil.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         ad.getAdUnitId(),
@@ -445,6 +445,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
                                 @Override
                                 public void onAdShowedFullScreenContent() {
+                                    if (fullScreenContentCallback != null && enableScreenContentCallback) {
+                                        fullScreenContentCallback.onAdShowedFullScreenContent();
+                                    }
                                     isShowingAd = true;
                                     splashAd = null;
                                 }
@@ -543,6 +546,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
 
                         @Override
                         public void onAdShowedFullScreenContent() {
+                            if (fullScreenContentCallback != null && enableScreenContentCallback) {
+                                fullScreenContentCallback.onAdShowedFullScreenContent();
+                            }
                             isShowingAd = true;
                             appResumeAd = null;
                         }
