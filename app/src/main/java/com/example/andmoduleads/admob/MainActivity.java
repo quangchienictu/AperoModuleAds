@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ads.control.ads.AppOpenManager;
 import com.ads.control.util.AdjustApero;
 import com.ads.control.ads.Admod;
 import com.ads.control.billing.AppPurchase;
@@ -22,6 +23,7 @@ import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.PurchaseListioner;
 import com.ads.control.funtion.RewardCallback;
 import com.example.andmoduleads.R;
+import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
@@ -47,6 +49,16 @@ public class MainActivity extends AppCompatActivity {
         frAds = findViewById(R.id.fr_ads);
 
         Admod.getInstance().initRewardAds(this,getString(R.string.admod_app_reward_id));
+
+        AppOpenManager.getInstance().setEnableScreenContentCallback(true);
+        AppOpenManager.getInstance().setFullScreenContentCallback(new FullScreenContentCallback(){
+            @Override
+            public void onAdShowedFullScreenContent() {
+                super.onAdShowedFullScreenContent();
+                Log.e("AppOpenManager", "onAdShowedFullScreenContent: ");
+
+            }
+        });
 
 
         Admod.getInstance().setNumToShowAds(4,3);
