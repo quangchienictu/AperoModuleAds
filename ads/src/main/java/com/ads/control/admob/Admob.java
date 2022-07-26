@@ -166,6 +166,7 @@ public class Admob {
             }
         }
         MobileAds.initialize(context, initializationStatus -> {
+            Log.i(TAG, "init success ");
         });
         MobileAds.setRequestConfiguration(new RequestConfiguration.Builder().setTestDeviceIds(testDeviceList).build());
 

@@ -37,7 +37,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.gms:play-services-ads:20.4.0'
+    implementation 'com.google.android.gms:play-services-ads:21.1.0'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
 //    implementation 'com.anjlab.android.iab.v3:library:1.1.0'
     implementation 'com.intuit.sdp:sdp-android:1.0.6'
@@ -52,7 +52,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version"
     annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
 
-    implementation platform('com.google.firebase:firebase-bom:28.0.1')
+    implementation platform('com.google.firebase:firebase-bom:30.1.0')
     implementation 'com.google.firebase:firebase-analytics'
 
     def multidex_version = "2.0.1"

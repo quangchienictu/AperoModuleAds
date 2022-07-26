@@ -87,7 +87,7 @@ public class MaxSimpleListActivity extends AppCompatActivity {
     }
 
     private void setupAdAdapter() {
-        adAdapter = AperoAd.getInstance().getNativeRepeatAdapter(this, idNative, layoutCustomNative, com.ads.control.R.layout.layout_native_medium,
+        adAdapter = AperoAd.getInstance().getNativeFixedPositionAdapter(this, idNative, layoutCustomNative, com.ads.control.R.layout.layout_native_medium,
                 originalAdapter, listener, 4);
 
         recyclerView.setAdapter(adAdapter.getAdapter());
