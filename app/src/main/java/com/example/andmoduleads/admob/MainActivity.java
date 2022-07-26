@@ -35,7 +35,7 @@ import com.google.android.gms.ads.nativead.NativeAd;
 
 public class MainActivity extends AppCompatActivity {
     public static final String PRODUCT_ID = "android.test.purchased";
-
+    private static final String TAG = "MAIN_TEST";
     //adjust
     private static final String EVENT_TOKEN_SIMPLE = "g3mfiw";
     private static final String EVENT_TOKEN_REVENUE = "a4fd35";
@@ -60,9 +60,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         frAds = findViewById(R.id.fl_adplaceholder);
         configMediationProvider();
-//        Admob.getInstance().initRewardAds(this,getString(R.string.admod_app_reward_id));
+        AperoAd.getInstance().setCountClickToShowAds(3);
         AppOpenManager.getInstance().setEnableScreenContentCallback(true);
-        AppOpenManager.getInstance().setFullScreenContentCallback(new FullScreenContentCallback(){
+        AppOpenManager.getInstance().setFullScreenContentCallback(new FullScreenContentCallback() {
             @Override
             public void onAdShowedFullScreenContent() {
                 super.onAdShowedFullScreenContent();
@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        Admob.getInstance().setNumToShowAds(4, 3);
 
         AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom);
 
@@ -99,33 +98,50 @@ public class MainActivity extends AppCompatActivity {
         loadAdInterstitial();
 
 
-//        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-//        }
-
-
         findViewById(R.id.btShowAds).setOnClickListener(v -> {
             if (mInterstitialAd.isReady()) {
-                AperoAd.getInstance().forceShowInterstitial(this, mInterstitialAd, new AperoAdCallback() {
+                AperoAd.getInstance().showInterstitialAdByTimes(this, mInterstitialAd, new AperoAdCallback() {
                     @Override
                     public void onAdClosed() {
-                        Log.i("MAIN_TEST", "onAdClosed: start content and finish main");
+                        Log.i(TAG, "onAdClosed: start content and finish main");
                         startActivity(new Intent(MainActivity.this, ContentActivity.class));
                     }
 
                     @Override
                     public void onAdFailedToShow(@Nullable ApAdError adError) {
                         super.onAdFailedToShow(adError);
-//                        startActivity(new Intent(MainActivity.this, ContentActivity.class));
+                        Log.i(TAG, "onAdFailedToShow:" + adError.getMessage());
+                        startActivity(new Intent(MainActivity.this, ContentActivity.class));
+                    }
+                }, true);
+            } else {
+                Toast.makeText(this, "start loading ads", Toast.LENGTH_SHORT).show();
+                loadAdInterstitial();
+            }
+        });
+
+        findViewById(R.id.btForceShowAds).setOnClickListener(v -> {
+            if (mInterstitialAd.isReady()) {
+                AperoAd.getInstance().forceShowInterstitial(this, mInterstitialAd, new AperoAdCallback() {
+                    @Override
+                    public void onAdClosed() {
+                        Log.i(TAG, "onAdClosed: start content and finish main");
+                        startActivity(new Intent(MainActivity.this, MaxSimpleListActivity.class));
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@Nullable ApAdError adError) {
+                        super.onAdFailedToShow(adError);
+                        Log.i(TAG, "onAdFailedToShow:" + adError.getMessage());
+                        startActivity(new Intent(MainActivity.this, MaxSimpleListActivity.class));
                     }
                 }, false);
             } else {
                 loadAdInterstitial();
             }
+
         });
-        findViewById(R.id.btForceShowAds).setOnClickListener(v -> {
-            startActivity(new Intent(MainActivity.this, MaxSimpleListActivity.class));
-        });
+
         findViewById(R.id.btnShowReward).setOnClickListener(v -> {
             if (rewardAd != null && rewardAd.isReady()) {
                 AperoAd.getInstance().forceShowRewardAd(this, rewardAd, new AperoAdCallback());

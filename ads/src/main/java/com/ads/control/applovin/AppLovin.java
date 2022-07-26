@@ -112,6 +112,15 @@ public class AppLovin {
         this.context = context;
     }
 
+    public void setNumShowAds(int numShowAds) {
+        this.numShowAds = numShowAds;
+    }
+
+    public void setNumToShowAds(int numShowAds, int currentClicked) {
+        this.numShowAds = numShowAds;
+        this.currentClicked = currentClicked;
+    }
+
     public MaxInterstitialAd getInterstitialSplash() {
         return interstitialSplash;
     }

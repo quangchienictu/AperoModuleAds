@@ -79,6 +79,27 @@ public class AperoAd {
         return INSTANCE;
     }
 
+    /**
+     * Set count click to show ads interstitial when call showInterstitialAdByTimes()
+     *
+     * @param countClickToShowAds - default = 3
+     */
+    public void setCountClickToShowAds(int countClickToShowAds) {
+        Admob.getInstance().setNumToShowAds(countClickToShowAds);
+        AppLovin.getInstance().setNumShowAds(countClickToShowAds);
+    }
+
+    /**
+     * Set count click to show ads interstitial when call showInterstitialAdByTimes()
+     *
+     * @param countClickToShowAds  Default value = 3
+     * @param currentClicked   Default value = 0
+     */
+    public void setCountClickToShowAds(int countClickToShowAds, int currentClicked) {
+        Admob.getInstance().setNumToShowAds(countClickToShowAds,currentClicked);
+        AppLovin.getInstance().setNumToShowAds(countClickToShowAds, currentClicked);
+    }
+
 
     /**
      * @param context
@@ -657,7 +678,7 @@ public class AperoAd {
                                 }
 
                             });
-                        }else {
+                        } else {
                             mInterstitialAd.setInterstitialAd(null);
                         }
                     }
@@ -690,7 +711,7 @@ public class AperoAd {
                                 }
 
                             });
-                        }else {
+                        } else {
                             mInterstitialAd.setInterstitialAd(null);
                         }
                     }
@@ -727,7 +748,124 @@ public class AperoAd {
     }
 
     /**
+     * Called force show ApInterstitialAd when reach the number of clicks show ads
+     *
+     * @param context
+     * @param mInterstitialAd
+     * @param callback
+     * @param shouldReloadAds auto reload ad when ad close
+     */
+    public void showInterstitialAdByTimes(Context context, ApInterstitialAd mInterstitialAd,
+                                          final AperoAdCallback callback, boolean shouldReloadAds) {
+        if (mInterstitialAd.isNotReady()) {
+            Log.e(TAG, "forceShowInterstitial: ApInterstitialAd is not ready");
+            callback.onAdFailedToShow(new ApAdError("ApInterstitialAd is not ready"));
+            return;
+        }
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.PROVIDER_ADMOB:
+                AdCallback adCallback = new AdCallback() {
+                    @Override
+                    public void onAdClosed() {
+                        super.onAdClosed();
+                        Log.d(TAG, "onAdClosed: ");
+                        callback.onAdClosed();
+                        if (shouldReloadAds) {
+                            Admob.getInstance().getInterstitialAds(context, mInterstitialAd.getInterstitialAd().getAdUnitId(), new AdCallback() {
+                                @Override
+                                public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
+                                    super.onInterstitialLoad(interstitialAd);
+                                    Log.d(TAG, "Admob shouldReloadAds success");
+                                    mInterstitialAd.setInterstitialAd(interstitialAd);
+                                    callback.onInterstitialLoad(mInterstitialAd);
+                                }
+
+                                @Override
+                                public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                                    super.onAdFailedToLoad(i);
+                                    mInterstitialAd.setInterstitialAd(null);
+                                    callback.onAdFailedToLoad(new ApAdError(i));
+                                }
+
+                                @Override
+                                public void onAdFailedToShow(@Nullable AdError adError) {
+                                    super.onAdFailedToShow(adError);
+                                    callback.onAdFailedToShow(new ApAdError(adError));
+                                }
+
+                            });
+                        } else {
+                            mInterstitialAd.setInterstitialAd(null);
+                        }
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@Nullable AdError adError) {
+                        super.onAdFailedToShow(adError);
+                        Log.d(TAG, "onAdFailedToShow: ");
+                        callback.onAdFailedToShow(new ApAdError(adError));
+                        if (shouldReloadAds) {
+                            Admob.getInstance().getInterstitialAds(context, mInterstitialAd.getInterstitialAd().getAdUnitId(), new AdCallback() {
+                                @Override
+                                public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
+                                    super.onInterstitialLoad(interstitialAd);
+                                    Log.d(TAG, "Admob shouldReloadAds success");
+                                    mInterstitialAd.setInterstitialAd(interstitialAd);
+                                    callback.onInterstitialLoad(mInterstitialAd);
+                                }
+
+                                @Override
+                                public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                                    super.onAdFailedToLoad(i);
+                                    callback.onAdFailedToLoad(new ApAdError(i));
+                                }
+
+                                @Override
+                                public void onAdFailedToShow(@Nullable AdError adError) {
+                                    super.onAdFailedToShow(adError);
+                                    callback.onAdFailedToShow(new ApAdError(adError));
+                                }
+
+                            });
+                        } else {
+                            mInterstitialAd.setInterstitialAd(null);
+                        }
+                    }
+                };
+                Admob.getInstance().showInterstitialAdByTimes(context, mInterstitialAd.getInterstitialAd(), adCallback);
+                break;
+            case AperoAdConfig.PROVIDER_MAX:
+                AppLovin.getInstance().showInterstitialAdByTimes(context, mInterstitialAd.getMaxInterstitialAd(), new AdCallback() {
+                    @Override
+                    public void onAdClosed() {
+                        super.onAdClosed();
+                        callback.onAdClosed();
+                        if (shouldReloadAds)
+                            mInterstitialAd.getMaxInterstitialAd().loadAd();
+
+                    }
+
+                    @Override
+                    public void onInterstitialLoad(@Nullable InterstitialAd interstitialAd) {
+                        super.onInterstitialLoad(interstitialAd);
+                        Log.d(TAG, "Max inter onAdLoaded:");
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@Nullable AdError adError) {
+                        super.onAdFailedToShow(adError);
+                        callback.onAdFailedToShow(new ApAdError(adError));
+                        if (shouldReloadAds)
+                            mInterstitialAd.getMaxInterstitialAd().loadAd();
+                    }
+
+                }, false);
+        }
+    }
+
+    /**
      * Load native ad and auto populate ad to view in activity
+     *
      * @param activity
      * @param id
      * @param layoutCustomNative
@@ -769,7 +907,8 @@ public class AperoAd {
     }
 
     /**
-     *  Load native ad and auto populate ad to adPlaceHolder and hide containerShimmerLoading
+     * Load native ad and auto populate ad to adPlaceHolder and hide containerShimmerLoading
+     *
      * @param activity
      * @param id
      * @param layoutCustomNative
@@ -813,6 +952,7 @@ public class AperoAd {
 
     /**
      * Result a ApNativeAd in onUnifiedNativeAdLoaded when native ad loaded
+     *
      * @param activity
      * @param id
      * @param layoutCustomNative
@@ -996,6 +1136,7 @@ public class AperoAd {
 
     /**
      * Result a AperoAdAdapter with ad native repeating interval
+     *
      * @param activity
      * @param id
      * @param layoutCustomNative
@@ -1044,6 +1185,7 @@ public class AperoAd {
 
     /**
      * Result a AperoAdAdapter with ad native fixed in position
+     *
      * @param activity
      * @param id
      * @param layoutCustomNative
