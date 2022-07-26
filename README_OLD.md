@@ -1,16 +1,25 @@
 
 # AndModuleAds
-
 Import Module
 ~~~
 	maven { url 'https://jitpack.io' }
-	implementation 'com.github.AperoVN:AperoModuleAds:4.0.0'
+
+	// for targetSdkVersion >31 and admob sdk 20.5.0
+	implementation 'com.github.AperoVN:AperoModuleAds:3.0.2'
+	// for targetSdkVersion <31 and admob sdk 20.4.0
+	implementation 'com.github.AperoVN:AperoModuleAds:2.6.0-rc.3'
+	// integrate max mediation 
+	implementation 'com.github.AperoVN:AperoModuleAds:2.6.10-max'
 ~~~	 
 # Summary
-* [Setup Ads](#example-admob)
+* [Setup Admob](#example-admob)
 	* [Setup id ads](#set_up_ads)
 	* [Ads Formats](#ads_formats)
-	* [Config Ads]
+* [Setup Max Mediation](#example-max)
+* Setup Iron Source
+	* Coming soon
+* Setup FAN
+	* Coming soon
 * [Billing App](#billing_app)
 * [Ads rule](#ads_rule)
 
