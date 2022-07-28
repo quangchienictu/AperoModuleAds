@@ -37,11 +37,9 @@ public class MyApplication extends AdsMultiDexApplication {
     public void onCreate() {
         super.onCreate();
         context = this;
-//        AppOpenManager.getInstance().setSplashActivity(SplashActivity.class, AppOpenManager.AD_UNIT_ID_TEST, 5000);
         AppOpenManager.getInstance().disableAppResumeWithActivity(SplashActivity.class);
         Admob.getInstance().setNumToShowAds(0);
 
-//        AdjustApero.setEventNamePurchase("gzel1k");
         storageCommon = new StorageCommon();
         initBilling();
         initAds();
@@ -64,39 +62,7 @@ public class MyApplication extends AdsMultiDexApplication {
         List<String> listSubsId = new ArrayList<>();
         Admob.getInstance().setOpenActivityAfterShowInterAds(true);
         AppPurchase.getInstance().initBilling(getApplication(),listINAPId,listSubsId);
-//        AppPurchase.getInstance().addProductId(MainActivity.PRODUCT_ID);
 
     }
 
-   /* @Override
-    public boolean enableAdsResume() {
-        return false;
-    }
-
-    @Override
-    public List<String> getListTestDeviceId() {
-        // thêm device test ( trong log, bắt buộc với FAN)
-        return Collections.singletonList("EC25F576DA9B6CE74778B268CB87E431");
-    }
-
-
-    @Override
-    public String getOpenAppAdId() {
-        return AppOpenManager.AD_UNIT_ID_TEST;
-    }
-
-    @Override
-    public Boolean buildDebug() {
-        return BuildConfig.DEBUG;
-    }
-
-    @Override
-    public boolean enableAdjust() {
-        return true;
-    }
-
-    @Override
-    public String getAdjustToken() {
-        return "cc4jvudppczk";
-    }*/
 }

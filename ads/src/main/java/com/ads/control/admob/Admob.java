@@ -101,9 +101,6 @@ public class Admob {
     private boolean openActivityAfterShowInterAds = false;
     private Context context;
 //    private AppOpenAd appOpenAd = null;
-//    private static final String SHARED_PREFERENCE_NAME = "ads_shared_preference";
-
-//    private final Map<String, AppOpenAd> appOpenAdMap = new HashMap<>();
 
     InterstitialAd mInterstitialSplash;
     InterstitialAd interstitialAd;
@@ -1856,9 +1853,9 @@ public class Admob {
 
         Log.e(TAG, "Found test ad id on debug : " + AppUtil.VARIANT_DEV);
 
-//        if (!AppUtil.BUILD_DEBUG) {
-//            throw new RuntimeException("Found test ad id on release");
-//        }
+        if (!AppUtil.VARIANT_DEV) {
+            throw new RuntimeException("Found test ad id on release");
+        }
     }
 
     public final static int SPLASH_ADS = 0;
