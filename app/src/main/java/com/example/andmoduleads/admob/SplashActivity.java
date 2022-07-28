@@ -51,19 +51,10 @@ public class SplashActivity extends AppCompatActivity {
             }
         }, 5000);
 
-        initBilling();
         AppPurchase.getInstance().setEventConsumePurchaseTest(findViewById(R.id.txtLoading));
     }
 
-    private void initBilling() {
-        List<String> listINAPId = new ArrayList<>();
-        listINAPId.add(MainActivity.PRODUCT_ID);
-        List<String> listSubsId = new ArrayList<>();
 
-        AppPurchase.getInstance().initBilling(getApplication(), listINAPId, listSubsId);
-//        AppPurchase.getInstance().addProductId(MainActivity.PRODUCT_ID);
-
-    }
 
     AperoAdCallback adCallback = new AperoAdCallback() {
         @Override
