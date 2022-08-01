@@ -33,9 +33,11 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ads.control.ads.AperoAdCallback;
 import com.ads.control.ads.nativeAds.AperoAdPlacer;
 import com.ads.control.ads.nativeAds.AperoAdPlacerSettings;
 import com.ads.control.ads.nativeAds.AdmobRecyclerAdapter;
+import com.ads.control.ads.wrapper.ApAdValue;
 import com.ads.control.util.AdjustApero;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.R;
@@ -691,7 +693,6 @@ public class Admob {
 
                         //tracking adjust
                         interstitialAd.setOnPaidEventListener(adValue -> {
-
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                             AdjustApero.pushTrackEventAdmob(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
