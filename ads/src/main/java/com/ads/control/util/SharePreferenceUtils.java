@@ -21,19 +21,19 @@ public class SharePreferenceUtils {
 
     public static void setInstallTime(Context context) {
         SharedPreferences pre = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        pre.edit().putLong(KEY_INSTALL_TIME, System.currentTimeMillis() / 1000000).apply();
+        pre.edit().putLong(KEY_INSTALL_TIME, System.currentTimeMillis()).apply();
     }
 
-    public static long getCurrentTotalRevenueAd(Context context) {
+    public static float getCurrentTotalRevenueAd(Context context) {
         SharedPreferences pre = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        return pre.getLong(KEY_CURRENT_TOTAL_REVENUE_AD, 0);
+        return pre.getFloat(KEY_CURRENT_TOTAL_REVENUE_AD, 0);
     }
 
-    public static void updateCurrentTotalRevenueAd(Context context, long revenue) {
+    public static void updateCurrentTotalRevenueAd(Context context, float revenue) {
         SharedPreferences pre = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
-        long currentTotalRevenue = pre.getLong(KEY_CURRENT_TOTAL_REVENUE_AD, 0);
+        float currentTotalRevenue = pre.getFloat(KEY_CURRENT_TOTAL_REVENUE_AD, 0);
         currentTotalRevenue += revenue / 1000000.0;
-        pre.edit().putLong(KEY_CURRENT_TOTAL_REVENUE_AD, currentTotalRevenue).apply();
+        pre.edit().putFloat(KEY_CURRENT_TOTAL_REVENUE_AD, currentTotalRevenue).apply();
     }
 
     public static boolean isPushRevenue3Day(Context context) {

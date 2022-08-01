@@ -30,7 +30,7 @@ public class FirebaseAnalyticsUtil {
         params.putString("network", mediationAdapterClassName);
 
         FirebaseAnalytics.getInstance(context).logEvent("paid_ad_impression", params);
-        SharePreferenceUtils.updateCurrentTotalRevenueAd(context, adValue.getValueMicros());
+        SharePreferenceUtils.updateCurrentTotalRevenueAd(context, (float) adValue.getValueMicros());
         logCurrentTotalRevenueAd(context, "event_current_total_revenue_ad");
         logTotalRevenueAdIn3DaysIfNeed(context);
         logTotalRevenueAdIn7DaysIfNeed(context);
@@ -48,7 +48,7 @@ public class FirebaseAnalyticsUtil {
         params.putString("network", adValue.getNetworkName());
 
         FirebaseAnalytics.getInstance(context).logEvent("paid_ad_impression", params);
-        SharePreferenceUtils.updateCurrentTotalRevenueAd(context, (long) adValue.getRevenue());
+        SharePreferenceUtils.updateCurrentTotalRevenueAd(context, (float) adValue.getRevenue());
         logCurrentTotalRevenueAd(context, "event_current_total_revenue_ad");
         logTotalRevenueAdIn3DaysIfNeed(context);
         logTotalRevenueAdIn7DaysIfNeed(context);
@@ -65,9 +65,9 @@ public class FirebaseAnalyticsUtil {
 
     public static void logCurrentTotalRevenueAd(Context context, String eventName) {
         Log.d(TAG, "logCurrentTotalRevenueAd: ");
-        long currentTotalRevenue = SharePreferenceUtils.getCurrentTotalRevenueAd(context);
+        float currentTotalRevenue = SharePreferenceUtils.getCurrentTotalRevenueAd(context);
         Bundle bundle = new Bundle();
-        bundle.putLong("value", currentTotalRevenue);
+        bundle.putFloat("value", currentTotalRevenue);
         FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
     }
 
