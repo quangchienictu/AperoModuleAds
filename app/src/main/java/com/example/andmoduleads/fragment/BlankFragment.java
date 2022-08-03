@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.ads.control.admob.Admob;
 import com.ads.control.ads.AperoAd;
+import com.ads.control.ads.AperoAdConfig;
 import com.ads.control.funtion.AdCallback;
 import com.example.andmoduleads.R;
 import com.example.andmoduleads.admob.ContentActivity;
@@ -54,14 +55,18 @@ public class BlankFragment extends Fragment {
 //            }
 //        });
         View view1 = view.findViewById(R.id.include).getRootView();
+        String idBanner;
+        if (AperoAd.getInstance().getMediationProvider() == AperoAdConfig.PROVIDER_ADMOB) {
+            idBanner = getString(R.string.admod_banner_id);
+        } else {
+            idBanner = getString(R.string.applovin_test_banner);
+        }
 
-        String idBanner = getString(R.string.admod_banner_id);
-
-        AperoAd.getInstance().loadBannerFragment(requireActivity(), idBanner, view1, new AdCallback(){
+        AperoAd.getInstance().loadBannerFragment(requireActivity(), idBanner, view1, new AdCallback() {
             @Override
             public void onAdClicked() {
                 super.onAdClicked();
-                Log.e("TAG", "onAdClicked: BannerFragment" );
+                Log.e("TAG", "onAdClicked: BannerFragment");
             }
         });
 

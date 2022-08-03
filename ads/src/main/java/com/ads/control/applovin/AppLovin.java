@@ -324,6 +324,9 @@ public class AppLovin {
             @Override
             public void onAdClicked(MaxAd ad) {
                 FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
+                if (adListener != null) {
+                    adListener.onAdClicked();
+                }
             }
 
             @Override
@@ -389,6 +392,9 @@ public class AppLovin {
             @Override
             public void onAdClicked(MaxAd ad) {
                 FirebaseAnalyticsUtil.logClickAdsEvent(context, interstitialSplash.getAdUnitId());
+                if (adListener != null) {
+                    adListener.onAdClicked();
+                }
             }
 
             @Override
@@ -572,6 +578,9 @@ public class AppLovin {
             @Override
             public void onAdClicked(MaxAd ad) {
                 FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
+                if (callback != null) {
+                    callback.onAdClicked();
+                }
             }
 
             @Override

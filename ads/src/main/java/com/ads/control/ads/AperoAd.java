@@ -378,6 +378,14 @@ public class AperoAd {
                         super.onAdClosedByUser();
                         adListener.onAdClosedByUser();
                     }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        if (adListener != null) {
+                            adListener.onAdClicked();
+                        }
+                    }
                 });
         }
     }
@@ -789,6 +797,13 @@ public class AperoAd {
                             mInterstitialAd.getMaxInterstitialAd().loadAd();
                     }
 
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        if (callback != null) {
+                            callback.onAdClicked();
+                        }
+                    }
                 }, false);
         }
     }
@@ -913,6 +928,13 @@ public class AperoAd {
                             mInterstitialAd.getMaxInterstitialAd().loadAd();
                     }
 
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        if (callback != null) {
+                            callback.onAdClicked();
+                        }
+                    }
                 }, false);
         }
     }
@@ -1242,6 +1264,14 @@ public class AperoAd {
                         super.onAdFailedToShow(adError);
                         apRewardAd.clean();
                         callback.onAdFailedToShow(new ApAdError(adError));
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        if (callback != null) {
+                            callback.onAdClicked();
+                        }
                     }
                 });
         }
