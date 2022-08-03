@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ads.control.admob.Admob;
 import com.ads.control.admob.AppOpenManager;
 import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdCallback;
@@ -18,17 +19,14 @@ import com.ads.control.ads.AperoAdConfig;
 import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.ads.wrapper.ApRewardAd;
-import com.ads.control.ads.wrapper.ApRewardItem;
-import com.ads.control.util.AdjustApero;
-import com.ads.control.admob.Admob;
 import com.ads.control.billing.AppPurchase;
-import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.dialog.DialogExitApp1;
 import com.ads.control.dialog.InAppDialog;
 import com.ads.control.funtion.AdCallback;
+import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.funtion.PurchaseListioner;
+import com.ads.control.util.AdjustApero;
 import com.example.andmoduleads.R;
-import com.example.andmoduleads.applovin.MainApplovinActivity;
 import com.example.andmoduleads.applovin.MaxSimpleListActivity;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
@@ -67,11 +65,22 @@ public class MainActivity extends AppCompatActivity {
             public void onAdShowedFullScreenContent() {
                 super.onAdShowedFullScreenContent();
                 Log.e("AppOpenManager", "onAdShowedFullScreenContent: ");
+            }
 
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                Log.e(TAG, "onAdClicked: AppOpenManager");
             }
         });
 
-        AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom);
+        AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom, new AdCallback() {
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                Log.e(TAG, "onAdClicked: NativeAd");
+            }
+        });
 
         AppPurchase.getInstance().setPurchaseListioner(new PurchaseListioner() {
             @Override
@@ -93,7 +102,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        AperoAd.getInstance().loadBanner(this, idBanner);
+        AperoAd.getInstance().loadBanner(this, idBanner, new AdCallback() {
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                Log.e(TAG, "onAdClicked: Banner");
+            }
+        });
 
         loadAdInterstitial();
 
@@ -112,6 +127,12 @@ public class MainActivity extends AppCompatActivity {
                         super.onAdFailedToShow(adError);
                         Log.i(TAG, "onAdFailedToShow:" + adError.getMessage());
                         startActivity(new Intent(MainActivity.this, ContentActivity.class));
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        Log.e(TAG, "onAdClicked: InterstitialAdByTimes");
                     }
                 }, true);
             } else {
@@ -135,6 +156,12 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(TAG, "onAdFailedToShow:" + adError.getMessage());
                         startActivity(new Intent(MainActivity.this, MaxSimpleListActivity.class));
                     }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        Log.e(TAG, "onAdClicked: Interstitial");
+                    }
                 }, false);
             } else {
                 loadAdInterstitial();
@@ -144,7 +171,13 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.btnShowReward).setOnClickListener(v -> {
             if (rewardAd != null && rewardAd.isReady()) {
-                AperoAd.getInstance().forceShowRewardAd(this, rewardAd, new AperoAdCallback());
+                AperoAd.getInstance().forceShowRewardAd(this, rewardAd, new AperoAdCallback() {
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        Log.e(TAG, "onAdClicked: RewardAd");
+                    }
+                });
                 return;
             }
             rewardAd = AperoAd.getInstance().getRewardAd(this, getString(R.string.admod_app_reward_id));

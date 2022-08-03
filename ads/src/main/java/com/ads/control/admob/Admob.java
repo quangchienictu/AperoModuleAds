@@ -33,18 +33,16 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ads.control.ads.AperoAdCallback;
+import com.ads.control.R;
+import com.ads.control.ads.nativeAds.AdmobRecyclerAdapter;
 import com.ads.control.ads.nativeAds.AperoAdPlacer;
 import com.ads.control.ads.nativeAds.AperoAdPlacerSettings;
-import com.ads.control.ads.nativeAds.AdmobRecyclerAdapter;
-import com.ads.control.ads.wrapper.ApAdValue;
-import com.ads.control.util.AdjustApero;
 import com.ads.control.billing.AppPurchase;
-import com.ads.control.R;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.AdmodHelper;
 import com.ads.control.funtion.RewardCallback;
+import com.ads.control.util.AdjustApero;
 import com.ads.control.util.AppUtil;
 import com.ads.control.util.FirebaseAnalyticsUtil;
 import com.applovin.mediation.AppLovinExtras;
@@ -447,6 +445,14 @@ public class Admob {
                     adListener.onAdFailedToLoad(i);
                 }
             }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                if (adListener != null) {
+                    adListener.onAdClicked();
+                }
+            }
         });
 
     }
@@ -525,6 +531,9 @@ public class Admob {
             public void onAdClicked() {
                 super.onAdClicked();
                 FirebaseAnalyticsUtil.logClickAdsEvent(context, mInterstitialSplash.getAdUnitId());
+                if (adListener != null) {
+                    adListener.onAdClicked();
+                }
             }
         });
 
@@ -814,6 +823,9 @@ public class Admob {
             public void onAdClicked() {
                 super.onAdClicked();
                 FirebaseAnalyticsUtil.logClickAdsEvent(context, mInterstitialAd.getAdUnitId());
+                if (callback != null) {
+                    callback.onAdClicked();
+                }
             }
         });
 
@@ -1755,6 +1767,9 @@ public class Admob {
                 public void onAdClicked() {
                     super.onAdClicked();
                     FirebaseAnalyticsUtil.logClickAdsEvent(context, rewardedAd.getAdUnitId());
+                    if (adCallback != null) {
+                        adCallback.onAdClicked();
+                    }
                 }
             });
             rewardedAd.show(context, new OnUserEarnedRewardListener() {

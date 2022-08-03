@@ -458,6 +458,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                     super.onAdClicked();
                                     if (currentActivity != null) {
                                         FirebaseAnalyticsUtil.logClickAdsEvent(currentActivity, splashAdId);
+                                        if (fullScreenContentCallback!= null) {
+                                            fullScreenContentCallback.onAdClicked();
+                                        }
                                     }
                                 }
                             });
@@ -558,6 +561,9 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             super.onAdClicked();
                             if (currentActivity != null) {
                                 FirebaseAnalyticsUtil.logClickAdsEvent(currentActivity, appResumeAdId);
+                                if (fullScreenContentCallback!= null) {
+                                    fullScreenContentCallback.onAdClicked();
+                                }
                             }
                         }
                     });

@@ -6,5 +6,5 @@ public interface   RewardCallback {
     void onUserEarnedReward(  RewardItem var1);
     void onRewardedAdClosed(  );
     void onRewardedAdFailedToShow(int codeError  );
-
+    void onAdClicked();
 }
