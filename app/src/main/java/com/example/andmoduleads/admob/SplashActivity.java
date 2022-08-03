@@ -86,6 +86,12 @@ public class SplashActivity extends AppCompatActivity {
             startMain();
 
         }
+
+        @Override
+        public void onAdClicked() {
+            super.onAdClicked();
+            Log.e(TAG, "onAdClicked: Splash" );
+        }
     };
 
     private void loadSplash() {

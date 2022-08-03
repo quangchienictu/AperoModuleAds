@@ -31,8 +31,8 @@ import com.adjust.sdk.OnSessionTrackingSucceededListener;
 import com.ads.control.R;
 import com.ads.control.admob.Admob;
 import com.ads.control.admob.AppOpenManager;
-import com.ads.control.ads.nativeAds.AperoAdPlacer;
 import com.ads.control.ads.nativeAds.AperoAdAdapter;
+import com.ads.control.ads.nativeAds.AperoAdPlacer;
 import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.ads.wrapper.ApAdValue;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
@@ -258,6 +258,36 @@ public class AperoAd {
         }
     }
 
+    public void loadBanner(final Activity mActivity, String id, final AdCallback adCallback) {
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.PROVIDER_ADMOB:
+                Admob.getInstance().loadBanner(mActivity, id, adCallback);
+                break;
+            case AperoAdConfig.PROVIDER_MAX:
+                AppLovin.getInstance().loadBanner(mActivity, id, adCallback);
+        }
+    }
+
+    public void loadBannerFragment(final Activity mActivity, String id, final View rootView) {
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.PROVIDER_ADMOB:
+                Admob.getInstance().loadBannerFragment(mActivity, id, rootView);
+                break;
+            case AperoAdConfig.PROVIDER_MAX:
+                AppLovin.getInstance().loadBannerFragment(mActivity, id, rootView);
+        }
+    }
+
+    public void loadBannerFragment(final Activity mActivity, String id, final View rootView, final AdCallback adCallback) {
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.PROVIDER_ADMOB:
+                Admob.getInstance().loadBannerFragment(mActivity, id, rootView, adCallback);
+                break;
+            case AperoAdConfig.PROVIDER_MAX:
+                AppLovin.getInstance().loadBannerFragment(mActivity, id, rootView, adCallback);
+        }
+    }
+
 //    public void loadBanner(final Activity mActivity, String id, final AperoAdCallback callback) {
 //        switch (adConfig.getMediationProvider()) {
 //            case AperoAdConfig.PROVIDER_ADMOB:
@@ -313,6 +343,14 @@ public class AperoAd {
                         super.onAdClosedByUser();
                         adListener.onAdClosedByUser();
                     }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        if (adListener != null) {
+                            adListener.onAdClicked();
+                        }
+                    }
                 });
                 break;
             case AperoAdConfig.PROVIDER_MAX:
@@ -339,6 +377,14 @@ public class AperoAd {
                     public void onAdClosedByUser() {
                         super.onAdClosedByUser();
                         adListener.onAdClosedByUser();
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        if (adListener != null) {
+                            adListener.onAdClicked();
+                        }
                     }
                 });
         }
@@ -715,6 +761,14 @@ public class AperoAd {
                             mInterstitialAd.setInterstitialAd(null);
                         }
                     }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        if (callback != null) {
+                            callback.onAdClicked();
+                        }
+                    }
                 };
                 Admob.getInstance().forceShowInterstitial(context, mInterstitialAd.getInterstitialAd(), adCallback);
                 break;
@@ -743,6 +797,13 @@ public class AperoAd {
                             mInterstitialAd.getMaxInterstitialAd().loadAd();
                     }
 
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        if (callback != null) {
+                            callback.onAdClicked();
+                        }
+                    }
                 }, false);
         }
     }
@@ -793,6 +854,11 @@ public class AperoAd {
                                     callback.onAdFailedToShow(new ApAdError(adError));
                                 }
 
+                                @Override
+                                public void onAdClosedByUser() {
+                                    super.onAdClosedByUser();
+                                    callback.onAdClosedByUser();
+                                }
                             });
                         } else {
                             mInterstitialAd.setInterstitialAd(null);
@@ -826,10 +892,29 @@ public class AperoAd {
                                     callback.onAdFailedToShow(new ApAdError(adError));
                                 }
 
+                                @Override
+                                public void onAdClosedByUser() {
+                                    super.onAdClosedByUser();
+                                    callback.onAdClosedByUser();
+                                }
                             });
                         } else {
                             mInterstitialAd.setInterstitialAd(null);
                         }
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        if (callback != null) {
+                            callback.onAdClicked();
+                        }
+                    }
+
+                    @Override
+                    public void onAdClosedByUser() {
+                        super.onAdClosedByUser();
+                        callback.onAdClosedByUser();
                     }
                 };
                 Admob.getInstance().showInterstitialAdByTimes(context, mInterstitialAd.getInterstitialAd(), adCallback);
@@ -859,6 +944,13 @@ public class AperoAd {
                             mInterstitialAd.getMaxInterstitialAd().loadAd();
                     }
 
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        if (callback != null) {
+                            callback.onAdClicked();
+                        }
+                    }
                 }, false);
         }
     }
@@ -905,7 +997,6 @@ public class AperoAd {
                 break;
         }
     }
-
     /**
      * Load native ad and auto populate ad to adPlaceHolder and hide containerShimmerLoading
      *
@@ -974,6 +1065,12 @@ public class AperoAd {
                         super.onAdFailedToLoad(i);
                         callback.onAdFailedToLoad(new ApAdError(i));
                     }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        callback.onAdClicked();
+                    }
                 });
                 break;
             case AperoAdConfig.PROVIDER_MAX:
@@ -988,6 +1085,12 @@ public class AperoAd {
                     public void onAdFailedToLoad(@Nullable MaxError i) {
                         super.onAdFailedToLoad(i);
                         callback.onAdFailedToLoad(new ApAdError(i));
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        callback.onAdClicked();
                     }
                 });
                 break;
@@ -1107,6 +1210,13 @@ public class AperoAd {
                         apRewardAd.clean();
                         callback.onAdFailedToShow(new ApAdError(new AdError(codeError, "note msg", "Reward")));
                     }
+
+                    @Override
+                    public void onAdClicked() {
+                        if (callback != null) {
+                            callback.onAdClicked();
+                        }
+                    }
                 });
                 break;
             case AperoAdConfig.PROVIDER_MAX:
@@ -1129,6 +1239,14 @@ public class AperoAd {
                         super.onAdFailedToShow(adError);
                         apRewardAd.clean();
                         callback.onAdFailedToShow(new ApAdError(adError));
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        if (callback != null) {
+                            callback.onAdClicked();
+                        }
                     }
                 });
         }
