@@ -268,6 +268,26 @@ public class AperoAd {
         }
     }
 
+    public void loadBannerFragment(final Activity mActivity, String id, final View rootView) {
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.PROVIDER_ADMOB:
+                Admob.getInstance().loadBannerFragment(mActivity, id, rootView);
+                break;
+            case AperoAdConfig.PROVIDER_MAX:
+                AppLovin.getInstance().loadBannerFragment(mActivity, id, rootView);
+        }
+    }
+
+    public void loadBannerFragment(final Activity mActivity, String id, final View rootView, final AdCallback adCallback) {
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.PROVIDER_ADMOB:
+                Admob.getInstance().loadBannerFragment(mActivity, id, rootView, adCallback);
+                break;
+            case AperoAdConfig.PROVIDER_MAX:
+                AppLovin.getInstance().loadBannerFragment(mActivity, id, rootView, adCallback);
+        }
+    }
+
 //    public void loadBanner(final Activity mActivity, String id, final AperoAdCallback callback) {
 //        switch (adConfig.getMediationProvider()) {
 //            case AperoAdConfig.PROVIDER_ADMOB:
