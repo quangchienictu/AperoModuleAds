@@ -997,59 +997,6 @@ public class AperoAd {
                 break;
         }
     }
-
-    public void loadNativeAd(final Activity activity, String id,
-                             int layoutCustomNative, final AdCallback adCallback) {
-        FrameLayout adPlaceHolder = activity.findViewById(R.id.fl_adplaceholder);
-        ShimmerFrameLayout containerShimmerLoading = activity.findViewById(R.id.shimmer_container_native);
-        switch (adConfig.getMediationProvider()) {
-            case AperoAdConfig.PROVIDER_ADMOB:
-                Admob.getInstance().loadNativeAd(((Context) activity), id, new AdCallback() {
-                    @Override
-                    public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
-                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
-                        populateNativeAdView(activity, new ApNativeAd(layoutCustomNative, unifiedNativeAd), adPlaceHolder, containerShimmerLoading);
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@Nullable LoadAdError i) {
-                        super.onAdFailedToLoad(i);
-                    }
-
-                    @Override
-                    public void onAdClicked() {
-                        super.onAdClicked();
-                        if (adCallback != null) {
-                            adCallback.onAdClicked();
-                        }
-                    }
-                });
-                break;
-            case AperoAdConfig.PROVIDER_MAX:
-                AppLovin.getInstance().loadNativeAd(activity, id, layoutCustomNative, new AppLovinCallback() {
-                    @Override
-                    public void onUnifiedNativeAdLoaded(MaxNativeAdView unifiedNativeAd) {
-                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
-                        populateNativeAdView(activity, new ApNativeAd(layoutCustomNative, unifiedNativeAd), adPlaceHolder, containerShimmerLoading);
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@Nullable MaxError i) {
-                        super.onAdFailedToLoad(i);
-                    }
-
-                    @Override
-                    public void onAdClicked() {
-                        super.onAdClicked();
-                        if (adCallback != null) {
-                            adCallback.onAdClicked();
-                        }
-                    }
-                });
-                break;
-        }
-    }
-
     /**
      * Load native ad and auto populate ad to adPlaceHolder and hide containerShimmerLoading
      *
@@ -1118,6 +1065,12 @@ public class AperoAd {
                         super.onAdFailedToLoad(i);
                         callback.onAdFailedToLoad(new ApAdError(i));
                     }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        callback.onAdClicked();
+                    }
                 });
                 break;
             case AperoAdConfig.PROVIDER_MAX:
@@ -1132,6 +1085,12 @@ public class AperoAd {
                     public void onAdFailedToLoad(@Nullable MaxError i) {
                         super.onAdFailedToLoad(i);
                         callback.onAdFailedToLoad(new ApAdError(i));
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        callback.onAdClicked();
                     }
                 });
                 break;

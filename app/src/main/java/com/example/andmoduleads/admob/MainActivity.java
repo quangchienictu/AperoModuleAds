@@ -18,6 +18,7 @@ import com.ads.control.ads.AperoAdCallback;
 import com.ads.control.ads.AperoAdConfig;
 import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
+import com.ads.control.ads.wrapper.ApNativeAd;
 import com.ads.control.ads.wrapper.ApRewardAd;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.dialog.DialogExitApp1;
@@ -28,6 +29,7 @@ import com.ads.control.funtion.PurchaseListioner;
 import com.ads.control.util.AdjustApero;
 import com.example.andmoduleads.R;
 import com.example.andmoduleads.applovin.MaxSimpleListActivity;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
 
@@ -74,11 +76,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom, new AdCallback() {
+        //AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom);
+
+        AperoAd.getInstance().loadNativeAdResultCallback(this, idNative, layoutNativeCustom, new AperoAdCallback() {
+            @Override
+            public void onNativeAdLoaded(@NonNull ApNativeAd nativeAd) {
+                super.onNativeAdLoaded(nativeAd);
+                FrameLayout adPlaceHolder = findViewById(com.ads.control.R.id.fl_adplaceholder);
+                ShimmerFrameLayout containerShimmerLoading = findViewById(com.ads.control.R.id.shimmer_container_native);
+                AperoAd.getInstance().populateNativeAdView(MainActivity.this, nativeAd, adPlaceHolder, containerShimmerLoading);
+            }
+
             @Override
             public void onAdClicked() {
                 super.onAdClicked();
-                Log.e(TAG, "onAdClicked: NativeAd");
+                Log.e(TAG, "onAdClicked: AdResultCallback" );
             }
         });
 
