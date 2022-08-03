@@ -854,6 +854,11 @@ public class AperoAd {
                                     callback.onAdFailedToShow(new ApAdError(adError));
                                 }
 
+                                @Override
+                                public void onAdClosedByUser() {
+                                    super.onAdClosedByUser();
+                                    callback.onAdClosedByUser();
+                                }
                             });
                         } else {
                             mInterstitialAd.setInterstitialAd(null);
@@ -887,6 +892,11 @@ public class AperoAd {
                                     callback.onAdFailedToShow(new ApAdError(adError));
                                 }
 
+                                @Override
+                                public void onAdClosedByUser() {
+                                    super.onAdClosedByUser();
+                                    callback.onAdClosedByUser();
+                                }
                             });
                         } else {
                             mInterstitialAd.setInterstitialAd(null);
@@ -899,6 +909,12 @@ public class AperoAd {
                         if (callback != null) {
                             callback.onAdClicked();
                         }
+                    }
+
+                    @Override
+                    public void onAdClosedByUser() {
+                        super.onAdClosedByUser();
+                        callback.onAdClosedByUser();
                     }
                 };
                 Admob.getInstance().showInterstitialAdByTimes(context, mInterstitialAd.getInterstitialAd(), adCallback);
