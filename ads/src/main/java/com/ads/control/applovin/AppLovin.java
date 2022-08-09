@@ -374,12 +374,12 @@ public class AppLovin {
             @Override
             public void onAdDisplayed(MaxAd ad) {
                 Log.d(TAG, "onAdDisplayed: ");
-                isShowLoadingSplash = false;
             }
 
             @Override
             public void onAdHidden(MaxAd ad) {
                 Log.d(TAG, "onAdHidden: " + ((AppCompatActivity) activity).getLifecycle().getCurrentState());
+                isShowLoadingSplash = false;
                 if (adListener != null && ((AppCompatActivity) activity).getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
                     adListener.onAdClosed();
                     interstitialSplash = null;
@@ -434,7 +434,6 @@ public class AppLovin {
             new Handler().postDelayed(() -> {
                 if (activity != null && !activity.isDestroyed())
                     interstitialSplash.showAd();
-                isShowLoadingSplash = false;
             }, 800);
         } else {
             Log.e(TAG, "onShowSplash fail ");
@@ -443,10 +442,10 @@ public class AppLovin {
     }
 
     public void onCheckShowSplashWhenFail(Activity activity, AppLovinCallback callback, int timeDelay) {
-        new Handler(activity.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (AppLovin.getInstance().getInterstitialSplash() != null && !AppLovin.getInstance().isShowLoadingSplash) {
+        if (AppLovin.getInstance().getInterstitialSplash() != null && !AppLovin.getInstance().isShowLoadingSplash) {
+            new Handler(activity.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
                     if (AppLovin.getInstance().getInterstitialSplash().isReady()) {
                         Log.i(TAG, "show ad splash when show fail in background");
                         AppLovin.getInstance().onShowSplash(activity, callback);
@@ -454,8 +453,8 @@ public class AppLovin {
                         callback.onAdClosed();
                     }
                 }
-            }
-        }, timeDelay);
+            }, timeDelay);
+        }
     }
 
 

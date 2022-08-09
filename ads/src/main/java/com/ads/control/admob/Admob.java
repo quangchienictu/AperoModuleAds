@@ -489,7 +489,6 @@ public class Admob {
             public void onAdShowedFullScreenContent() {
                 Log.d(TAG, " Splash:onAdShowedFullScreenContent ");
                 AppOpenManager.getInstance().setInterstitialShowing(true);
-                isShowLoadingSplash = false;
             }
 
             @Override
@@ -562,9 +561,8 @@ public class Admob {
                         }, 1500);
                     }
                     if (activity != null && mInterstitialSplash != null) {
-                        Log.i(TAG, "start show InterstitialAd " + activity.getLifecycle().getCurrentState().name() +"/"+ProcessLifecycleOwner.get().getLifecycle().getCurrentState().name());
+                        Log.i(TAG, "start show InterstitialAd " + activity.getLifecycle().getCurrentState().name() + "/" + ProcessLifecycleOwner.get().getLifecycle().getCurrentState().name());
                         mInterstitialSplash.show(activity);
-                        isShowLoadingSplash = false;
                     } else if (adListener != null) {
                         if (dialog != null) {
                             dialog.dismiss();
@@ -588,15 +586,15 @@ public class Admob {
     }
 
     public void onCheckShowSplashWhenFail(AppCompatActivity activity, AdCallback callback, int timeDelay) {
-        new Handler(activity.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (interstitialSplashLoaded() && !isShowLoadingSplash()) {
+        if (interstitialSplashLoaded() && !isShowLoadingSplash()) {
+            new Handler(activity.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
                     Log.i(TAG, "show ad splash when show fail in background");
                     Admob.getInstance().onShowSplash(activity, callback);
                 }
-            }
-        }, timeDelay);
+            }, timeDelay);
+        }
     }
 
     public void loadInterstitialAds(Context context, String id, long timeOut, AdCallback adListener) {
@@ -889,7 +887,7 @@ public class Admob {
                                 }
                             }, 1500);
                         }
-                        Log.i(TAG, "start show InterstitialAd " + ((AppCompatActivity) context).getLifecycle().getCurrentState().name() +"/"+ProcessLifecycleOwner.get().getLifecycle().getCurrentState().name());
+                        Log.i(TAG, "start show InterstitialAd " + ((AppCompatActivity) context).getLifecycle().getCurrentState().name() + "/" + ProcessLifecycleOwner.get().getLifecycle().getCurrentState().name());
                         mInterstitialAd.show((Activity) context);
                     } else {
                         if (dialog != null && dialog.isShowing() && !((Activity) context).isDestroyed())
