@@ -178,12 +178,16 @@ public class Admob {
                 WebView.setDataDirectorySuffix(processName);
             }
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            String processName = Application.getProcessName();
+            String packageName = context.getPackageName();
+            if (!packageName.equals(processName)) {
+                WebView.setDataDirectorySuffix(processName);
+            }
+        }
 
         MobileAds.initialize(context, initializationStatus -> {
         });
-//        if (BuildConfig.DEBUG) {
-//            MobileAds.setRequestConfiguration(new RequestConfiguration.Builder().setTestDeviceIds(Arrays.asList(getDeviceId((Activity) context))).build());
-//        }
         this.context = context;
     }
 
@@ -548,7 +552,7 @@ public class Admob {
                         }, 1500);
                     }
                     if (activity != null && mInterstitialSplash != null) {
-                        Log.i(TAG, "start show InterstitialAd " + activity.getLifecycle().getCurrentState().name() +"/"+ProcessLifecycleOwner.get().getLifecycle().getCurrentState().name());
+                        Log.i(TAG, "start show InterstitialAd " + activity.getLifecycle().getCurrentState().name() + "/" + ProcessLifecycleOwner.get().getLifecycle().getCurrentState().name());
                         mInterstitialSplash.show(activity);
                         isShowLoadingSplash = false;
                     } else if (adListener != null) {
@@ -873,7 +877,7 @@ public class Admob {
                                 }
                             }, 1500);
                         }
-                        Log.i(TAG, "start show InterstitialAd " + ((AppCompatActivity) context).getLifecycle().getCurrentState().name() +"/"+ProcessLifecycleOwner.get().getLifecycle().getCurrentState().name());
+                        Log.i(TAG, "start show InterstitialAd " + ((AppCompatActivity) context).getLifecycle().getCurrentState().name() + "/" + ProcessLifecycleOwner.get().getLifecycle().getCurrentState().name());
                         mInterstitialAd.show((Activity) context);
                     } else {
                         if (dialog != null && dialog.isShowing() && !((Activity) context).isDestroyed())
