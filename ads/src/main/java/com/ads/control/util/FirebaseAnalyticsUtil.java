@@ -28,7 +28,7 @@ public class FirebaseAnalyticsUtil {
         params.putInt("precision", adValue.getPrecisionType());
         params.putString("adunitid", adUnitId);
         params.putString("network", mediationAdapterClassName);
-
+        logPaidAdImpressionValue(context, adValue.getValueMicros() / 1000000.0, adValue.getPrecisionType(), adUnitId, mediationAdapterClassName);
         FirebaseAnalytics.getInstance(context).logEvent("paid_ad_impression", params);
         SharePreferenceUtils.updateCurrentTotalRevenueAd(context, (float) adValue.getValueMicros());
         logCurrentTotalRevenueAd(context, "event_current_total_revenue_ad");
@@ -46,12 +46,22 @@ public class FirebaseAnalyticsUtil {
         // But log for purposes of debugging and future reference.
         params.putString("adunitid", adValue.getAdUnitId());
         params.putString("network", adValue.getNetworkName());
-
+        logPaidAdImpressionValue(context, adValue.getRevenue() / 1000000.0, 0, adValue.getAdUnitId(), adValue.getNetworkName());
         FirebaseAnalytics.getInstance(context).logEvent("paid_ad_impression", params);
         SharePreferenceUtils.updateCurrentTotalRevenueAd(context, (float) adValue.getRevenue());
         logCurrentTotalRevenueAd(context, "event_current_total_revenue_ad");
         logTotalRevenueAdIn3DaysIfNeed(context);
         logTotalRevenueAdIn7DaysIfNeed(context);
+    }
+
+    private static void logPaidAdImpressionValue(Context context, double value, int precision, String adunitid, String network) {
+        Bundle params = new Bundle(); // Log ad value in micros.
+        params.putDouble("value", value);
+        params.putString("currency", "USD");
+        params.putInt("precision", precision);
+        params.putString("adunitid", adunitid);
+        params.putString("network", network);
+        FirebaseAnalytics.getInstance(context).logEvent("paid_ad_impression_value", params);
     }
 
     public static void logClickAdsEvent(Context context, String adUnitId) {
