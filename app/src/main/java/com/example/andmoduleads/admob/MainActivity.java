@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         frAds = findViewById(R.id.fr_ads);
-
+        Log.e("TAG", "get id purchased: " + AppPurchase.getInstance().getIdPurchased() );
         Admod.getInstance().initRewardAds(this,getString(R.string.admod_app_reward_id));
 
         AppOpenManager.getInstance().setEnableScreenContentCallback(true);
