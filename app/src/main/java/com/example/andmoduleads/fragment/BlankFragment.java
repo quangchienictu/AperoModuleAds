@@ -15,7 +15,7 @@ import android.widget.FrameLayout;
 import com.ads.control.admob.Admob;
 import com.ads.control.ads.AperoAd;
 import com.ads.control.funtion.AdCallback;
-import com.example.andmoduleads.admob.ContentActivity;
+import com.example.andmoduleads.activity.ContentActivity;
 import com.example.andmoduleads.R;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.interstitial.InterstitialAd;

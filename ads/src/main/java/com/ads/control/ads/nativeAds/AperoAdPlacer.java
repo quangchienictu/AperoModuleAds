@@ -13,6 +13,7 @@ import com.ads.control.R;
 import com.ads.control.admob.Admob;
 import com.ads.control.ads.wrapper.ApAdValue;
 import com.ads.control.ads.wrapper.ApNativeAd;
+import com.ads.control.ads.wrapper.StatusAd;
 import com.ads.control.funtion.AdCallback;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdValue;
@@ -47,24 +48,24 @@ public class AperoAdPlacer {
             int posAddAd = 0;
             int countNewAdapter = adapterOriginal.getItemCount();
             while (posAddAd <= countNewAdapter - settings.getPositionFixAd()) {
-                posAddAd += settings.getPositionFixAd() ;
-                listAd.put(posAddAd, new ApNativeAd(StatusNative.AD_INIT));
-                Log.i(TAG, "add native to list pos: "+ posAddAd);
+                posAddAd += settings.getPositionFixAd();
+                listAd.put(posAddAd, new ApNativeAd(StatusAd.AD_INIT));
+                Log.i(TAG, "add native to list pos: " + posAddAd);
                 listPositionAd.add(posAddAd);
                 posAddAd++;
                 countNewAdapter++;
             }
         } else {
             listPositionAd.add(settings.getPositionFixAd());
-            listAd.put(settings.getPositionFixAd(), new ApNativeAd(StatusNative.AD_INIT));
+            listAd.put(settings.getPositionFixAd(), new ApNativeAd(StatusAd.AD_INIT));
         }
     }
 
     public void renderAd(int pos, RecyclerView.ViewHolder holder) {
 
-        if (listAd.get(pos).getAdmobNativeAd() == null && listAd.get(pos).getStatus() != StatusNative.AD_LOADING) {
+        if (listAd.get(pos).getAdmobNativeAd() == null && listAd.get(pos).getStatus() != StatusAd.AD_LOADING) {
             holder.itemView.post(() -> {
-                ApNativeAd nativeAd =  new ApNativeAd(StatusNative.AD_LOADING);
+                ApNativeAd nativeAd = new ApNativeAd(StatusAd.AD_LOADING);
                 listAd.put(pos, nativeAd);
                 Admob.getInstance().loadNativeAd(activity, settings.getAdUnitId(), new AdCallback() {
                     @Override
@@ -85,7 +86,7 @@ public class AperoAdPlacer {
                         ShimmerFrameLayout containerShimmer = holder.itemView.findViewById(R.id.shimmer_container_native);
 
                         nativeAd.setAdmobNativeAd(unifiedNativeAd);
-                        nativeAd.setStatus(StatusNative.AD_LOADED);
+                        nativeAd.setStatus(StatusAd.AD_LOADED);
                         listAd.put(pos, nativeAd);
 
                         containerShimmer.stopShimmer();
@@ -128,7 +129,7 @@ public class AperoAdPlacer {
             public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
                 super.onUnifiedNativeAdLoaded(unifiedNativeAd);
                 ApNativeAd nativeAd = new ApNativeAd(settings.getLayoutCustomAd(), unifiedNativeAd);
-                nativeAd.setStatus(StatusNative.AD_LOADED);
+                nativeAd.setStatus(StatusAd.AD_LOADED);
                 listAd.put(listPositionAd.get(countLoadAd), nativeAd);
                 Log.i(TAG, "native ad in recycle loaded: " + countLoadAd);
                 countLoadAd++;
@@ -151,38 +152,40 @@ public class AperoAdPlacer {
     }
 
     public int getAdjustedCount() {
-            int countMinAd ;
+        int countMinAd;
         if (settings.isRepeatingAd()) {
-            countMinAd =   adapterOriginal.getItemCount() / settings.getPositionFixAd();
-        } else {
+            countMinAd = adapterOriginal.getItemCount() / settings.getPositionFixAd();
+        } else if (adapterOriginal.getItemCount() >= settings.getPositionFixAd()) {
             countMinAd = 1;
+        }else {
+            countMinAd = 0;
         }
 
-        return  adapterOriginal.getItemCount() + Math.min(countMinAd, listAd.size());
+        return adapterOriginal.getItemCount() + Math.min(countMinAd, listAd.size());
     }
 
 
-    public void onAdLoaded(int position){
-        Log.i(TAG, "Ad native loaded in pos: "+position);
-        if (settings.getListener()!=null)
+    public void onAdLoaded(int position) {
+        Log.i(TAG, "Ad native loaded in pos: " + position);
+        if (settings.getListener() != null)
             settings.getListener().onAdLoaded(position);
     }
 
-    public void onAdRemoved(int position){
-        Log.i(TAG, "Ad native removed in pos: "+position);
-        if (settings.getListener()!=null)
+    public void onAdRemoved(int position) {
+        Log.i(TAG, "Ad native removed in pos: " + position);
+        if (settings.getListener() != null)
             settings.getListener().onAdRemoved(position);
     }
 
-    public void onAdClicked(){
+    public void onAdClicked() {
         Log.i(TAG, "Ad native clicked ");
-        if (settings.getListener()!=null)
+        if (settings.getListener() != null)
             settings.getListener().onAdClicked();
     }
 
-    public void onAdRevenuePaid(ApAdValue adValue){
+    public void onAdRevenuePaid(ApAdValue adValue) {
         Log.i(TAG, "Ad native revenue paid ");
-        if (settings.getListener()!=null)
+        if (settings.getListener() != null)
             settings.getListener().onAdRevenuePaid(adValue);
     }
 
@@ -194,6 +197,6 @@ public class AperoAdPlacer {
 
         void onAdClicked();
 
-        void onAdRevenuePaid(ApAdValue adValue );
+        void onAdRevenuePaid(ApAdValue adValue);
     }
 }

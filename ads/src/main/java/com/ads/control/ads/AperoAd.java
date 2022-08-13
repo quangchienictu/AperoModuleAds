@@ -39,6 +39,7 @@ import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.ads.wrapper.ApNativeAd;
 import com.ads.control.ads.wrapper.ApRewardAd;
 import com.ads.control.ads.wrapper.ApRewardItem;
+import com.ads.control.ads.wrapper.StatusAd;
 import com.ads.control.applovin.AppLovin;
 import com.ads.control.applovin.AppLovinCallback;
 import com.ads.control.funtion.AdCallback;

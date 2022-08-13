@@ -6,8 +6,8 @@ import com.ads.control.application.AdsMultiDexApplication;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.admob.Admob;
 import com.ads.control.admob.AppOpenManager;
-import com.example.andmoduleads.admob.MainActivity;
-import com.example.andmoduleads.admob.SplashActivity;
+import com.example.andmoduleads.activity.MainActivity;
+import com.example.andmoduleads.activity.SplashActivity;
 
 import java.util.ArrayList;
 import java.util.List;

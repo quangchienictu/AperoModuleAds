@@ -15,19 +15,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndModuleAds">
         <activity
-            android:name=".admob.AdmobSimpleListActivity"
-            android:exported="false" />
-        <activity
-            android:name=".applovin.MaxSimpleListActivity"
+            android:name=".activity.SimpleListActivity"
             android:exported="true">
 
         </activity>
-        <activity
-            android:name=".applovin.MainApplovinActivity"
-            android:exported="false" />
-        <activity android:name=".admob.ContentActivity" />
-        <activity android:name=".admob.MainActivity" />
-        <activity android:name=".admob.SplashActivity"
+        <activity android:name=".activity.ContentActivity" />
+        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
