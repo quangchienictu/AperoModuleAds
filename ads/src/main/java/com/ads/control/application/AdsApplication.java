@@ -2,6 +2,7 @@ package com.ads.control.application;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -22,6 +23,8 @@ import com.ads.control.util.AdjustApero;
 import com.ads.control.admob.AppOpenManager;
 import com.ads.control.admob.Admob;
 import com.ads.control.util.AppUtil;
+import com.ads.control.util.SharePreferenceUtils;
+import com.google.android.gms.common.util.SharedPreferencesUtils;
 
 import java.util.List;
 
@@ -40,6 +43,10 @@ public abstract class AdsApplication extends Application {
         if (enableAdjust()) {
             setupIdEvent();
             setupAdjust();
+        }
+
+        if (SharePreferenceUtils.getInstallTime(this) == 0) {
+            SharePreferenceUtils.setInstallTime(this);
         }
     }
 

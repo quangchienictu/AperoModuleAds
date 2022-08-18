@@ -85,6 +85,12 @@ public class SplashActivity extends AppCompatActivity {
             startMain();
 
         }
+
+        @Override
+        public void onAdClicked() {
+            super.onAdClicked();
+            Log.e(TAG, "onAdClicked: Splash" );
+        }
     };
 
     private void loadSplash() {
@@ -140,7 +146,20 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        Log.e(TAG, "Splash onPause: " );
         AperoAd.getInstance().onCheckShowSplashWhenFail(this, adCallback, 1000);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e(TAG, "Splash onPause: " );
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.e(TAG, "Splash onStop: " );
     }
 
     @Override

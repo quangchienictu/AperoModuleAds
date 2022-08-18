@@ -33,16 +33,16 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.ads.control.R;
+import com.ads.control.ads.nativeAds.AdmobRecyclerAdapter;
 import com.ads.control.ads.nativeAds.AperoAdPlacer;
 import com.ads.control.ads.nativeAds.AperoAdPlacerSettings;
-import com.ads.control.ads.nativeAds.AdmobRecyclerAdapter;
-import com.ads.control.util.AdjustApero;
 import com.ads.control.billing.AppPurchase;
-import com.ads.control.R;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.AdmodHelper;
 import com.ads.control.funtion.RewardCallback;
+import com.ads.control.util.AdjustApero;
 import com.ads.control.util.AppUtil;
 import com.ads.control.util.FirebaseAnalyticsUtil;
 import com.applovin.mediation.AppLovinExtras;
@@ -163,7 +163,6 @@ public class Admob {
             }
         }
         MobileAds.initialize(context, initializationStatus -> {
-            Log.i(TAG, "init success ");
         });
         MobileAds.setRequestConfiguration(new RequestConfiguration.Builder().setTestDeviceIds(testDeviceList).build());
 
@@ -552,7 +551,7 @@ public class Admob {
                         }, 1500);
                     }
                     if (activity != null && mInterstitialSplash != null) {
-                        Log.i(TAG, "start show InterstitialAd " + activity.getLifecycle().getCurrentState().name() + "/" + ProcessLifecycleOwner.get().getLifecycle().getCurrentState().name());
+                        Log.i(TAG, "start show InterstitialAd " + activity.getLifecycle().getCurrentState().name() +"/"+ProcessLifecycleOwner.get().getLifecycle().getCurrentState().name());
                         mInterstitialSplash.show(activity);
                         isShowLoadingSplash = false;
                     } else if (adListener != null) {
@@ -692,7 +691,6 @@ public class Admob {
 
                         //tracking adjust
                         interstitialAd.setOnPaidEventListener(adValue -> {
-
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                             AdjustApero.pushTrackEventAdmob(adValue);
                             FirebaseAnalyticsUtil.logPaidAdImpression(context,
@@ -814,6 +812,9 @@ public class Admob {
             public void onAdClicked() {
                 super.onAdClicked();
                 FirebaseAnalyticsUtil.logClickAdsEvent(context, mInterstitialAd.getAdUnitId());
+                if (callback != null) {
+                    callback.onAdClicked();
+                }
             }
         });
 
@@ -1755,6 +1756,9 @@ public class Admob {
                 public void onAdClicked() {
                     super.onAdClicked();
                     FirebaseAnalyticsUtil.logClickAdsEvent(context, rewardedAd.getAdUnitId());
+                    if (adCallback != null) {
+                        adCallback.onAdClicked();
+                    }
                 }
             });
             rewardedAd.show(context, new OnUserEarnedRewardListener() {

@@ -7,15 +7,16 @@ Import Module
 	implementation 'com.github.AperoVN:AperoModuleAds:4.0.0'
 ~~~	 
 # Summary
-* [Setup Ads](#example-admob)
+* [Setup AperoAd](#setup_aperoad)
 	* [Setup id ads](#set_up_ads)
+	* [Config ads](#config_ads)
 	* [Ads Formats](#ads_formats)
-	* [Config Ads]
+
 * [Billing App](#billing_app)
 * [Ads rule](#ads_rule)
 
-# <a id="example-admob"></a>Setup Admob
-## <a id="set_up_ads"></a>Setup id ads
+# <a id="setup_aperoad"></a>Setup AperoAd
+## <a id="set_up_ads"></a>Setup id ads for project
 * Config variant test and release in gradle
 * test: using id admob test while dev
 * release: using exactly id admob,  build release (build file .aab)
@@ -25,11 +26,13 @@ Import Module
               manifestPlaceholders = [ ad_app_id:"AD_APP_ID_TEST" ]
               buildConfigField "String", "ads_inter_turn_on", "\"AD_ID_INTERSTIAL_TEST\""
               buildConfigField "String", "ads_inter_turn_off", "\"AD_ID_INTERSTIAL_TEST\""
+	      buildConfigField "Boolean", "build_debug", "true"
            }
        release {
                manifestPlaceholders = [ ad_app_id:"AD_APP_ID" ]
                buildConfigField "String", "ads_inter_splash", "\"AD_ID_INTERSTIAL\""
                buildConfigField "String", "ads_inter_turn_on", "\"AD_ID_INTERSTIAL\""
+	       buildConfigField "Boolean", "build_debug", "false"
            }
       }
 ~~~
@@ -39,80 +42,91 @@ AndroidManiafest.xml
   	android:name="com.google.android.gms.ads.APPLICATION_ID"
   	android:value="@string/admob_app_id" />
 ~~~
-## <a id="init_ads"></a>Init Ads
+## <a id="config_ads"></a>Config ads
 Create class Application
 ~~~
-class App : AdsMultiDexApplication(){}
+class App : AdsMultiDexApplication(){
+    @Override
+    public void onCreate() {
+        super.onCreate();
+	...
+	aperoAdConfig.setMediationProvider(AperoAdConfig.PROVIDER_ADMOB);
+        aperoAdConfig.setVariant(BuildConfig.build_debug);
+        aperoAdConfig.enableAdjust(ADJUST_TOKEN,EVENT_PURCHASE_ADJUST);
+        aperoAdConfig.setIdAdResume(AppOpenManager.AD_UNIT_ID_TEST);
+        listTestDevice.add(ID_TEST_DEVICE);
+        aperoAdConfig.setListDeviceTest(listTestDevice);
+	AperoAd.getInstance().init(this, aperoAdConfig, false);
+	}
+}
 ~~~
 AndroidManiafest.xml
 ~~~
 <application
 android:name=".App"
-................
+...
 >
 ~~~
-Setup mediation
-~~~
-override fun onCreate() {
-    super.onCreate()
-    Admod.getInstance().setFan(false)
-    Admod.getInstance().setAppLovin(false)
-    Admod.getInstance().setColony(false)
-}
-~~~
+
 ## <a id="ads_formats"></a>Ads formats
 ### Ad Splash Interstitial
 SplashActivity
 ~~~ 
-  var adCallback: AdCallback = object : AdCallback() {
-	override fun onAdFailedToLoad(i: LoadAdError?) {
-	   startMain()
-	}
-	override fun onAdFailedToShow(adError: AdError?) {
-	   startMain()
-	}
-	override fun onAdClosed() {
-	   super.onAdClosed()
-	   startMain()
-	}
-  }
+    AperoAdCallback adCallback = new AperoAdCallback() {
+        @Override
+        public void onAdFailedToLoad(@Nullable ApAdError i) {
+            super.onAdFailedToLoad(i);
+            startMain();
+        }
+
+        @Override
+        public void onAdLoaded() {
+            super.onAdLoaded();
+        }
+
+        @Override
+        public void onAdClosed() {
+            super.onAdClosed();
+            startMain();
+
+        }
+    };
 ~~~
 ~~~
-  Admod.getInstance()
-      .loadSplashInterstitalAds(
-  	this,
-  	BuildConfig.ad_interstitial_splash,
-  	timeout,
-  	timeDelay,
-  	adCallback
-  )
+        AperoAd.getInstance().setInitCallback(new AperoInitCallback() {
+            @Override
+            public void initAdSuccess() {
+                AperoAd.getInstance().loadSplashInterstitialAds(SplashActivity.this, idAdSplash, TIME_OUT, TIME_DELAY_SHOW_AD, true, adCallback);
+            }
+        });
 ~~~
 ### Interstitial
 Load ad interstital before show
 ~~~
   private fun loadInterCreate() {
-  	Admod.getInstance().getInterstitalAds(
-  		context,
-  		ID_AD_INTERSTITAL,
-  		object : AdCallback() {
-  			override fun onInterstitialLoad(interstitialAd: InterstitialAd) {
-  				this.createInterstitial = interstitialAd
-  		}
-  	})
+	ApInterstitialAd mInterstitialAd = AperoAd.getInstance().getInterstitialAds(this, idInter);
   }
 ~~~
+Show and auto release ad interstitial
 ~~~
-  Admod.getInstance()
-  	.forceShowInterstitial(
-  		context,
-  		App.getInstance().storageCommon!!.createInterstitial,
-  		object : AdCallback() {
-  			override fun onAdClosed() {
-  				startActivity(intent)
-  				//reloead ad interstitital
-  				loadInterCreate()
-  		}
-  })
+         if (mInterstitialAd.isReady()) {
+                AperoAd.getInstance().forceShowInterstitial(this, mInterstitialAd, new AperoAdCallback() {
+                    @Override
+                    public void onAdClosed() {
+                        Log.i(TAG, "onAdClosed: start content and finish main");
+                        startActivity(new Intent(MainActivity.this, MaxSimpleListActivity.class));
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@Nullable ApAdError adError) {
+                        super.onAdFailedToShow(adError);
+                        Log.i(TAG, "onAdFailedToShow:" + adError.getMessage());
+                        startActivity(new Intent(MainActivity.this, MaxSimpleListActivity.class));
+                    }
+                }, true);
+            } else {
+                loadAdInterstitial();
+            }
 ~~~
 ### Ad Banner
 include layout banner
@@ -128,26 +142,23 @@ activity_main.xml
 ~~~
 load ad banner
 ~~~
-  Admod.getInstance().loadBanner(this, ID_AD_BANNER)
+  AperoAd.getInstance().loadBanner(this, idBanner);
 ~~~
 
 ### Ad Native
 Load ad native before show
 ~~~
-  Admod.getInstance()
-  	.loadNativeAd(context, ID_AD_NATIVE, object : AdCallback() {
-  		override fun onUnifiedNativeAdLoaded(unifiedNativeAd: NativeAd) {
-  			this.unifiedNativeAd = unifiedNativeAd
-  		}
-  })
+        AperoAd.getInstance().loadNativeAdResultCallback(this,ID_NATIVE_AD, com.ads.control.R.layout.custom_native_max_small,new AperoAdCallback(){
+            @Override
+            public void onNativeAdLoaded(@NonNull ApNativeAd nativeAd) {
+                super.onNativeAdLoaded(nativeAd);
+               //save or show native 
+            }
+        });
 ~~~
 show ad native
 ~~~
-  val adView = LayoutInflater.from(context)
-  	.inflate(R.layout.custom_native_home, null) as NativeAdView
-  Admod.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, adView)
-  frAds.removeAllViews()
-  frAds.addView(adView)
+	AperoAd.getInstance().populateNativeAdView(MainApplovinActivity.this,nativeAd,flParentNative,shimmerFrameLayout);
 ~~~
 auto load and show native contains loading
 
@@ -157,26 +168,29 @@ activity_main.xml
 ~~~
 MainActivity
 ~~~
-  Admod.getInstance().loadNative(activity,ID_AD_NATIVE)
+  AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom);
 ~~~
-
+Load Ad native for recyclerView
+~~~~
+	// ad native repeating interval
+	AperoAdAdapter     adAdapter = AperoAd.getInstance().getNativeRepeatAdapter(this, idNative, layoutCustomNative, com.ads.control.R.layout.layout_native_medium,
+                originalAdapter, listener, 4);
+	
+	// ad native fixed in position
+    	AperoAdAdapter   adAdapter = AperoAd.getInstance().getNativeFixedPositionAdapter(this, idNative, layoutCustomNative, com.ads.control.R.layout.layout_native_medium,
+                originalAdapter, listener, 4);
+	
+        recyclerView.setAdapter(adAdapter.getAdapter());
+        adAdapter.loadAds();
+~~~~
 ### Ad Reward
-Init and show reward
+Get and show reward
 ~~~
-  Admod.getInstance().initRewardAds(this,ID_AD_REWARD);
+  ApRewardAd rewardAd = AperoAd.getInstance().getRewardAd(this, idAdReward);
 
-Admod.getInstance().showRewardAds(this, new RewardCallback() {
-	@Override
-	public void onUserEarnedReward(RewardItem var1) {
-
-                }
-        @Override
-        public void onRewardedAdClosed() {
-                }
-        @Override
-        public void onRewardedAdFailedToShow(int codeError) {
-
-        }
+   if (rewardAd != null && rewardAd.isReady()) {
+                AperoAd.getInstance().forceShowRewardAd(this, rewardAd, new AperoAdCallback());
+            }
 });
 ~~~
 ### Ad resume
@@ -185,120 +199,14 @@ App
   override fun onCreate() {
   	super.onCreate()
   	AppOpenManager.getInstance().enableAppResume()
+	aperoAdConfig.setIdAdResume(AppOpenManager.AD_UNIT_ID_TEST);
+	...
   }
 	
-  override fun enableAdsResume(): Boolean = true
-  override fun getOpenAppAdId(): String {
-  	return ID_AD_RESUME
-  }
-~~~
-# <a id="example-max"></a>Setup Max Mediation
-AndroidManiafest.xml
-~~~
-        <meta-data
-            android:name="applovin.sdk.key"
-            android:value="@string/sdk_key_applovin" />
-~~~
-### Init and load Ad Splash Interstitial
-~~~ 
-AppLovin.getInstance().init(this, object : AppLovinCallback() {
-                override fun initAppLovinSuccess() {
-                    super.initAppLovinSuccess()
-                    AppLovin.getInstance().loadSplashInterstitialAds(
-                        this@SplashActivity,
-                        idAdSplash,
-                        timeout,
-                        timeDelayShowSplash,
-                        true,
-                        appLovinCallbackWhenLoad
-                    )
-                }
-            })
-~~~
-### Interstitial
-Load ad interstital before show
-~~~
-	//load interstitial	
-	adInterstital = AppLovin.getInstance()
-                        .getInterstitialAds(this, BuildConfig.ad_interstitial_view_file)
-	
-	// show interstitial and reload interstitial
-	   AppLovin.getInstance().forceShowInterstitial(
-                        this,
-                        adInterstital,
-                        new AdCallback() {
-                            @Override
-                            public void onAdClosed() {
-                                // next action here
-                            }
 
-                            @Override
-                            public void onAdClicked() {
-                                super.onAdClicked();
-                            }
-                        },true);
 ~~~
-### Ad Banner
-include layout banner
-activity_main.xml
-~~~
-  <include
-  android:id="@+id/include"
-  layout="@layout/layout_banner_control"
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:layout_alignParentBottom="true"
-  app:layout_constraintBottom_toBottomOf="parent" />
-~~~
-load ad banner
-~~~
- AppLovin.getInstance().loadBanner(this,ID_AD_BANNER)
-~~~
-### Ad Native
-Load ad native before show
-~~~
- AppLovin.getInstance().loadNativeAd(
-                        this,
-                        BuildConfig.native_language,
-                        R.layout.layout_custom_native_max,
-                        object :
-                            AppLovinCallback() {
-                            override fun onUnifiedNativeAdLoaded(unifiedNativeAd: MaxNativeAdView?) {
-                                super.onUnifiedNativeAdLoaded(unifiedNativeAd)
-                               
-                            }
 
-                            override fun onAdFailedToLoad(i: MaxError?) {
-                                super.onAdFailedToLoad(i)
-                               
-                            }
-                        })
-~~~
-Show ad native
-~~~
-	layoutAdNative.addView(unifiedNativeAd)
-~~~
-Native Ads for recycleView
-~~~
-// Fixed Position native in adapter
-adAdapter = AppLovin.getInstance().getNativeFixedPositionAdapter(this,getString(R.string.applovin_test_native),R.layout.layout_custom_native_max,
-                originalAdapter, listener,5);
-// Repeat Native in adapter
-adAdapter = AppLovin.getInstance().getNativeRepeatAdapter(this, getString(R.string.applovin_test_native), R.layout.max_native_custom_ad_small,
-                originalAdapter, listener,5);
-	
-recyclerView.setAdapter(adAdapter);
-adAdapter.loadAds();
 
-//remove adAdapter
-@Override
-public void onDestroy()
-    {
-        adAdapter.destroy();
-        super.onDestroy();
-    }
-~~~
-	
 # <a id="billing_app"></a>Billing app
 ## Init Billing
 Application
