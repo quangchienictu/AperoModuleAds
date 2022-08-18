@@ -25,7 +25,7 @@ import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.dialog.DialogExitApp1;
 import com.ads.control.dialog.InAppDialog;
 import com.ads.control.funtion.AdCallback;
-import com.ads.control.funtion.PurchaseListioner;
+import com.ads.control.funtion.PurchaseListener;
 import com.example.andmoduleads.R;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom);
 
-        AppPurchase.getInstance().setPurchaseListioner(new PurchaseListioner() {
+        AppPurchase.getInstance().setPurchaseListener(new PurchaseListener() {
             @Override
             public void onProductPurchased(String productId, String transactionDetails) {
                 Log.e("PurchaseListioner", "ProductPurchased:" + productId);

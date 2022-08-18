@@ -39,7 +39,7 @@ public class SplashActivity extends AppCompatActivity {
             idAdSplash = getString(R.string.applovin_test_inter);
         AppPurchase.getInstance().setBillingListener(new BillingListener() {
             @Override
-            public void onInitBillingListener(int code) {
+            public void onInitBillingFinished(int code) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

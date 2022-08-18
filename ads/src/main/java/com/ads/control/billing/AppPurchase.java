@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.ads.control.funtion.BillingListener;
-import com.ads.control.funtion.PurchaseListioner;
+import com.ads.control.funtion.PurchaseListener;
 import com.ads.control.util.AdjustApero;
 import com.ads.control.util.AppUtil;
 import com.android.billingclient.api.AcknowledgePurchaseParams;
@@ -54,15 +54,22 @@ public class AppPurchase {
     private String productId;
     private List<String> listSubcriptionId;
     private List<String> listINAPId;
-    private PurchaseListioner purchaseListioner;
+    private PurchaseListener purchaseListioner;
     private BillingListener billingListener;
-    private Boolean isInitBillingFinish = false;
     private BillingClient billingClient;
     private List<SkuDetails> skuListINAPFromStore;
     private List<SkuDetails> skuListSubsFromStore;
     final private Map<String, SkuDetails> skuDetailsINAPMap = new HashMap<>();
     final private Map<String, SkuDetails> skuDetailsSubsMap = new HashMap<>();
+    /**
+     * Is init billing finished with result OK
+     */
     private boolean isAvailable;
+
+    /**
+     * Is init billing finished
+     */
+    private Boolean isInitBillingFinish = false;
     private boolean isListGot;
     private boolean isConsumePurchase = false;
 
@@ -73,19 +80,19 @@ public class AppPurchase {
 
     private boolean isPurchase = false;//state purchase on app
 
-    public void setPurchaseListioner(PurchaseListioner purchaseListioner) {
-        this.purchaseListioner = purchaseListioner;
+    public void setPurchaseListener(PurchaseListener purchaseListener) {
+        this.purchaseListioner = purchaseListener;
     }
 
     /**
-     * listener init billing app
-     *
+     * Listener init billing app
+     * When init available auto call onInitBillingFinish with resultCode = 0
      * @param billingListener
      */
     public void setBillingListener(BillingListener billingListener) {
         this.billingListener = billingListener;
         if (isAvailable) {
-            billingListener.onInitBillingListener(0);
+            billingListener.onInitBillingFinished(0);
             isInitBillingFinish = true;
         }
     }
@@ -108,15 +115,15 @@ public class AppPurchase {
     }
 
     /**
-     * listener init billing app with timeout
-     *
+     * Listener init billing app with timeout
+     * When init available auto call onInitBillingFinish with resultCode = 0
      * @param billingListener
      * @param timeout
      */
     public void setBillingListener(BillingListener billingListener, int timeout) {
         this.billingListener = billingListener;
         if (isAvailable) {
-            billingListener.onInitBillingListener(0);
+            billingListener.onInitBillingFinished(0);
             isInitBillingFinish = true;
             return;
         }
@@ -126,7 +133,7 @@ public class AppPurchase {
                 if (!isInitBillingFinish) {
                     Log.e(TAG, "setBillingListener: timeout ");
                     isInitBillingFinish = true;
-                    billingListener.onInitBillingListener(BillingClient.BillingResponseCode.ERROR);
+                    billingListener.onInitBillingFinished(BillingClient.BillingResponseCode.ERROR);
                 }
             }
         }, timeout);
@@ -229,7 +236,7 @@ public class AppPurchase {
         this.productId = productId;
     }
 
-    public void addSubcriptionId(String id) {
+    public void addSubscriptionId(String id) {
         if (listSubcriptionId == null)
             listSubcriptionId = new ArrayList<>();
         listSubcriptionId.add(id);
@@ -312,7 +319,7 @@ public class AppPurchase {
                                     isPurchase = true;
                                     if (!verified) {
                                         if (billingListener != null && isCallback)
-                                            billingListener.onInitBillingListener(billingResult.getResponseCode());
+                                            billingListener.onInitBillingFinished(billingResult.getResponseCode());
                                         verified = true;
                                         verifiedINAP = true;
                                         return;
@@ -323,7 +330,7 @@ public class AppPurchase {
                     }
                     if (verifiedSUBS && !verified) {
                         // chưa mua subs và IAP
-                        billingListener.onInitBillingListener(billingResult.getResponseCode());
+                        billingListener.onInitBillingFinished(billingResult.getResponseCode());
                     }
                     verifiedINAP = true;
                 }
@@ -343,7 +350,7 @@ public class AppPurchase {
                                     isPurchase = true;
                                     if (!verified) {
                                         if (billingListener != null && isCallback)
-                                            billingListener.onInitBillingListener(billingResult.getResponseCode());
+                                            billingListener.onInitBillingFinished(billingResult.getResponseCode());
                                         verified = true;
                                         verifiedINAP = true;
                                         return;
@@ -355,7 +362,7 @@ public class AppPurchase {
                     if (verifiedINAP && !verified) {
                         // chưa mua subs và IAP
                         if (billingListener != null && isCallback) {
-                            billingListener.onInitBillingListener(billingResult.getResponseCode());
+                            billingListener.onInitBillingFinished(billingResult.getResponseCode());
                         }
                     }
                     verifiedSUBS = true;
@@ -417,7 +424,7 @@ public class AppPurchase {
             return "";
         }
         if (AppUtil.VARIANT_DEV) {
-            // Dùng ID Purchase test khi debug
+            // Auto using id purchase test in variant dev
             productId = PRODUCT_ID_TEST;
         }
 
