@@ -31,8 +31,6 @@ public class MyApplication extends AdsMultiDexApplication {
 
 
 
-
-
     @Override
     public void onCreate() {
         super.onCreate();

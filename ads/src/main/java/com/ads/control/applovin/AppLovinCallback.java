@@ -16,10 +16,6 @@ public class AppLovinCallback {
     public void onAdClosed() {
     }
 
-    // event AD closed when setOpenActivityAfterShowInterAds = true
-    public void onAdClosedByUser() {
-    }
-
 
     public void onAdFailedToLoad(@Nullable MaxError i) {
     }

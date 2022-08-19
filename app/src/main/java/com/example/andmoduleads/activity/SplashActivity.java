@@ -68,8 +68,7 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         public void onAdFailedToLoad(@Nullable ApAdError i) {
             super.onAdFailedToLoad(i);
-
-            startMain();
+            Log.d(TAG, "onAdLoaded");
         }
 
         @Override
@@ -79,18 +78,18 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onAdClosed() {
-            super.onAdClosed();
-            Log.d(TAG, "onAdClosed");
+        public void onNextAction() {
+            super.onNextAction();
+            Log.d(TAG, "onNextAction");
             startMain();
-
         }
 
         @Override
-        public void onAdClicked() {
-            super.onAdClicked();
-            Log.e(TAG, "onAdClicked: Splash" );
+        public void onAdClosed() {
+            super.onAdClosed();
+            Log.d(TAG, "onAdClosed");
         }
+
     };
 
     private void loadSplash() {

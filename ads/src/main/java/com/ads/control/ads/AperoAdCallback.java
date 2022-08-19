@@ -12,12 +12,9 @@ import com.ads.control.ads.wrapper.ApRewardItem;
 public class AperoAdCallback {
 
 
+    public void onNextAction(){}
 
     public void onAdClosed() {
-    }
-
-    // event AD closed when setOpenActivityAfterShowInterAds = true (only admob)
-    public void onAdClosedByUser() {
     }
 
 

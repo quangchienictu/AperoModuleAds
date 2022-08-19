@@ -39,7 +39,6 @@ import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.ads.wrapper.ApNativeAd;
 import com.ads.control.ads.wrapper.ApRewardAd;
 import com.ads.control.ads.wrapper.ApRewardItem;
-import com.ads.control.ads.wrapper.StatusAd;
 import com.ads.control.applovin.AppLovin;
 import com.ads.control.applovin.AppLovinCallback;
 import com.ads.control.funtion.AdCallback;
@@ -93,11 +92,11 @@ public class AperoAd {
     /**
      * Set count click to show ads interstitial when call showInterstitialAdByTimes()
      *
-     * @param countClickToShowAds  Default value = 3
-     * @param currentClicked   Default value = 0
+     * @param countClickToShowAds Default value = 3
+     * @param currentClicked      Default value = 0
      */
     public void setCountClickToShowAds(int countClickToShowAds, int currentClicked) {
-        Admob.getInstance().setNumToShowAds(countClickToShowAds,currentClicked);
+        Admob.getInstance().setNumToShowAds(countClickToShowAds, currentClicked);
         AppLovin.getInstance().setNumToShowAds(countClickToShowAds, currentClicked);
     }
 
@@ -314,11 +313,17 @@ public class AperoAd {
     public void loadSplashInterstitialAds(final Context context, String id, long timeOut, long timeDelay, boolean showSplashIfReady, AperoAdCallback adListener) {
         switch (adConfig.getMediationProvider()) {
             case AperoAdConfig.PROVIDER_ADMOB:
-                Admob.getInstance().loadSplashInterstitalAds(context, id, timeOut, timeDelay, showSplashIfReady, new AdCallback() {
+                Admob.getInstance().loadSplashInterstitialAds(context, id, timeOut, timeDelay, showSplashIfReady, new AdCallback() {
                     @Override
                     public void onAdClosed() {
                         super.onAdClosed();
                         adListener.onAdClosed();
+                    }
+
+                    @Override
+                    public void onNextAction() {
+                        super.onNextAction();
+                        adListener.onNextAction();
                     }
 
                     @Override
@@ -339,11 +344,6 @@ public class AperoAd {
                         adListener.onAdSplashReady();
                     }
 
-                    @Override
-                    public void onAdClosedByUser() {
-                        super.onAdClosedByUser();
-                        adListener.onAdClosedByUser();
-                    }
 
                     @Override
                     public void onAdClicked() {
@@ -360,6 +360,7 @@ public class AperoAd {
                     public void onAdClosed() {
                         super.onAdClosed();
                         adListener.onAdClosed();
+                        adListener.onNextAction();
                     }
 
                     @Override
@@ -372,12 +373,6 @@ public class AperoAd {
                     public void onAdSplashReady() {
                         super.onAdSplashReady();
                         adListener.onAdSplashReady();
-                    }
-
-                    @Override
-                    public void onAdClosedByUser() {
-                        super.onAdClosedByUser();
-                        adListener.onAdClosedByUser();
                     }
 
                     @Override
@@ -409,10 +404,12 @@ public class AperoAd {
                             }
 
                             @Override
-                            public void onAdClosedByUser() {
-                                super.onAdClosedByUser();
-                                adListener.onAdClosedByUser();
+                            public void onNextAction() {
+                                super.onNextAction();
+                                adListener.onNextAction();
                             }
+
+
                         }
                 );
                 break;
@@ -428,13 +425,9 @@ public class AperoAd {
                     public void onAdClosed() {
                         super.onAdClosed();
                         adListener.onAdClosed();
+                        adListener.onNextAction();
                     }
 
-                    @Override
-                    public void onAdClosedByUser() {
-                        super.onAdClosedByUser();
-                        adListener.onAdClosedByUser();
-                    }
                 });
 
         }
@@ -456,14 +449,9 @@ public class AperoAd {
                     @Override
                     public void onAdClosed() {
                         super.onAdClosed();
-                        callback.onAdClosed();
+                        callback.onNextAction();
                     }
 
-                    @Override
-                    public void onAdClosedByUser() {
-                        super.onAdClosedByUser();
-                        callback.onAdClosedByUser();
-                    }
 
                     @Override
                     public void onAdLoaded() {
@@ -489,14 +477,9 @@ public class AperoAd {
                     @Override
                     public void onAdClosed() {
                         super.onAdClosed();
-                        callback.onAdClosed();
+                        callback.onNextAction();
                     }
 
-                    @Override
-                    public void onAdClosedByUser() {
-                        super.onAdClosedByUser();
-                        callback.onAdClosedByUser();
-                    }
 
                     @Override
                     public void onAdLoaded() {
@@ -686,11 +669,11 @@ public class AperoAd {
      * @param callback
      * @param shouldReloadAds auto reload ad when ad close
      */
-    public void forceShowInterstitial(Context context, ApInterstitialAd mInterstitialAd,
-                                      final AperoAdCallback callback, boolean shouldReloadAds) {
-        if (mInterstitialAd.isNotReady()) {
+    public void forceShowInterstitial(@NonNull Context context, ApInterstitialAd mInterstitialAd,
+                                      @NonNull final AperoAdCallback callback, boolean shouldReloadAds) {
+        if (mInterstitialAd == null || mInterstitialAd.isNotReady()) {
             Log.e(TAG, "forceShowInterstitial: ApInterstitialAd is not ready");
-            callback.onAdFailedToShow(new ApAdError("ApInterstitialAd is not ready"));
+            callback.onNextAction();
             return;
         }
         switch (adConfig.getMediationProvider()) {
@@ -728,6 +711,13 @@ public class AperoAd {
                         } else {
                             mInterstitialAd.setInterstitialAd(null);
                         }
+                    }
+
+                    @Override
+                    public void onNextAction() {
+                        super.onNextAction();
+                        Log.d(TAG, "onNextAction: ");
+                        callback.onNextAction();
                     }
 
                     @Override
@@ -779,6 +769,7 @@ public class AperoAd {
                     public void onAdClosed() {
                         super.onAdClosed();
                         callback.onAdClosed();
+                        callback.onNextAction();
                         if (shouldReloadAds)
                             mInterstitialAd.getMaxInterstitialAd().loadAd();
 
@@ -855,15 +846,17 @@ public class AperoAd {
                                     callback.onAdFailedToShow(new ApAdError(adError));
                                 }
 
-                                @Override
-                                public void onAdClosedByUser() {
-                                    super.onAdClosedByUser();
-                                    callback.onAdClosedByUser();
-                                }
                             });
                         } else {
                             mInterstitialAd.setInterstitialAd(null);
                         }
+                    }
+
+                    @Override
+                    public void onNextAction() {
+                        super.onNextAction();
+                        Log.d(TAG, "onNextAction: ");
+                        callback.onNextAction();
                     }
 
                     @Override
@@ -893,11 +886,6 @@ public class AperoAd {
                                     callback.onAdFailedToShow(new ApAdError(adError));
                                 }
 
-                                @Override
-                                public void onAdClosedByUser() {
-                                    super.onAdClosedByUser();
-                                    callback.onAdClosedByUser();
-                                }
                             });
                         } else {
                             mInterstitialAd.setInterstitialAd(null);
@@ -911,12 +899,6 @@ public class AperoAd {
                             callback.onAdClicked();
                         }
                     }
-
-                    @Override
-                    public void onAdClosedByUser() {
-                        super.onAdClosedByUser();
-                        callback.onAdClosedByUser();
-                    }
                 };
                 Admob.getInstance().showInterstitialAdByTimes(context, mInterstitialAd.getInterstitialAd(), adCallback);
                 break;
@@ -926,6 +908,7 @@ public class AperoAd {
                     public void onAdClosed() {
                         super.onAdClosed();
                         callback.onAdClosed();
+                        callback.onNextAction();
                         if (shouldReloadAds)
                             mInterstitialAd.getMaxInterstitialAd().loadAd();
 
@@ -979,6 +962,7 @@ public class AperoAd {
                     @Override
                     public void onAdFailedToLoad(@Nullable LoadAdError i) {
                         super.onAdFailedToLoad(i);
+                        Log.e(TAG, "onAdFailedToLoad : NativeAd" );
                     }
                 });
                 break;
@@ -993,11 +977,13 @@ public class AperoAd {
                     @Override
                     public void onAdFailedToLoad(@Nullable MaxError i) {
                         super.onAdFailedToLoad(i);
+                        Log.e(TAG, "onAdFailedToLoad : NativeAd" );
                     }
                 });
                 break;
         }
     }
+
     /**
      * Load native ad and auto populate ad to adPlaceHolder and hide containerShimmerLoading
      *
@@ -1022,6 +1008,7 @@ public class AperoAd {
                     @Override
                     public void onAdFailedToLoad(@Nullable LoadAdError i) {
                         super.onAdFailedToLoad(i);
+                        Log.e(TAG, "onAdFailedToLoad : NativeAd" );
                     }
                 });
                 break;
@@ -1036,6 +1023,7 @@ public class AperoAd {
                     @Override
                     public void onAdFailedToLoad(@Nullable MaxError i) {
                         super.onAdFailedToLoad(i);
+                        Log.e(TAG, "onAdFailedToLoad : NativeAd" );
                     }
                 });
                 break;
@@ -1065,6 +1053,12 @@ public class AperoAd {
                     public void onAdFailedToLoad(@Nullable LoadAdError i) {
                         super.onAdFailedToLoad(i);
                         callback.onAdFailedToLoad(new ApAdError(i));
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@Nullable AdError adError) {
+                        super.onAdFailedToShow(adError);
+                        callback.onAdFailedToShow(new ApAdError(adError));
                     }
 
                     @Override
@@ -1188,7 +1182,7 @@ public class AperoAd {
             callback) {
         if (!apRewardAd.isReady()) {
             Log.e(TAG, "forceShowRewardAd fail: reward ad not ready");
-            callback.onAdClosed();
+            callback.onNextAction();
             return;
         }
         switch (adConfig.getMediationProvider()) {
@@ -1203,7 +1197,7 @@ public class AperoAd {
                     @Override
                     public void onRewardedAdClosed() {
                         apRewardAd.clean();
-                        callback.onAdClosed();
+                        callback.onNextAction();
                     }
 
                     @Override
@@ -1232,7 +1226,7 @@ public class AperoAd {
                     public void onAdClosed() {
                         super.onAdClosed();
                         apRewardAd.clean();
-                        callback.onAdClosed();
+                        callback.onNextAction();
                     }
 
                     @Override

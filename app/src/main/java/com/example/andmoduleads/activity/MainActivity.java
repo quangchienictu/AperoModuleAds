@@ -101,8 +101,8 @@ public class MainActivity extends AppCompatActivity {
             if (mInterstitialAd.isReady()) {
                 AperoAd.getInstance().showInterstitialAdByTimes(this, mInterstitialAd, new AperoAdCallback() {
                     @Override
-                    public void onAdClosed() {
-                        Log.i(TAG, "onAdClosed: start content and finish main");
+                    public void onNextAction() {
+                        Log.i(TAG, "onNextAction: start content and finish main");
                         startActivity(new Intent(MainActivity.this, ContentActivity.class));
                     }
 
@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onAdFailedToShow(@Nullable ApAdError adError) {
                         super.onAdFailedToShow(adError);
                         Log.i(TAG, "onAdFailedToShow:" + adError.getMessage());
-                        startActivity(new Intent(MainActivity.this, ContentActivity.class));
                     }
                 }, true);
             } else {
@@ -123,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             if (mInterstitialAd.isReady()) {
                 AperoAd.getInstance().forceShowInterstitial(this, mInterstitialAd, new AperoAdCallback() {
                     @Override
-                    public void onAdClosed() {
+                    public void onNextAction() {
                         Log.i(TAG, "onAdClosed: start content and finish main");
                         startActivity(new Intent(MainActivity.this, SimpleListActivity.class));
                     }
@@ -132,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onAdFailedToShow(@Nullable ApAdError adError) {
                         super.onAdFailedToShow(adError);
                         Log.i(TAG, "onAdFailedToShow:" + adError.getMessage());
-                        startActivity(new Intent(MainActivity.this, SimpleListActivity.class));
                     }
                 }, false);
             } else {

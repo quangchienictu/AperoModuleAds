@@ -12,12 +12,9 @@ import com.google.android.gms.ads.rewarded.RewardedAd;
 
 public class AdCallback {
 
+    public void onNextAction(){}
 
     public void onAdClosed() {
-    }
-
-    // event AD closed when setOpenActivityAfterShowInterAds = true
-    public void onAdClosedByUser() {
     }
 
 
