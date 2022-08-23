@@ -330,6 +330,14 @@ public class AperoAd {
                     public void onAdFailedToLoad(@Nullable LoadAdError i) {
                         super.onAdFailedToLoad(i);
                         adListener.onAdFailedToLoad(new ApAdError(i));
+                        adListener.onNextAction();
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@Nullable AdError adError) {
+                        super.onAdFailedToShow(adError);
+                        adListener.onAdFailedToShow(new ApAdError(adError));
+                        adListener.onNextAction();
                     }
 
                     @Override
@@ -360,6 +368,20 @@ public class AperoAd {
                     public void onAdClosed() {
                         super.onAdClosed();
                         adListener.onAdClosed();
+                        adListener.onNextAction();
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@Nullable MaxError i) {
+                        super.onAdFailedToLoad(i);
+                        adListener.onAdFailedToLoad(new ApAdError(i));
+                        adListener.onNextAction();
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@Nullable MaxError adError) {
+                        super.onAdFailedToShow(adError);
+                        adListener.onAdFailedToShow(new ApAdError(adError));
                         adListener.onNextAction();
                     }
 
