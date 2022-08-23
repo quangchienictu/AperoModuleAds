@@ -504,7 +504,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                 e.printStackTrace();
             }
             final Dialog finalDialog = dialog;
-            new Handler().postDelayed(() -> {
+//            new Handler().postDelayed(() -> {
                 if (appResumeAd != null) {
                     appResumeAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                         @Override
@@ -569,7 +569,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                     });
                     appResumeAd.show(currentActivity);
                 }
-            }, 1000);
+//            }, 1000);
         }
     }
 
