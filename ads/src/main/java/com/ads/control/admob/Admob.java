@@ -456,6 +456,7 @@ public class Admob {
                 if (isTimeout)
                     return;
                 if (adListener != null) {
+                    adListener.onNextAction();
                     if (handlerTimeout != null && rdTimeout != null) {
                         handlerTimeout.removeCallbacks(rdTimeout);
                     }
