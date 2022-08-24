@@ -330,14 +330,14 @@ public class AperoAd {
                     public void onAdFailedToLoad(@Nullable LoadAdError i) {
                         super.onAdFailedToLoad(i);
                         adListener.onAdFailedToLoad(new ApAdError(i));
-                        adListener.onNextAction();
+
                     }
 
                     @Override
                     public void onAdFailedToShow(@Nullable AdError adError) {
                         super.onAdFailedToShow(adError);
                         adListener.onAdFailedToShow(new ApAdError(adError));
-                        adListener.onNextAction();
+
                     }
 
                     @Override
@@ -469,7 +469,7 @@ public class AperoAd {
             case AperoAdConfig.PROVIDER_ADMOB:
                 Admob.getInstance().onCheckShowSplashWhenFail(activity, new AdCallback() {
                     @Override
-                    public void onAdClosed() {
+                    public void onNextAction() {
                         super.onAdClosed();
                         callback.onNextAction();
                     }
