@@ -24,6 +24,7 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
         if (SharePreferenceUtils.getInstallTime(this) == 0) {
             SharePreferenceUtils.setInstallTime(this);
         }
+        AppUtil.currentTotalRevenue001Ad = SharePreferenceUtils.getCurrentTotalRevenue001Ad(this);
     }
 
 
