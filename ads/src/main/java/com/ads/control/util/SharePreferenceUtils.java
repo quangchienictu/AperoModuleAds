@@ -10,6 +10,8 @@ public class SharePreferenceUtils {
 
     private final static String KEY_CURRENT_TOTAL_REVENUE_AD = "KEY_CURRENT_TOTAL_REVENUE_AD";
 
+    private final static String KEY_CURRENT_TOTAL_REVENUE_001_AD = "KEY_CURRENT_TOTAL_REVENUE_001_AD";
+
     private final static String KEY_PUSH_EVENT_REVENUE_3_DAY = "KEY_PUSH_EVENT_REVENUE_3_DAY";
 
     private final static String KEY_PUSH_EVENT_REVENUE_7_DAY = "KEY_PUSH_EVENT_REVENUE_7_DAY";
@@ -34,6 +36,16 @@ public class SharePreferenceUtils {
         float currentTotalRevenue = pre.getFloat(KEY_CURRENT_TOTAL_REVENUE_AD, 0);
         currentTotalRevenue += revenue / 1000000.0;
         pre.edit().putFloat(KEY_CURRENT_TOTAL_REVENUE_AD, currentTotalRevenue).apply();
+    }
+
+    public static float getCurrentTotalRevenue001Ad(Context context) {
+        SharedPreferences pre = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return pre.getFloat(KEY_CURRENT_TOTAL_REVENUE_001_AD, 0);
+    }
+
+    public static void updateCurrentTotalRevenue001Ad(Context context, float revenue) {
+        SharedPreferences pre = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        pre.edit().putFloat(KEY_CURRENT_TOTAL_REVENUE_001_AD, revenue).apply();
     }
 
     public static boolean isPushRevenue3Day(Context context) {
