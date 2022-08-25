@@ -88,7 +88,7 @@ public class FirebaseAnalyticsUtil {
             AppUtil.currentTotalRevenue001Ad = 0;
             SharePreferenceUtils.updateCurrentTotalRevenue001Ad(context, 0);
             Bundle bundle = new Bundle();
-            bundle.putFloat("value", revenue);
+            bundle.putFloat("value", revenue / 1000000);
             FirebaseAnalytics.getInstance(context).logEvent("paid_ad_impression_value_001", bundle);
         }
     }
