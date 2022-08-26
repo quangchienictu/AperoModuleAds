@@ -72,6 +72,7 @@ public class AppPurchase {
     private boolean verified = false;
 
     private boolean isPurchase = false;//state purchase on app
+    private String idPurchased = "";//id purchased
 
     public void setPurchaseListioner(PurchaseListioner purchaseListioner) {
         this.purchaseListioner = purchaseListioner;
@@ -292,6 +293,10 @@ public class AppPurchase {
         return isPurchase;
     }
 
+    public String getIdPurchased(){
+        return  idPurchased;
+    }
+
     private boolean verifiedINAP = false;
     private boolean verifiedSUBS = false;
 
@@ -308,8 +313,9 @@ public class AppPurchase {
                         for (Purchase purchase : list) {
                             for (String id : listINAPId) {
                                 if (purchase.getSkus().contains(id)) {
-                                    Log.d(TAG, "verifyPurchased INAPP: true");
+                                    Log.d(TAG, "verifyPurchased INAPP: true - id:"+id);
                                     isPurchase = true;
+                                    idPurchased = id;
                                     if (!verified) {
                                         if (billingListener != null && isCallback)
                                             billingListener.onInitBillingListener(billingResult.getResponseCode());
@@ -339,8 +345,9 @@ public class AppPurchase {
                         for (Purchase purchase : list) {
                             for (String id : listSubcriptionId) {
                                 if (purchase.getSkus().contains(id)) {
-                                    Log.d(TAG, "verifyPurchased SUBS: true");
+                                    Log.d(TAG, "verifyPurchased SUBS: true - id:"+id);
                                     isPurchase = true;
+                                    idPurchased = id;
                                     if (!verified) {
                                         if (billingListener != null && isCallback)
                                             billingListener.onInitBillingListener(billingResult.getResponseCode());
@@ -614,6 +621,8 @@ public class AppPurchase {
 
         if (purchaseListioner != null)
             isPurchase = true;
+
+        idPurchased = idPurchaseCurrent;
         purchaseListioner.onProductPurchased(purchase.getOrderId(), purchase.getOriginalJson());
         if (isConsumePurchase) {
             ConsumeParams consumeParams =
