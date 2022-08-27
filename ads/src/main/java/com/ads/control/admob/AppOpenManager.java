@@ -517,14 +517,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             isShowingAd = false;
                             fetchAd(false);
 
-                            if (currentActivity != null && !currentActivity.isDestroyed() && dialog != null && dialog.isShowing()) {
-                                Log.d(TAG, "dismiss dialog loading ad open: ");
-                                try {
-                                    dialog.dismiss();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
+                            dismissDialogLoading();
                         }
 
                         @Override
