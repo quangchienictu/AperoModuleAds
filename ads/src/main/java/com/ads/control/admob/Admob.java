@@ -93,7 +93,7 @@ public class Admob {
     private Runnable rdTimeout;
     private PrepareLoadingAdsDialog dialog;
     private boolean isTimeout; // xử lý timeout show ads
-
+    private boolean disableAdResumeWhenClickAds = false;
     private boolean isShowLoadingSplash = false;  //kiểm tra trạng thái ad splash, ko cho load, show khi đang show loading ads splash
     private boolean isFan;
     private boolean isAdcolony;
@@ -148,6 +148,14 @@ public class Admob {
     public void setNumToShowAds(int numShowAds, int currentClicked) {
         this.numShowAds = numShowAds;
         this.currentClicked = currentClicked;
+    }
+
+    /**
+     * Disable ad resume when user click ads and back to app
+     * @param disableAdResumeWhenClickAds
+     */
+    public void setDisableAdResumeWhenClickAds(boolean disableAdResumeWhenClickAds) {
+        this.disableAdResumeWhenClickAds = disableAdResumeWhenClickAds;
     }
 
     /**
@@ -325,6 +333,7 @@ public class Admob {
                     }
                 }
             }
+
 
             @Override
             public void onAdFailedToLoad(LoadAdError i) {
@@ -543,6 +552,8 @@ public class Admob {
             public void onAdClicked() {
                 super.onAdClicked();
                 FirebaseAnalyticsUtil.logClickAdsEvent(context, mInterstitialSplash.getAdUnitId());
+                if (disableAdResumeWhenClickAds)
+                    AppOpenManager.getInstance().disableAdResumeByClickAction();
             }
         });
 
@@ -830,6 +841,8 @@ public class Admob {
             public void onAdClicked() {
                 super.onAdClicked();
                 FirebaseAnalyticsUtil.logClickAdsEvent(context, mInterstitialAd.getAdUnitId());
+                if (disableAdResumeWhenClickAds)
+                    AppOpenManager.getInstance().disableAdResumeByClickAction();
                 if (callback != null) {
                     callback.onAdClicked();
                 }
@@ -1072,6 +1085,8 @@ public class Admob {
                 public void onAdClicked() {
                     super.onAdClicked();
                     FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
+                    if (disableAdResumeWhenClickAds)
+                        AppOpenManager.getInstance().disableAdResumeByClickAction();
                 }
             });
 
@@ -1132,6 +1147,8 @@ public class Admob {
                 public void onAdClicked() {
                     super.onAdClicked();
                     FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
+                    if (disableAdResumeWhenClickAds)
+                        AppOpenManager.getInstance().disableAdResumeByClickAction();
                     if (callback != null) {
                         callback.onAdClicked();
                         Log.d(TAG, "onAdClicked");
@@ -1237,6 +1254,8 @@ public class Admob {
                     public void onAdClicked() {
                         super.onAdClicked();
                         FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
+                        if (disableAdResumeWhenClickAds)
+                            AppOpenManager.getInstance().disableAdResumeByClickAction();
                         if (callback != null) {
                             callback.onAdClicked();
                             Log.d(TAG, "onAdClicked");
@@ -1290,6 +1309,8 @@ public class Admob {
                     public void onAdClicked() {
                         super.onAdClicked();
                         FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
+                        if (disableAdResumeWhenClickAds)
+                            AppOpenManager.getInstance().disableAdResumeByClickAction();
                         if (callback != null) {
                             callback.onAdClicked();
                             Log.d(TAG, "onAdClicked");
@@ -1361,6 +1382,8 @@ public class Admob {
                     public void onAdClicked() {
                         super.onAdClicked();
                         FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
+                        if (disableAdResumeWhenClickAds)
+                            AppOpenManager.getInstance().disableAdResumeByClickAction();
                     }
                 })
                 .withNativeAdOptions(adOptions)
@@ -1429,6 +1452,8 @@ public class Admob {
                     public void onAdClicked() {
                         super.onAdClicked();
                         FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
+                        if (disableAdResumeWhenClickAds)
+                            AppOpenManager.getInstance().disableAdResumeByClickAction();
                         if (callback != null) {
                             callback.onAdClicked();
                             Log.d(TAG, "onAdClicked");
@@ -1709,6 +1734,8 @@ public class Admob {
                 public void onAdClicked() {
                     super.onAdClicked();
                     FirebaseAnalyticsUtil.logClickAdsEvent(context, rewardedAd.getAdUnitId());
+                    if (disableAdResumeWhenClickAds)
+                        AppOpenManager.getInstance().disableAdResumeByClickAction();
                 }
             });
             rewardedAd.show(context, new OnUserEarnedRewardListener() {
@@ -1772,6 +1799,8 @@ public class Admob {
                 public void onAdClicked() {
                     super.onAdClicked();
                     FirebaseAnalyticsUtil.logClickAdsEvent(context, rewardedAd.getAdUnitId());
+                    if (disableAdResumeWhenClickAds)
+                        AppOpenManager.getInstance().disableAdResumeByClickAction();
                     if (adCallback != null) {
                         adCallback.onAdClicked();
                     }

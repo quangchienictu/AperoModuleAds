@@ -52,13 +52,14 @@ public class MyApplication extends AdsMultiDexApplication {
         aperoAdConfig.setListDeviceTest(listTestDevice);
 
         AperoAd.getInstance().init(this, aperoAdConfig, false);
+        Admob.getInstance().setOpenActivityAfterShowInterAds(true);
+        Admob.getInstance().setDisableAdResumeWhenClickAds(true);
     }
 
     private void initBilling() {
         List<String> listINAPId = new ArrayList<>();
         listINAPId.add(MainActivity.PRODUCT_ID);
         List<String> listSubsId = new ArrayList<>();
-        Admob.getInstance().setOpenActivityAfterShowInterAds(true);
         AppPurchase.getInstance().initBilling(getApplication(),listINAPId,listSubsId);
 
     }
