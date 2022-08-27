@@ -330,12 +330,13 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     @Override
     public void onActivityStarted(Activity activity) {
         currentActivity = activity;
+        Log.d(TAG, "onActivityStarted: " + currentActivity);
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
         currentActivity = activity;
-        Log.d(TAG, "onActivityResumed: ");
+        Log.d(TAG, "onActivityResumed: " + currentActivity);
         if (splashActivity == null) {
             if (!activity.getClass().getName().equals(AdActivity.class.getName())) {
                 Log.d(TAG, "onActivityResumed 1: with " + activity.getClass().getName());
@@ -364,6 +365,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
     @Override
     public void onActivityDestroyed(Activity activity) {
         currentActivity = null;
+        Log.d(TAG, "onActivityDestroyed: null" );
     }
 
     public void showAdIfAvailable(final boolean isSplash) {
@@ -485,7 +487,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
         if (appResumeAd == null || currentActivity == null || AppPurchase.getInstance().isPurchased(currentActivity)) {
             return;
         }
-
         if (ProcessLifecycleOwner.get().getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.STARTED)) {
 
             try {
@@ -503,7 +504,6 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            final Dialog finalDialog = dialog;
 //            new Handler().postDelayed(() -> {
                 if (appResumeAd != null) {
                     appResumeAd.setFullScreenContentCallback(new FullScreenContentCallback() {
@@ -517,10 +517,10 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             isShowingAd = false;
                             fetchAd(false);
 
-                            if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null && finalDialog.isShowing()) {
+                            if (currentActivity != null && !currentActivity.isDestroyed() && dialog != null && dialog.isShowing()) {
                                 Log.d(TAG, "dismiss dialog loading ad open: ");
                                 try {
-                                    finalDialog.dismiss();
+                                    dialog.dismiss();
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -534,10 +534,10 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                 fullScreenContentCallback.onAdFailedToShowFullScreenContent(adError);
                             }
 
-                            if (currentActivity != null && !currentActivity.isDestroyed() && finalDialog != null && finalDialog.isShowing()) {
+                            if (currentActivity != null && !currentActivity.isDestroyed() && dialog != null && dialog.isShowing()) {
                                 Log.d(TAG, "dismiss dialog loading ad open: ");
                                 try {
-                                    finalDialog.dismiss();
+                                    dialog.dismiss();
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
