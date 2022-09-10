@@ -48,10 +48,12 @@ public class AperoAdPlacer {
             int posAddAd = 0;
             int countNewAdapter = adapterOriginal.getItemCount();
             while (posAddAd <= countNewAdapter - settings.getPositionFixAd()) {
+//                Log.i(TAG, "add native to list pos: " + posAddAd);
                 posAddAd += settings.getPositionFixAd();
-                listAd.put(posAddAd, new ApNativeAd(StatusAd.AD_INIT));
-                Log.i(TAG, "add native to list pos: " + posAddAd);
-                listPositionAd.add(posAddAd);
+                if (listAd.get(posAddAd) == null) {
+                    listAd.put(posAddAd, new ApNativeAd(StatusAd.AD_INIT));
+                    listPositionAd.add(posAddAd);
+                }
                 posAddAd++;
                 countNewAdapter++;
             }
@@ -62,64 +64,64 @@ public class AperoAdPlacer {
     }
 
     public void renderAd(int pos, RecyclerView.ViewHolder holder) {
+        ApNativeAd adNative = listAd.get(pos);
+        Log.e(TAG, "renderAd: " + adNative);
+        if (adNative.getAdmobNativeAd() == null) {
+            if (listAd.get(pos).getStatus() != StatusAd.AD_LOADING) {
+                holder.itemView.post(() -> {
+                    ApNativeAd nativeAd = new ApNativeAd(StatusAd.AD_LOADING);
+                    listAd.put(pos, nativeAd);
+                    Log.i(TAG, "start loading native ad in position: " + pos);
+                    Admob.getInstance().loadNativeAd(activity, settings.getAdUnitId(), new AdCallback() {
+                        @Override
+                        public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
+                            super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                            unifiedNativeAd.setOnPaidEventListener(new OnPaidEventListener() {
+                                @Override
+                                public void onPaidEvent(@NonNull AdValue adValue) {
+                                    AperoAdPlacer.this.onAdRevenuePaid(new ApAdValue(adValue));
+                                }
+                            });
 
-        if (listAd.get(pos).getAdmobNativeAd() == null && listAd.get(pos).getStatus() != StatusAd.AD_LOADING) {
-            holder.itemView.post(() -> {
-                ApNativeAd nativeAd = new ApNativeAd(StatusAd.AD_LOADING);
-                listAd.put(pos, nativeAd);
-                Admob.getInstance().loadNativeAd(activity, settings.getAdUnitId(), new AdCallback() {
-                    @Override
-                    public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
-                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
-                        Log.i(TAG, "native ad in recycle loaded position: " + pos);
-                        unifiedNativeAd.setOnPaidEventListener(new OnPaidEventListener() {
-                            @Override
-                            public void onPaidEvent(@NonNull AdValue adValue) {
-                                AperoAdPlacer.this.onAdRevenuePaid(new ApAdValue(adValue));
-                            }
-                        });
+                            AperoAdPlacer.this.onAdLoaded(pos);
+                            nativeAd.setAdmobNativeAd(unifiedNativeAd);
+                            nativeAd.setStatus(StatusAd.AD_LOADED);
+                            listAd.put(pos, nativeAd);
+                            populateAdToViewHolder(holder, unifiedNativeAd, pos);
+                        }
 
-                        AperoAdPlacer.this.onAdLoaded(pos);
-                        NativeAdView nativeAdView = (NativeAdView) LayoutInflater.from(activity)
-                                .inflate(settings.getLayoutCustomAd(), null);
-                        FrameLayout adPlaceHolder = holder.itemView.findViewById(R.id.fl_adplaceholder);
-                        ShimmerFrameLayout containerShimmer = holder.itemView.findViewById(R.id.shimmer_container_native);
+                        @Override
+                        public void onAdClicked() {
+                            super.onAdClicked();
+                            AperoAdPlacer.this.onAdClicked();
+                        }
 
-                        nativeAd.setAdmobNativeAd(unifiedNativeAd);
-                        nativeAd.setStatus(StatusAd.AD_LOADED);
-                        listAd.put(pos, nativeAd);
-
-                        containerShimmer.stopShimmer();
-                        containerShimmer.setVisibility(View.GONE);
-                        adPlaceHolder.setVisibility(View.VISIBLE);
-                        Admob.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, nativeAdView);
-                        adPlaceHolder.removeAllViews();
-                        adPlaceHolder.addView(nativeAdView);
-                    }
-
-                    @Override
-                    public void onAdClicked() {
-                        super.onAdClicked();
-                        AperoAdPlacer.this.onAdClicked();
-                    }
-
+                    });
                 });
-            });
-        } else {
-//            if (nativeAd.getStatus() == StatusNative.AD_LOADED) {
-//                //ad native loaded not attach view
-//                Log.i(TAG, "ad native render position: " + pos);
-//                containerShimmer.stopShimmer();
-//                containerShimmer.setVisibility(View.GONE);
-//                adPlaceHolder.setVisibility(View.VISIBLE);
-//                Admob.getInstance().populateUnifiedNativeAdView(nativeAd.getAdmobNativeAd(), nativeAdView);
-//                adPlaceHolder.removeAllViews();
-//                adPlaceHolder.addView(nativeAdView);
-//
-//                nativeAd.setStatus(StatusNative.AD_RENDER_SUCCESS);
-//                listAd.put(pos, nativeAd);
+            }
+//            else {
+//                if (listAd.get(pos).getStatus() == StatusAd.AD_LOADED) {
+//                    populateAdToViewHolder(holder, listAd.get(pos).getAdmobNativeAd(), pos);
+//                }
 //            }
         }
+    }
+
+    private void populateAdToViewHolder(RecyclerView.ViewHolder holder, NativeAd unifiedNativeAd, int pos) {
+        NativeAdView nativeAdView = (NativeAdView) LayoutInflater.from(activity)
+                .inflate(settings.getLayoutCustomAd(), null);
+        FrameLayout adPlaceHolder = holder.itemView.findViewById(R.id.fl_adplaceholder);
+        ShimmerFrameLayout containerShimmer = holder.itemView.findViewById(R.id.shimmer_container_native);
+
+
+        containerShimmer.stopShimmer();
+        containerShimmer.setVisibility(View.GONE);
+        adPlaceHolder.setVisibility(View.VISIBLE);
+        Admob.getInstance().populateUnifiedNativeAdView(unifiedNativeAd, nativeAdView);
+        Log.i(TAG, "native ad in recycle loaded position: " + pos + "  title: " + unifiedNativeAd.getHeadline() + "   count child ads:" + adPlaceHolder.getChildCount());
+        adPlaceHolder.removeAllViews();
+
+        adPlaceHolder.addView(nativeAdView);
     }
 
     public void loadAds() {
@@ -157,7 +159,7 @@ public class AperoAdPlacer {
             countMinAd = adapterOriginal.getItemCount() / settings.getPositionFixAd();
         } else if (adapterOriginal.getItemCount() >= settings.getPositionFixAd()) {
             countMinAd = 1;
-        }else {
+        } else {
             countMinAd = 0;
         }
 

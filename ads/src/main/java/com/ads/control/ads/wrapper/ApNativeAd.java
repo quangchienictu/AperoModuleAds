@@ -31,7 +31,8 @@ public class ApNativeAd extends ApAdBase {
 
     public void setAdmobNativeAd(NativeAd admobNativeAd) {
         this.admobNativeAd = admobNativeAd;
-        status = StatusAd.AD_LOADED;
+        if (admobNativeAd != null)
+            status = StatusAd.AD_LOADED;
     }
 
     public ApNativeAd() {
@@ -60,5 +61,8 @@ public class ApNativeAd extends ApAdBase {
         this.nativeView = nativeView;
     }
 
+    public String toString(){
+        return "Status:"+ status + " == nativeView:"+nativeView + " == admobNativeAd:"+admobNativeAd;
+    }
 
 }

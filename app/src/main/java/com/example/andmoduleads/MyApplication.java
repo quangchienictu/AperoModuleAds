@@ -52,8 +52,9 @@ public class MyApplication extends AdsMultiDexApplication {
         aperoAdConfig.setListDeviceTest(listTestDevice);
 
         AperoAd.getInstance().init(this, aperoAdConfig, false);
-        Admob.getInstance().setOpenActivityAfterShowInterAds(true);
+        Admob.getInstance().setOpenActivityAfterShowInterAds(false);
         Admob.getInstance().setDisableAdResumeWhenClickAds(true);
+
     }
 
     private void initBilling() {

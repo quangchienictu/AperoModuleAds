@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         frAds = findViewById(R.id.fl_adplaceholder);
         configMediationProvider();
         AperoAd.getInstance().setCountClickToShowAds(3);
+
         AppOpenManager.getInstance().setEnableScreenContentCallback(true);
         AppOpenManager.getInstance().setFullScreenContentCallback(new FullScreenContentCallback() {
             @Override
@@ -96,9 +97,11 @@ public class MainActivity extends AppCompatActivity {
 
         loadAdInterstitial();
 
-
         findViewById(R.id.btShowAds).setOnClickListener(v -> {
             if (mInterstitialAd.isReady()) {
+
+                ApInterstitialAd inter =    AperoAd.getInstance().getInterstitialAds(this, idInter);
+
                 AperoAd.getInstance().showInterstitialAdByTimes(this, mInterstitialAd, new AperoAdCallback() {
                     @Override
                     public void onNextAction() {
@@ -132,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                         super.onAdFailedToShow(adError);
                         Log.i(TAG, "onAdFailedToShow:" + adError.getMessage());
                     }
-                }, false);
+                }, true);
             } else {
                 loadAdInterstitial();
             }
@@ -196,6 +199,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadNativeExit() {
+
         if (unifiedNativeAd != null)
             return;
         Admob.getInstance().loadNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {

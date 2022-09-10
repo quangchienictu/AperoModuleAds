@@ -88,15 +88,15 @@ public class SimpleListActivity extends AppCompatActivity {
     }
 
     private void setupAdAdapter() {
-        adAdapter = AperoAd.getInstance().getNativeFixedPositionAdapter(this, idNative, layoutCustomNative, com.ads.control.R.layout.layout_native_medium,
-                originalAdapter, listener, 3);
+        adAdapter = AperoAd.getInstance().getNativeRepeatAdapter(this, idNative, layoutCustomNative, com.ads.control.R.layout.layout_native_medium,
+                originalAdapter, listener, 5);
 
         recyclerView.setAdapter(adAdapter.getAdapter());
         adAdapter.loadAds();
     }
 
     private void addSampleData() {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 30; i++) {
             sampleData.add("Item " + i);
         }
     }
