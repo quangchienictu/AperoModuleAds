@@ -44,7 +44,7 @@ public class AperoLogEventManager {
         // log revenue this ad
         logPaidAdImpressionValue(context, revenue / 1000000.0, precision, adUnitId, network);
         FirebaseAnalyticsUtil.logEventWithAds(context,params);
-
+        FacebookEventUtils.logEventWithAds(context,params);
         // update current tota
         // l revenue ads
         SharePreferenceUtils.updateCurrentTotalRevenueAd(context, (float) revenue);
@@ -68,6 +68,7 @@ public class AperoLogEventManager {
         params.putString("network", network);
 
         FirebaseAnalyticsUtil.logPaidAdImpressionValue(context, params);
+        FacebookEventUtils.logPaidAdImpressionValue(context, params);
     }
 
     public static void logClickAdsEvent(Context context, String adUnitId) {
@@ -78,6 +79,7 @@ public class AperoLogEventManager {
         bundle.putString("ad_unit_id", adUnitId);
 
         FirebaseAnalyticsUtil.logClickAdsEvent(context, bundle);
+        FacebookEventUtils.logClickAdsEvent(context, bundle);
     }
 
     public static void logCurrentTotalRevenueAd(Context context, String eventName) {
@@ -86,6 +88,7 @@ public class AperoLogEventManager {
         bundle.putFloat("value", currentTotalRevenue);
 
         FirebaseAnalyticsUtil.logCurrentTotalRevenueAd(context, eventName, bundle);
+        FacebookEventUtils.logCurrentTotalRevenueAd(context, eventName, bundle);
     }
 
 
@@ -97,6 +100,7 @@ public class AperoLogEventManager {
             Bundle bundle = new Bundle();
             bundle.putFloat("value", revenue / 1000000);
             FirebaseAnalyticsUtil.logTotalRevenue001Ad(context, bundle);
+            FacebookEventUtils.logTotalRevenue001Ad(context, bundle);
         }
     }
 
