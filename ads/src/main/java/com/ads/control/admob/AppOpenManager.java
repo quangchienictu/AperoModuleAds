@@ -24,8 +24,8 @@ import com.ads.control.R;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.dialog.ResumeLoadingDialog;
-import com.ads.control.util.AdjustApero;
-import com.ads.control.util.FirebaseAnalyticsUtil;
+import com.ads.control.event.AdjustApero;
+import com.ads.control.event.AperoLogEventManager;
 import com.google.android.gms.ads.AdActivity;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
@@ -226,7 +226,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             AppOpenManager.this.appResumeAd = ad;
                             AppOpenManager.this.appResumeAd.setOnPaidEventListener(adValue -> {
                                 AdjustApero.pushTrackEventAdmob(adValue);
-                                FirebaseAnalyticsUtil.logPaidAdImpression(myApplication.getApplicationContext(),
+                                AperoLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         ad.getAdUnitId(),
                                         ad.getResponseInfo()
@@ -237,7 +237,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             AppOpenManager.this.splashAd = ad;
                             AppOpenManager.this.splashAd.setOnPaidEventListener(adValue -> {
                                 AdjustApero.pushTrackEventAdmob(adValue);
-                                FirebaseAnalyticsUtil.logPaidAdImpression(myApplication.getApplicationContext(),
+                                AperoLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         ad.getAdUnitId(),
                                         ad.getResponseInfo()
@@ -459,7 +459,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                 public void onAdClicked() {
                                     super.onAdClicked();
                                     if (currentActivity != null) {
-                                        FirebaseAnalyticsUtil.logClickAdsEvent(currentActivity, splashAdId);
+                                        AperoLogEventManager.logClickAdsEvent(currentActivity, splashAdId);
                                         if (fullScreenContentCallback!= null) {
                                             fullScreenContentCallback.onAdClicked();
                                         }
@@ -553,7 +553,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         public void onAdClicked() {
                             super.onAdClicked();
                             if (currentActivity != null) {
-                                FirebaseAnalyticsUtil.logClickAdsEvent(currentActivity, appResumeAdId);
+                                AperoLogEventManager.logClickAdsEvent(currentActivity, appResumeAdId);
                                 if (fullScreenContentCallback!= null) {
                                     fullScreenContentCallback.onAdClicked();
                                 }
@@ -599,7 +599,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                             AppOpenManager.this.splashAd = appOpenAd;
                             splashLoadTime = new Date().getTime();
                             appOpenAd.setOnPaidEventListener(adValue -> {
-                                FirebaseAnalyticsUtil.logPaidAdImpression(myApplication.getApplicationContext(),
+                                AperoLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         appOpenAd.getAdUnitId(),
                                         appOpenAd.getResponseInfo()

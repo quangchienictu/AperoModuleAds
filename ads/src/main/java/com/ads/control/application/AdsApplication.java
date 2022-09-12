@@ -2,7 +2,6 @@ package com.ads.control.application;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -19,12 +18,11 @@ import com.adjust.sdk.OnEventTrackingFailedListener;
 import com.adjust.sdk.OnEventTrackingSucceededListener;
 import com.adjust.sdk.OnSessionTrackingFailedListener;
 import com.adjust.sdk.OnSessionTrackingSucceededListener;
-import com.ads.control.util.AdjustApero;
+import com.ads.control.event.AdjustApero;
 import com.ads.control.admob.AppOpenManager;
 import com.ads.control.admob.Admob;
 import com.ads.control.util.AppUtil;
 import com.ads.control.util.SharePreferenceUtils;
-import com.google.android.gms.common.util.SharedPreferencesUtils;
 
 import java.util.List;
 

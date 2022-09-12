@@ -1,15 +1,20 @@
-package com.ads.control.util;
+package com.ads.control.event;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.ads.control.util.AppUtil;
+import com.ads.control.util.SharePreferenceUtils;
 import com.applovin.mediation.MaxAd;
 import com.google.android.gms.ads.AdValue;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
-public class FirebaseAnalyticsUtil {
-    private static final String TAG = "FirebaseAnalyticsUtil";
+/**
+ * Created by lamlt on 12/09/2022.
+ */
+public class AperoLogEventManager {
+
+    private static final String TAG = "AperoLogEventManager";
 
     public static void logPaidAdImpression(Context context, AdValue adValue, String adUnitId, String mediationAdapterClassName) {
         logEventWithAds(context, (float) adValue.getValueMicros(), adValue.getPrecisionType(), adUnitId, mediationAdapterClassName);
@@ -38,7 +43,7 @@ public class FirebaseAnalyticsUtil {
 
         // log revenue this ad
         logPaidAdImpressionValue(context, revenue / 1000000.0, precision, adUnitId, network);
-        FirebaseAnalytics.getInstance(context).logEvent("paid_ad_impression", params);
+        FirebaseAnalyticsUtil.logEventWithAds(context,params);
 
         // update current tota
         // l revenue ads
@@ -61,7 +66,8 @@ public class FirebaseAnalyticsUtil {
         params.putInt("precision", precision);
         params.putString("adunitid", adunitid);
         params.putString("network", network);
-        FirebaseAnalytics.getInstance(context).logEvent("paid_ad_impression_value", params);
+
+        FirebaseAnalyticsUtil.logPaidAdImpressionValue(context, params);
     }
 
     public static void logClickAdsEvent(Context context, String adUnitId) {
@@ -70,26 +76,27 @@ public class FirebaseAnalyticsUtil {
                 adUnitId));
         Bundle bundle = new Bundle();
         bundle.putString("ad_unit_id", adUnitId);
-        FirebaseAnalytics.getInstance(context).logEvent("event_user_click_ads", bundle);
+
+        FirebaseAnalyticsUtil.logClickAdsEvent(context, bundle);
     }
 
     public static void logCurrentTotalRevenueAd(Context context, String eventName) {
-        Log.d(TAG, "logCurrentTotalRevenueAd: ");
         float currentTotalRevenue = SharePreferenceUtils.getCurrentTotalRevenueAd(context);
         Bundle bundle = new Bundle();
         bundle.putFloat("value", currentTotalRevenue);
-        FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
+
+        FirebaseAnalyticsUtil.logCurrentTotalRevenueAd(context, eventName, bundle);
     }
+
 
     public static void logTotalRevenue001Ad(Context context) {
         float revenue = AppUtil.currentTotalRevenue001Ad;
-        Log.d(TAG, "logTotalRevenue001Ad: " + revenue);
         if (revenue / 1000000 >= 0.01) {
             AppUtil.currentTotalRevenue001Ad = 0;
             SharePreferenceUtils.updateCurrentTotalRevenue001Ad(context, 0);
             Bundle bundle = new Bundle();
             bundle.putFloat("value", revenue / 1000000);
-            FirebaseAnalytics.getInstance(context).logEvent("paid_ad_impression_value_001", bundle);
+            FirebaseAnalyticsUtil.logTotalRevenue001Ad(context, bundle);
         }
     }
 
@@ -111,5 +118,38 @@ public class FirebaseAnalyticsUtil {
             logCurrentTotalRevenueAd(context, "event_total_revenue_ad_in_7_days");
             SharePreferenceUtils.setPushedRevenue7Day(context);
         }
+    }
+
+
+    public static void setEventNamePurchaseAdjust(String eventNamePurchase) {
+        AdjustApero.setEventNamePurchase(eventNamePurchase);
+    }
+
+    public static void trackAdRevenue(String id) {
+        AdjustApero.trackAdRevenue(id);
+    }
+
+    public static void onTrackEvent(String eventName) {
+        AdjustApero.onTrackEvent(eventName);
+    }
+
+    public static void onTrackEvent(String eventName, String id) {
+        AdjustApero.onTrackEvent(eventName, id);
+    }
+
+    public static void onTrackRevenue(String eventName, float revenue, String currency) {
+        AdjustApero.onTrackRevenue(eventName, revenue, currency);
+    }
+
+    public static void onTrackRevenuePurchase(float revenue, String currency) {
+        AdjustApero.onTrackRevenuePurchase(revenue, currency);
+    }
+
+    public static void pushTrackEventAdmob(AdValue adValue) {
+        AdjustApero.pushTrackEventAdmob(adValue);
+    }
+
+    public static void pushTrackEventApplovin(MaxAd ad, Context context) {
+        AdjustApero.pushTrackEventApplovin(ad, context);
     }
 }

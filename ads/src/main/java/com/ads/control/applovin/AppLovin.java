@@ -20,8 +20,8 @@ import com.ads.control.R;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
-import com.ads.control.util.AdjustApero;
-import com.ads.control.util.FirebaseAnalyticsUtil;
+import com.ads.control.event.AdjustApero;
+import com.ads.control.event.AperoLogEventManager;
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdListener;
 import com.applovin.mediation.MaxAdViewAdListener;
@@ -207,7 +207,7 @@ public class AppLovin {
 
             @Override
             public void onAdClicked(MaxAd ad) {
-                FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
+                AperoLogEventManager.logClickAdsEvent(context, ad.getAdUnitId());
             }
 
             @Override
@@ -323,7 +323,7 @@ public class AppLovin {
 
             @Override
             public void onAdClicked(MaxAd ad) {
-                FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
+                AperoLogEventManager.logClickAdsEvent(context, ad.getAdUnitId());
                 if (adListener != null) {
                     adListener.onAdClicked();
                 }
@@ -391,7 +391,7 @@ public class AppLovin {
 
             @Override
             public void onAdClicked(MaxAd ad) {
-                FirebaseAnalyticsUtil.logClickAdsEvent(context, interstitialSplash.getAdUnitId());
+                AperoLogEventManager.logClickAdsEvent(context, interstitialSplash.getAdUnitId());
                 if (adListener != null) {
                     adListener.onAdClicked();
                 }
@@ -489,7 +489,7 @@ public class AppLovin {
 
             @Override
             public void onAdClicked(MaxAd ad) {
-                FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
+                AperoLogEventManager.logClickAdsEvent(context, ad.getAdUnitId());
             }
 
             @Override
@@ -576,7 +576,7 @@ public class AppLovin {
 
             @Override
             public void onAdClicked(MaxAd ad) {
-                FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
+                AperoLogEventManager.logClickAdsEvent(context, ad.getAdUnitId());
                 if (callback != null) {
                     callback.onAdClicked();
                 }
@@ -726,7 +726,7 @@ public class AppLovin {
 
             @Override
             public void onAdClicked(MaxAd ad) {
-                FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
+                AperoLogEventManager.logClickAdsEvent(context, ad.getAdUnitId());
             }
 
             @Override
@@ -790,7 +790,7 @@ public class AppLovin {
 
             @Override
             public void onAdClicked(MaxAd ad) {
-                FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
+                AperoLogEventManager.logClickAdsEvent(context, ad.getAdUnitId());
                 if (adCallback != null) {
                     adCallback.onAdClicked();
                 }
@@ -933,7 +933,7 @@ public class AppLovin {
             @Override
             public void onNativeAdClicked(final MaxAd ad) {
                 Log.e(TAG, "onNativeAdClicked: ");
-                FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
+                AperoLogEventManager.logClickAdsEvent(context, ad.getAdUnitId());
                 callback.onAdClicked();
             }
         });
@@ -1029,7 +1029,7 @@ public class AppLovin {
 
             @Override
             public void onAdClicked(MaxAd ad) {
-                FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
+                AperoLogEventManager.logClickAdsEvent(context, ad.getAdUnitId());
                 callback.onAdClicked();
             }
 
@@ -1094,7 +1094,7 @@ public class AppLovin {
 
                 @Override
                 public void onAdClicked(MaxAd ad) {
-                    FirebaseAnalyticsUtil.logClickAdsEvent(context, ad.getAdUnitId());
+                    AperoLogEventManager.logClickAdsEvent(context, ad.getAdUnitId());
                     callback.onAdClicked();
                 }
 

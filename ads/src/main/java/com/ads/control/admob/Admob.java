@@ -43,9 +43,9 @@ import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.AdmodHelper;
 import com.ads.control.funtion.RewardCallback;
-import com.ads.control.util.AdjustApero;
+import com.ads.control.event.AdjustApero;
 import com.ads.control.util.AppUtil;
-import com.ads.control.util.FirebaseAnalyticsUtil;
+import com.ads.control.event.AperoLogEventManager;
 import com.applovin.mediation.AppLovinExtras;
 import com.applovin.mediation.ApplovinAdapter;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -490,7 +490,7 @@ public class Admob {
         mInterstitialSplash.setOnPaidEventListener(adValue -> {
             Log.d(TAG, "OnPaidEvent splash:" + adValue.getValueMicros());
             AdjustApero.pushTrackEventAdmob(adValue);
-            FirebaseAnalyticsUtil.logPaidAdImpression(context,
+            AperoLogEventManager.logPaidAdImpression(context,
                     adValue,
                     mInterstitialSplash.getAdUnitId(),
                     mInterstitialSplash.getResponseInfo()
@@ -551,7 +551,7 @@ public class Admob {
             @Override
             public void onAdClicked() {
                 super.onAdClicked();
-                FirebaseAnalyticsUtil.logClickAdsEvent(context, mInterstitialSplash.getAdUnitId());
+                AperoLogEventManager.logClickAdsEvent(context, mInterstitialSplash.getAdUnitId());
                 if (disableAdResumeWhenClickAds)
                     AppOpenManager.getInstance().disableAdResumeByClickAction();
             }
@@ -656,7 +656,7 @@ public class Admob {
                     interstitialAd.setOnPaidEventListener(adValue -> {
                         AdjustApero.pushTrackEventAdmob(adValue);
                         Log.d(TAG, "OnPaidEvent loadInterstitialAds:" + adValue.getValueMicros());
-                        FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                        AperoLogEventManager.logPaidAdImpression(context,
                                 adValue,
                                 interstitialAd.getAdUnitId(),
                                 interstitialAd.getResponseInfo()
@@ -724,7 +724,7 @@ public class Admob {
                         interstitialAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                             AdjustApero.pushTrackEventAdmob(adValue);
-                            FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                            AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     interstitialAd.getAdUnitId(),
                                     interstitialAd.getResponseInfo()
@@ -840,7 +840,7 @@ public class Admob {
             @Override
             public void onAdClicked() {
                 super.onAdClicked();
-                FirebaseAnalyticsUtil.logClickAdsEvent(context, mInterstitialAd.getAdUnitId());
+                AperoLogEventManager.logClickAdsEvent(context, mInterstitialAd.getAdUnitId());
                 if (disableAdResumeWhenClickAds)
                     AppOpenManager.getInstance().disableAdResumeByClickAction();
                 if (callback != null) {
@@ -1072,7 +1072,7 @@ public class Admob {
                         adView.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
                             AdjustApero.pushTrackEventAdmob(adValue);
-                            FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                            AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     adView.getAdUnitId(),
                                     adView.getResponseInfo()
@@ -1084,7 +1084,7 @@ public class Admob {
                 @Override
                 public void onAdClicked() {
                     super.onAdClicked();
-                    FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
+                    AperoLogEventManager.logClickAdsEvent(context, id);
                     if (disableAdResumeWhenClickAds)
                         AppOpenManager.getInstance().disableAdResumeByClickAction();
                 }
@@ -1134,7 +1134,7 @@ public class Admob {
                         adView.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
                             AdjustApero.pushTrackEventAdmob(adValue);
-                            FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                            AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     adView.getAdUnitId(),
                                     adView.getResponseInfo()
@@ -1146,7 +1146,7 @@ public class Admob {
                 @Override
                 public void onAdClicked() {
                     super.onAdClicked();
-                    FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
+                    AperoLogEventManager.logClickAdsEvent(context, id);
                     if (disableAdResumeWhenClickAds)
                         AppOpenManager.getInstance().disableAdResumeByClickAction();
                     if (callback != null) {
@@ -1236,7 +1236,7 @@ public class Admob {
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                             AdjustApero.pushTrackEventAdmob(adValue);
-                            FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                            AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     id,
                                     "native");
@@ -1253,7 +1253,7 @@ public class Admob {
                     @Override
                     public void onAdClicked() {
                         super.onAdClicked();
-                        FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
+                        AperoLogEventManager.logClickAdsEvent(context, id);
                         if (disableAdResumeWhenClickAds)
                             AppOpenManager.getInstance().disableAdResumeByClickAction();
                         if (callback != null) {
@@ -1291,7 +1291,7 @@ public class Admob {
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
                             AdjustApero.pushTrackEventAdmob(adValue);
-                            FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                            AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     id,
                                     "native");
@@ -1308,7 +1308,7 @@ public class Admob {
                     @Override
                     public void onAdClicked() {
                         super.onAdClicked();
-                        FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
+                        AperoLogEventManager.logClickAdsEvent(context, id);
                         if (disableAdResumeWhenClickAds)
                             AppOpenManager.getInstance().disableAdResumeByClickAction();
                         if (callback != null) {
@@ -1357,7 +1357,7 @@ public class Admob {
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent native:" + adValue.getValueMicros());
                             AdjustApero.pushTrackEventAdmob(adValue);
-                            FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                            AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     id,
                                     "native");
@@ -1381,7 +1381,7 @@ public class Admob {
                     @Override
                     public void onAdClicked() {
                         super.onAdClicked();
-                        FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
+                        AperoLogEventManager.logClickAdsEvent(context, id);
                         if (disableAdResumeWhenClickAds)
                             AppOpenManager.getInstance().disableAdResumeByClickAction();
                     }
@@ -1427,7 +1427,7 @@ public class Admob {
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent Native:" + adValue.getValueMicros());
                             AdjustApero.pushTrackEventAdmob(adValue);
-                            FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                            AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     id,
                                     "native");
@@ -1451,7 +1451,7 @@ public class Admob {
                     @Override
                     public void onAdClicked() {
                         super.onAdClicked();
-                        FirebaseAnalyticsUtil.logClickAdsEvent(context, id);
+                        AperoLogEventManager.logClickAdsEvent(context, id);
                         if (disableAdResumeWhenClickAds)
                             AppOpenManager.getInstance().disableAdResumeByClickAction();
                         if (callback != null) {
@@ -1624,7 +1624,7 @@ public class Admob {
 
                     Log.d(TAG, "OnPaidEvent Reward:" + adValue.getValueMicros());
                     AdjustApero.pushTrackEventAdmob(adValue);
-                    FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                    AperoLogEventManager.logPaidAdImpression(context,
                             adValue,
                             rewardedAd.getAdUnitId(),
                             "rewardedAd");
@@ -1664,7 +1664,7 @@ public class Admob {
                 Admob.this.rewardedAd.setOnPaidEventListener(adValue -> {
                     Log.d(TAG, "OnPaidEvent Reward:" + adValue.getValueMicros());
                     AdjustApero.pushTrackEventAdmob(adValue);
-                    FirebaseAnalyticsUtil.logPaidAdImpression(context,
+                    AperoLogEventManager.logPaidAdImpression(context,
                             adValue,
                             rewardedAd.getAdUnitId(),
                             "rewardedAd");
@@ -1733,7 +1733,7 @@ public class Admob {
 
                 public void onAdClicked() {
                     super.onAdClicked();
-                    FirebaseAnalyticsUtil.logClickAdsEvent(context, rewardedAd.getAdUnitId());
+                    AperoLogEventManager.logClickAdsEvent(context, rewardedAd.getAdUnitId());
                     if (disableAdResumeWhenClickAds)
                         AppOpenManager.getInstance().disableAdResumeByClickAction();
                 }
@@ -1798,7 +1798,7 @@ public class Admob {
 
                 public void onAdClicked() {
                     super.onAdClicked();
-                    FirebaseAnalyticsUtil.logClickAdsEvent(context, rewardedAd.getAdUnitId());
+                    AperoLogEventManager.logClickAdsEvent(context, rewardedAd.getAdUnitId());
                     if (disableAdResumeWhenClickAds)
                         AppOpenManager.getInstance().disableAdResumeByClickAction();
                     if (adCallback != null) {

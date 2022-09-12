@@ -1,4 +1,4 @@
-package com.ads.control.util;
+package com.ads.control.event;
 
 import android.content.Context;
 
@@ -57,6 +57,7 @@ public class AdjustApero {
             Adjust.trackAdRevenue(adRevenue);
         }
     }
+
     public static void pushTrackEventApplovin(MaxAd ad, Context context) {
         if (AdjustApero.enableAdjust) {
             AdjustAdRevenue adjustAdRevenue = new AdjustAdRevenue( AdjustConfig.AD_REVENUE_APPLOVIN_MAX );
@@ -67,7 +68,7 @@ public class AdjustApero {
 
             Adjust.trackAdRevenue( adjustAdRevenue );
 
-            FirebaseAnalyticsUtil.logPaidAdImpression(context,ad);
+            AperoLogEventManager.logPaidAdImpression(context,ad);
         }
     }
 }
