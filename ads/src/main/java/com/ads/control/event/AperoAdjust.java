@@ -9,14 +9,14 @@ import com.adjust.sdk.AdjustEvent;
 import com.applovin.mediation.MaxAd;
 import com.google.android.gms.ads.AdValue;
 
-public class AdjustApero {
+public class AperoAdjust {
 
 
     public static boolean enableAdjust = false;
     private static String eventNamePurchase = "";
 
     public static void setEventNamePurchase(String eventNamePurchase) {
-        AdjustApero.eventNamePurchase = eventNamePurchase;
+        AperoAdjust.eventNamePurchase = eventNamePurchase;
     }
 
     public static void trackAdRevenue(String id) {
@@ -44,13 +44,13 @@ public class AdjustApero {
     }
 
     public static void onTrackRevenuePurchase(float revenue, String currency) {
-        if (AdjustApero.enableAdjust) {
+        if (AperoAdjust.enableAdjust) {
             onTrackRevenue(eventNamePurchase, revenue, currency);
         }
     }
 
     public static void pushTrackEventAdmob(AdValue adValue) {
-        if (AdjustApero.enableAdjust) {
+        if (AperoAdjust.enableAdjust) {
             AdjustAdRevenue adRevenue = new AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB);
             adRevenue.setRevenue(adValue.getValueMicros() / 1000000.0, adValue.getCurrencyCode());
 
@@ -59,7 +59,7 @@ public class AdjustApero {
     }
 
     public static void pushTrackEventApplovin(MaxAd ad, Context context) {
-        if (AdjustApero.enableAdjust) {
+        if (AperoAdjust.enableAdjust) {
             AdjustAdRevenue adjustAdRevenue = new AdjustAdRevenue( AdjustConfig.AD_REVENUE_APPLOVIN_MAX );
             adjustAdRevenue.setRevenue( ad.getRevenue(), "USD" );
             adjustAdRevenue.setAdRevenueNetwork( ad.getNetworkName() );

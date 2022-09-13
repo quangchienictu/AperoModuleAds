@@ -43,7 +43,7 @@ import com.ads.control.applovin.AppLovin;
 import com.ads.control.applovin.AppLovinCallback;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.RewardCallback;
-import com.ads.control.event.AdjustApero;
+import com.ads.control.event.AperoAdjust;
 import com.ads.control.util.AppUtil;
 import com.ads.control.event.AperoLogEventManager;
 import com.applovin.mediation.MaxAd;
@@ -122,7 +122,7 @@ public class AperoAd {
         AppUtil.VARIANT_DEV = adConfig.isVariantDev();
         Log.i(TAG, "Config variant dev: " + AppUtil.VARIANT_DEV);
         if (adConfig.isEnableAdjust()) {
-            AdjustApero.enableAdjust = true;
+            AperoAdjust.enableAdjust = true;
             setupAdjust(adConfig.isVariantDev(), adConfig.getAdjustToken());
         }
         switch (adConfig.getMediationProvider()) {

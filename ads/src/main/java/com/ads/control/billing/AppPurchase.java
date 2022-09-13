@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 
 import com.ads.control.funtion.BillingListener;
 import com.ads.control.funtion.PurchaseListener;
-import com.ads.control.event.AdjustApero;
+import com.ads.control.event.AperoAdjust;
 import com.ads.control.util.AppUtil;
 import com.android.billingclient.api.AcknowledgePurchaseParams;
 import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
@@ -624,7 +624,7 @@ public class AppPurchase {
         //tracking adjust
         double price = getPriceWithoutCurrency(idPurchaseCurrent, typeIap);
         String currentcy = getCurrency(idPurchaseCurrent, typeIap);
-        AdjustApero.onTrackRevenuePurchase((float) price, currentcy);
+        AperoAdjust.onTrackRevenuePurchase((float) price, currentcy);
 
         if (purchaseListioner != null)
             isPurchase = true;

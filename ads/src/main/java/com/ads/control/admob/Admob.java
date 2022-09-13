@@ -43,7 +43,7 @@ import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.AdmodHelper;
 import com.ads.control.funtion.RewardCallback;
-import com.ads.control.event.AdjustApero;
+import com.ads.control.event.AperoAdjust;
 import com.ads.control.util.AppUtil;
 import com.ads.control.event.AperoLogEventManager;
 import com.applovin.mediation.AppLovinExtras;
@@ -489,7 +489,7 @@ public class Admob {
 
         mInterstitialSplash.setOnPaidEventListener(adValue -> {
             Log.d(TAG, "OnPaidEvent splash:" + adValue.getValueMicros());
-            AdjustApero.pushTrackEventAdmob(adValue);
+            AperoAdjust.pushTrackEventAdmob(adValue);
             AperoLogEventManager.logPaidAdImpression(context,
                     adValue,
                     mInterstitialSplash.getAdUnitId(),
@@ -654,7 +654,7 @@ public class Admob {
 
                 if (interstitialAd != null) {
                     interstitialAd.setOnPaidEventListener(adValue -> {
-                        AdjustApero.pushTrackEventAdmob(adValue);
+                        AperoAdjust.pushTrackEventAdmob(adValue);
                         Log.d(TAG, "OnPaidEvent loadInterstitialAds:" + adValue.getValueMicros());
                         AperoLogEventManager.logPaidAdImpression(context,
                                 adValue,
@@ -723,7 +723,7 @@ public class Admob {
                         //tracking adjust
                         interstitialAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
-                            AdjustApero.pushTrackEventAdmob(adValue);
+                            AperoAdjust.pushTrackEventAdmob(adValue);
                             AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     interstitialAd.getAdUnitId(),
@@ -1071,7 +1071,7 @@ public class Admob {
                     if (adView != null) {
                         adView.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
-                            AdjustApero.pushTrackEventAdmob(adValue);
+                            AperoAdjust.pushTrackEventAdmob(adValue);
                             AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     adView.getAdUnitId(),
@@ -1133,7 +1133,7 @@ public class Admob {
                     if (adView != null) {
                         adView.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
-                            AdjustApero.pushTrackEventAdmob(adValue);
+                            AperoAdjust.pushTrackEventAdmob(adValue);
                             AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     adView.getAdUnitId(),
@@ -1235,7 +1235,7 @@ public class Admob {
                         callback.onUnifiedNativeAdLoaded(nativeAd);
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
-                            AdjustApero.pushTrackEventAdmob(adValue);
+                            AperoAdjust.pushTrackEventAdmob(adValue);
                             AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     id,
@@ -1290,7 +1290,7 @@ public class Admob {
                         callback.onUnifiedNativeAdLoaded(nativeAd);
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
-                            AdjustApero.pushTrackEventAdmob(adValue);
+                            AperoAdjust.pushTrackEventAdmob(adValue);
                             AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     id,
@@ -1356,7 +1356,7 @@ public class Admob {
                                 .inflate(layout, null);
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent native:" + adValue.getValueMicros());
-                            AdjustApero.pushTrackEventAdmob(adValue);
+                            AperoAdjust.pushTrackEventAdmob(adValue);
                             AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     id,
@@ -1426,7 +1426,7 @@ public class Admob {
                                 .inflate(layout, null);
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent Native:" + adValue.getValueMicros());
-                            AdjustApero.pushTrackEventAdmob(adValue);
+                            AperoAdjust.pushTrackEventAdmob(adValue);
                             AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     id,
@@ -1623,7 +1623,7 @@ public class Admob {
                 Admob.this.rewardedAd.setOnPaidEventListener(adValue -> {
 
                     Log.d(TAG, "OnPaidEvent Reward:" + adValue.getValueMicros());
-                    AdjustApero.pushTrackEventAdmob(adValue);
+                    AperoAdjust.pushTrackEventAdmob(adValue);
                     AperoLogEventManager.logPaidAdImpression(context,
                             adValue,
                             rewardedAd.getAdUnitId(),
@@ -1663,7 +1663,7 @@ public class Admob {
                 Admob.this.rewardedAd = rewardedAd;
                 Admob.this.rewardedAd.setOnPaidEventListener(adValue -> {
                     Log.d(TAG, "OnPaidEvent Reward:" + adValue.getValueMicros());
-                    AdjustApero.pushTrackEventAdmob(adValue);
+                    AperoAdjust.pushTrackEventAdmob(adValue);
                     AperoLogEventManager.logPaidAdImpression(context,
                             adValue,
                             rewardedAd.getAdUnitId(),

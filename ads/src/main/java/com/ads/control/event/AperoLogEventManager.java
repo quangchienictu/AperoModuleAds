@@ -126,34 +126,34 @@ public class AperoLogEventManager {
 
 
     public static void setEventNamePurchaseAdjust(String eventNamePurchase) {
-        AdjustApero.setEventNamePurchase(eventNamePurchase);
+        AperoAdjust.setEventNamePurchase(eventNamePurchase);
     }
 
     public static void trackAdRevenue(String id) {
-        AdjustApero.trackAdRevenue(id);
+        AperoAdjust.trackAdRevenue(id);
     }
 
     public static void onTrackEvent(String eventName) {
-        AdjustApero.onTrackEvent(eventName);
+        AperoAdjust.onTrackEvent(eventName);
     }
 
     public static void onTrackEvent(String eventName, String id) {
-        AdjustApero.onTrackEvent(eventName, id);
+        AperoAdjust.onTrackEvent(eventName, id);
     }
 
     public static void onTrackRevenue(String eventName, float revenue, String currency) {
-        AdjustApero.onTrackRevenue(eventName, revenue, currency);
+        AperoAdjust.onTrackRevenue(eventName, revenue, currency);
     }
 
     public static void onTrackRevenuePurchase(float revenue, String currency) {
-        AdjustApero.onTrackRevenuePurchase(revenue, currency);
+        AperoAdjust.onTrackRevenuePurchase(revenue, currency);
     }
 
     public static void pushTrackEventAdmob(AdValue adValue) {
-        AdjustApero.pushTrackEventAdmob(adValue);
+        AperoAdjust.pushTrackEventAdmob(adValue);
     }
 
     public static void pushTrackEventApplovin(MaxAd ad, Context context) {
-        AdjustApero.pushTrackEventApplovin(ad, context);
+        AperoAdjust.pushTrackEventApplovin(ad, context);
     }
 }

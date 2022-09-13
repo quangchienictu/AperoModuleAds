@@ -24,7 +24,7 @@ import com.ads.control.R;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.dialog.ResumeLoadingDialog;
-import com.ads.control.event.AdjustApero;
+import com.ads.control.event.AperoAdjust;
 import com.ads.control.event.AperoLogEventManager;
 import com.google.android.gms.ads.AdActivity;
 import com.google.android.gms.ads.AdError;
@@ -225,7 +225,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         if (!isSplash) {
                             AppOpenManager.this.appResumeAd = ad;
                             AppOpenManager.this.appResumeAd.setOnPaidEventListener(adValue -> {
-                                AdjustApero.pushTrackEventAdmob(adValue);
+                                AperoAdjust.pushTrackEventAdmob(adValue);
                                 AperoLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         ad.getAdUnitId(),
@@ -236,7 +236,7 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         } else {
                             AppOpenManager.this.splashAd = ad;
                             AppOpenManager.this.splashAd.setOnPaidEventListener(adValue -> {
-                                AdjustApero.pushTrackEventAdmob(adValue);
+                                AperoAdjust.pushTrackEventAdmob(adValue);
                                 AperoLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         ad.getAdUnitId(),

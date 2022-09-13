@@ -18,7 +18,7 @@ import com.adjust.sdk.OnEventTrackingFailedListener;
 import com.adjust.sdk.OnEventTrackingSucceededListener;
 import com.adjust.sdk.OnSessionTrackingFailedListener;
 import com.adjust.sdk.OnSessionTrackingSucceededListener;
-import com.ads.control.event.AdjustApero;
+import com.ads.control.event.AperoAdjust;
 import com.ads.control.admob.AppOpenManager;
 import com.ads.control.admob.Admob;
 import com.ads.control.util.AppUtil;
@@ -60,7 +60,7 @@ public abstract class AdsApplication extends Application {
     public abstract Boolean buildDebug();
 
     private void setupIdEvent() {
-        AdjustApero.enableAdjust = true;
+        AperoAdjust.enableAdjust = true;
     }
 
     private void setupAdjust() {

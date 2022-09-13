@@ -20,7 +20,7 @@ import com.ads.control.R;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.funtion.AdCallback;
-import com.ads.control.event.AdjustApero;
+import com.ads.control.event.AperoAdjust;
 import com.ads.control.event.AperoLogEventManager;
 import com.applovin.mediation.MaxAd;
 import com.applovin.mediation.MaxAdListener;
@@ -364,7 +364,7 @@ public class AppLovin {
             adListener.onAdClosed();
             return;
         }
-        interstitialSplash.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, context));
+        interstitialSplash.setRevenueListener(ad -> AperoAdjust.pushTrackEventApplovin(ad, context));
         interstitialSplash.setListener(new MaxAdListener() {
             @Override
             public void onAdLoaded(MaxAd ad) {
@@ -547,7 +547,7 @@ public class AppLovin {
             return;
         }
 
-        interstitialAd.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, context));
+        interstitialAd.setRevenueListener(ad -> AperoAdjust.pushTrackEventApplovin(ad, context));
         interstitialAd.setListener(new MaxAdListener() {
             @Override
             public void onAdLoaded(MaxAd ad) {
@@ -689,7 +689,7 @@ public class AppLovin {
         containerShimmer.setVisibility(View.VISIBLE);
         containerShimmer.startShimmer();
         MaxAdView adView = new MaxAdView(id, mActivity);
-        adView.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, mActivity));
+        adView.setRevenueListener(ad -> AperoAdjust.pushTrackEventApplovin(ad, mActivity));
         int width = ViewGroup.LayoutParams.MATCH_PARENT;
         // Banner height on phones and tablets is 50 and 90, respectively
         int heightPx = mActivity.getResources().getDimensionPixelSize(R.dimen.banner_height);
@@ -753,7 +753,7 @@ public class AppLovin {
         containerShimmer.setVisibility(View.VISIBLE);
         containerShimmer.startShimmer();
         MaxAdView adView = new MaxAdView(id, mActivity);
-        adView.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, mActivity));
+        adView.setRevenueListener(ad -> AperoAdjust.pushTrackEventApplovin(ad, mActivity));
         int width = ViewGroup.LayoutParams.MATCH_PARENT;
         // Banner height on phones and tablets is 50 and 90, respectively
         int heightPx = mActivity.getResources().getDimensionPixelSize(R.dimen.banner_height);
@@ -861,7 +861,7 @@ public class AppLovin {
         nativeAdView = new MaxNativeAdView(binder, activity);
 
         MaxNativeAdLoader nativeAdLoader = new MaxNativeAdLoader(id, activity);
-        nativeAdLoader.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, activity));
+        nativeAdLoader.setRevenueListener(ad -> AperoAdjust.pushTrackEventApplovin(ad, activity));
         nativeAdLoader.setNativeAdListener(new MaxNativeAdListener() {
             @Override
             public void onNativeAdLoaded(final MaxNativeAdView nativeAdView, final MaxAd ad) {
@@ -916,7 +916,7 @@ public class AppLovin {
         nativeAdView = new MaxNativeAdView(binder, activity);
 
         MaxNativeAdLoader nativeAdLoader = new MaxNativeAdLoader(id, activity);
-        nativeAdLoader.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, activity));
+        nativeAdLoader.setRevenueListener(ad -> AperoAdjust.pushTrackEventApplovin(ad, activity));
         nativeAdLoader.setNativeAdListener(new MaxNativeAdListener() {
             @Override
             public void onNativeAdLoaded(final MaxNativeAdView nativeAdView, final MaxAd ad) {
@@ -1057,7 +1057,7 @@ public class AppLovin {
 
     public void showRewardAd(Activity activity, MaxRewardedAd maxRewardedAd, AppLovinCallback callback) {
         if (maxRewardedAd.isReady()) {
-            maxRewardedAd.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, activity));
+            maxRewardedAd.setRevenueListener(ad -> AperoAdjust.pushTrackEventApplovin(ad, activity));
             maxRewardedAd.setListener(new MaxRewardedAdListener() {
                 @Override
                 public void onRewardedVideoStarted(MaxAd ad) {
@@ -1119,7 +1119,7 @@ public class AppLovin {
 
     public void showRewardAd(Activity activity, MaxRewardedAd maxRewardedAd) {
         if (maxRewardedAd.isReady()) {
-            maxRewardedAd.setRevenueListener(ad -> AdjustApero.pushTrackEventApplovin(ad, activity));
+            maxRewardedAd.setRevenueListener(ad -> AperoAdjust.pushTrackEventApplovin(ad, activity));
             maxRewardedAd.showAd();
         } else {
             Log.e(TAG, "showRewardAd error -  reward ad not ready");

@@ -75,7 +75,10 @@ dependencies {
 
     implementation 'com.airbnb.android:lottie:5.0.2'
 
-
     // applovin
     implementation 'com.applovin:applovin-sdk:11.4.2'
+
+    // appsflyer
+    implementation 'com.appsflyer:af-android-sdk:6.8.2'
+    implementation 'com.segment.analytics.android:analytics:4.+'
 }
