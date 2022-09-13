@@ -1,10 +1,16 @@
 
-# AndModuleAds
+# AperoModuleAds
+This is SDK ads by [Apero](https://apero.vn/). It has built in some sdk for easy use like
+- Admob
+- MAX Mediation(Applovin)
+- Google Billing
+- Adjust
+- Firebase log tracking event
 
-Import Module
+# Import Module
 ~~~
 	maven { url 'https://jitpack.io' }
-	implementation 'com.github.AperoVN:AperoModuleAds:4.0.0'
+	implementation 'com.github.AperoVN:AperoModuleAds:5.0.0'
 ~~~	 
 # Summary
 * [Setup AperoAd](#setup_aperoad)
@@ -44,6 +50,8 @@ AndroidManiafest.xml
 ~~~
 ## <a id="config_ads"></a>Config ads
 Create class Application
+
+Configure your mediation here. using PROVIDER_ADMOB or PROVIDER_MAX
 ~~~
 class App : AdsMultiDexApplication(){
     @Override
@@ -74,21 +82,10 @@ SplashActivity
 ~~~ 
     AperoAdCallback adCallback = new AperoAdCallback() {
         @Override
-        public void onAdFailedToLoad(@Nullable ApAdError i) {
-            super.onAdFailedToLoad(i);
+        public void onNextAction() {
+            super.onNextAction();
+            Log.d(TAG, "onNextAction");
             startMain();
-        }
-
-        @Override
-        public void onAdLoaded() {
-            super.onAdLoaded();
-        }
-
-        @Override
-        public void onAdClosed() {
-            super.onAdClosed();
-            startMain();
-
         }
     };
 ~~~
@@ -111,18 +108,13 @@ Show and auto release ad interstitial
 ~~~
          if (mInterstitialAd.isReady()) {
                 AperoAd.getInstance().forceShowInterstitial(this, mInterstitialAd, new AperoAdCallback() {
-                    @Override
-                    public void onAdClosed() {
-                        Log.i(TAG, "onAdClosed: start content and finish main");
-                        startActivity(new Intent(MainActivity.this, MaxSimpleListActivity.class));
-                    }
-
-                    @Override
-                    public void onAdFailedToShow(@Nullable ApAdError adError) {
-                        super.onAdFailedToShow(adError);
-                        Log.i(TAG, "onAdFailedToShow:" + adError.getMessage());
-                        startActivity(new Intent(MainActivity.this, MaxSimpleListActivity.class));
-                    }
+			@Override
+			public void onNextAction() {
+			    super.onNextAction();
+			    Log.d(TAG, "onNextAction");
+			   startActivity(new Intent(MainActivity.this, MaxSimpleListActivity.class));
+			}
+                
                 }, true);
             } else {
                 loadAdInterstitial();
@@ -235,7 +227,7 @@ Application
 	 AppPurchase.getInstance().isPurchased(this,PRODUCT_ID);
 	 //check purchase all
 	 AppPurchase.getInstance().isPurchased(this);
-##  purchase
+##  Purchase
 	 AppPurchase.getInstance().purchase(this,PRODUCT_ID);
 	 AppPurchase.getInstance().subscribe(this,SUBS_ID);
 ## Purchase Listener
@@ -251,6 +243,8 @@ Application
                  }
              });
 
+## Get id purchased
+	  AppPurchase.getInstance().getIdPurchased();
 ## Consume purchase
 	  AppPurchase.getInstance().consumePurchase(PRODUCT_ID);
 ## Get price
