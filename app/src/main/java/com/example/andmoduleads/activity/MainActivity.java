@@ -19,6 +19,7 @@ import com.ads.control.ads.AperoAdConfig;
 import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.ads.wrapper.ApRewardAd;
+import com.ads.control.ads.wrapper.ApRewardItem;
 import com.ads.control.event.AdjustApero;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.funtion.DialogExitListener;
@@ -142,10 +143,16 @@ public class MainActivity extends AppCompatActivity {
 
         findViewById(R.id.btnShowReward).setOnClickListener(v -> {
             if (rewardAd != null && rewardAd.isReady()) {
-                AperoAd.getInstance().forceShowRewardAd(this, rewardAd, new AperoAdCallback());
+                AperoAd.getInstance().forceShowRewardAd(this, rewardAd, new AperoAdCallback(){
+                    @Override
+                    public void onUserEarnedReward(@NonNull ApRewardItem rewardItem) {
+                        super.onUserEarnedReward(rewardItem);
+                        Log.i(TAG, "onUserEarnedReward: ");
+                    }
+                });
                 return;
             }
-            rewardAd = AperoAd.getInstance().getRewardAd(this, getString(R.string.admod_app_reward_id));
+            rewardAd = AperoAd.getInstance().getRewardAdInterstitial(this, getString(R.string.admod_app_reward_inter_id));
         });
 
 
