@@ -65,6 +65,11 @@ class App : AdsMultiDexApplication(){
         listTestDevice.add(ID_TEST_DEVICE);
         aperoAdConfig.setListDeviceTest(listTestDevice);
 	AperoAd.getInstance().init(this, aperoAdConfig, false);
+	
+	// Auto disable ad resume after user click ads and back to app
+	Admob.getInstance().setDisableAdResumeWhenClickAds(true);
+	// If true -> onNextAction() is called right after Ad Interstitial showed
+	Admob.getInstance().setOpenActivityAfterShowInterAds(false);
 	}
 }
 ~~~
