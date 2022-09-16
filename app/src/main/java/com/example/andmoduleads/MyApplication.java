@@ -30,7 +30,6 @@ public class MyApplication extends AdsMultiDexApplication {
     }
 
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -62,7 +61,6 @@ public class MyApplication extends AdsMultiDexApplication {
         listINAPId.add(MainActivity.PRODUCT_ID);
         List<String> listSubsId = new ArrayList<>();
         AppPurchase.getInstance().initBilling(getApplication(),listINAPId,listSubsId);
-
     }
 
 }
