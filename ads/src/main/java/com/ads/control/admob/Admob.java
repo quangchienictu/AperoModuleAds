@@ -71,6 +71,8 @@ import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
+import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback;
 import com.jirbo.adcolony.AdColonyAdapter;
 import com.jirbo.adcolony.AdColonyBundleBuilder;
 
@@ -1645,7 +1647,7 @@ public class Admob {
     }
 
     /**
-     * Khởi tạo quảng cáo reward
+     * Load ad Reward
      *
      * @param context
      * @param id
@@ -1686,18 +1688,57 @@ public class Admob {
         });
     }
 
+    /**
+     * Load ad Reward Interstitial
+     *
+     * @param context
+     * @param id
+     */
+    public void getRewardInterstitial(Context context, String id, AdCallback callback) {
+        if (Arrays.asList(context.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
+            showTestIdAlert(context, REWARD_ADS, id);
+        }
+        if (AppPurchase.getInstance().isPurchased(context)) {
+            return;
+        }
+        this.nativeId = id;
+        if (AppPurchase.getInstance().isPurchased(context)) {
+            return;
+        }
+        RewardedInterstitialAd.load(context, id, getAdRequest(), new RewardedInterstitialAdLoadCallback() {
+            @Override
+            public void onAdLoaded(@NonNull RewardedInterstitialAd rewardedAd) {
+                callback.onRewardAdLoaded(rewardedAd);
+                Log.i(TAG, "RewardInterstitial onAdLoaded "  );
+                rewardedAd.setOnPaidEventListener(adValue -> {
+                    Log.d(TAG, "OnPaidEvent Reward:" + adValue.getValueMicros());
+                    AperoAdjust.pushTrackEventAdmob(adValue);
+                    AperoLogEventManager.logPaidAdImpression(context,
+                            adValue,
+                            rewardedAd.getAdUnitId(),
+                            "rewardedAd");
+                });
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                callback.onAdFailedToLoad(loadAdError);
+                Log.e(TAG, "RewardInterstitial onAdFailedToLoad: " + loadAdError.getMessage());
+            }
+        });
+    }
+
     public RewardedAd getRewardedAd() {
 
         return rewardedAd;
     }
 
     /**
-     * Show quảng cáo reward và nhận kết quả trả về
+     * Show Reward and callback
      *
      * @param context
      * @param adCallback
      */
-
     public void showRewardAds(final Activity context, final RewardCallback adCallback) {
         if (AppPurchase.getInstance().isPurchased(context)) {
             adCallback.onUserEarnedReward(null);
@@ -1732,7 +1773,6 @@ public class Admob {
                     super.onAdShowedFullScreenContent();
 
                     AppOpenManager.getInstance().setInterstitialShowing(true);
-                    initRewardAds(context, nativeId);
                     rewardedAd = null;
                 }
 
@@ -1755,6 +1795,68 @@ public class Admob {
         }
     }
 
+    /**
+     * Show Reward Interstitial and callback
+     *
+     * @param activity
+     * @param rewardedInterstitialAd
+     * @param adCallback
+     */
+    public void showRewardInterstitial(final Activity activity,RewardedInterstitialAd rewardedInterstitialAd, final RewardCallback adCallback) {
+        if (AppPurchase.getInstance().isPurchased(activity)) {
+            adCallback.onUserEarnedReward(null);
+            return;
+        }
+        if (rewardedInterstitialAd == null) {
+            initRewardAds(activity, nativeId);
+
+            adCallback.onRewardedAdFailedToShow(0);
+            return;
+        } else {
+            rewardedInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    super.onAdDismissedFullScreenContent();
+                    if (adCallback != null)
+                        adCallback.onRewardedAdClosed();
+
+                    AppOpenManager.getInstance().setInterstitialShowing(false);
+
+                }
+
+                @Override
+                public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
+                    super.onAdFailedToShowFullScreenContent(adError);
+                    if (adCallback != null)
+                        adCallback.onRewardedAdFailedToShow(adError.getCode());
+                }
+
+                @Override
+                public void onAdShowedFullScreenContent() {
+                    super.onAdShowedFullScreenContent();
+
+                    AppOpenManager.getInstance().setInterstitialShowing(true);
+
+                }
+
+                public void onAdClicked() {
+                    super.onAdClicked();
+                    AperoLogEventManager.logClickAdsEvent(activity, rewardedAd.getAdUnitId());
+                    if (disableAdResumeWhenClickAds)
+                        AppOpenManager.getInstance().disableAdResumeByClickAction();
+                }
+            });
+            rewardedInterstitialAd.show(activity, new OnUserEarnedRewardListener() {
+                @Override
+                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                    if (adCallback != null) {
+                        adCallback.onUserEarnedReward(rewardItem);
+                    }
+                }
+            });
+        }
+    }
+
 
     /**
      * Show quảng cáo reward và nhận kết quả trả về
@@ -1762,7 +1864,6 @@ public class Admob {
      * @param context
      * @param adCallback
      */
-
     public void showRewardAds(final Activity context, RewardedAd rewardedAd, final RewardCallback adCallback) {
         if (AppPurchase.getInstance().isPurchased(context)) {
             adCallback.onUserEarnedReward(null);

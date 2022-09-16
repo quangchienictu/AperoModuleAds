@@ -19,6 +19,7 @@ import com.ads.control.ads.AperoAdConfig;
 import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.ads.wrapper.ApRewardAd;
+import com.ads.control.ads.wrapper.ApRewardItem;
 import com.ads.control.event.AperoAdjust;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.funtion.DialogExitListener;

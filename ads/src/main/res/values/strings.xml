@@ -27,8 +27,9 @@
         <item>ca-app-pub-3940256099942544/2247696110</item>
         <!--        native video-->
         <item>ca-app-pub-3940256099942544/1044960115</item>
+        <!--        reward-interstitial-->
+        <item>ca-app-pub-3940256099942544/5354046379</item>
     </string-array>
-
 
 
 </resources>
