@@ -215,6 +215,11 @@ public class Admob {
         return null;
     }
 
+    /**
+     * If true -> callback onNextAction() is called right after Ad Interstitial showed
+     * It help remove delay when user click close Ad and onAdClosed called
+     * @param openActivityAfterShowInterAds
+     */
     public void setOpenActivityAfterShowInterAds(boolean openActivityAfterShowInterAds) {
         this.openActivityAfterShowInterAds = openActivityAfterShowInterAds;
     }
@@ -551,9 +556,9 @@ public class Admob {
             @Override
             public void onAdClicked() {
                 super.onAdClicked();
-                AperoLogEventManager.logClickAdsEvent(context, mInterstitialSplash.getAdUnitId());
                 if (disableAdResumeWhenClickAds)
                     AppOpenManager.getInstance().disableAdResumeByClickAction();
+                AperoLogEventManager.logClickAdsEvent(context, mInterstitialSplash.getAdUnitId());
             }
         });
 
@@ -840,12 +845,12 @@ public class Admob {
             @Override
             public void onAdClicked() {
                 super.onAdClicked();
-                AperoLogEventManager.logClickAdsEvent(context, mInterstitialAd.getAdUnitId());
                 if (disableAdResumeWhenClickAds)
                     AppOpenManager.getInstance().disableAdResumeByClickAction();
                 if (callback != null) {
                     callback.onAdClicked();
                 }
+                AperoLogEventManager.logClickAdsEvent(context, mInterstitialAd.getAdUnitId());
             }
         });
 
@@ -1084,9 +1089,9 @@ public class Admob {
                 @Override
                 public void onAdClicked() {
                     super.onAdClicked();
-                    AperoLogEventManager.logClickAdsEvent(context, id);
                     if (disableAdResumeWhenClickAds)
                         AppOpenManager.getInstance().disableAdResumeByClickAction();
+                    AperoLogEventManager.logClickAdsEvent(context, id);
                 }
             });
 
@@ -1146,13 +1151,13 @@ public class Admob {
                 @Override
                 public void onAdClicked() {
                     super.onAdClicked();
-                    AperoLogEventManager.logClickAdsEvent(context, id);
                     if (disableAdResumeWhenClickAds)
                         AppOpenManager.getInstance().disableAdResumeByClickAction();
                     if (callback != null) {
                         callback.onAdClicked();
                         Log.d(TAG, "onAdClicked");
                     }
+                    AperoLogEventManager.logClickAdsEvent(context, id);
                 }
 
             });
@@ -1253,13 +1258,13 @@ public class Admob {
                     @Override
                     public void onAdClicked() {
                         super.onAdClicked();
-                        AperoLogEventManager.logClickAdsEvent(context, id);
                         if (disableAdResumeWhenClickAds)
                             AppOpenManager.getInstance().disableAdResumeByClickAction();
                         if (callback != null) {
                             callback.onAdClicked();
                             Log.d(TAG, "onAdClicked");
                         }
+                        AperoLogEventManager.logClickAdsEvent(context, id);
                     }
                 })
                 .withNativeAdOptions(adOptions)
@@ -1308,13 +1313,13 @@ public class Admob {
                     @Override
                     public void onAdClicked() {
                         super.onAdClicked();
-                        AperoLogEventManager.logClickAdsEvent(context, id);
                         if (disableAdResumeWhenClickAds)
                             AppOpenManager.getInstance().disableAdResumeByClickAction();
                         if (callback != null) {
                             callback.onAdClicked();
                             Log.d(TAG, "onAdClicked");
                         }
+                        AperoLogEventManager.logClickAdsEvent(context, id);
                     }
                 })
                 .withNativeAdOptions(adOptions)
@@ -1381,9 +1386,9 @@ public class Admob {
                     @Override
                     public void onAdClicked() {
                         super.onAdClicked();
-                        AperoLogEventManager.logClickAdsEvent(context, id);
                         if (disableAdResumeWhenClickAds)
                             AppOpenManager.getInstance().disableAdResumeByClickAction();
+                        AperoLogEventManager.logClickAdsEvent(context, id);
                     }
                 })
                 .withNativeAdOptions(adOptions)
@@ -1451,13 +1456,13 @@ public class Admob {
                     @Override
                     public void onAdClicked() {
                         super.onAdClicked();
-                        AperoLogEventManager.logClickAdsEvent(context, id);
                         if (disableAdResumeWhenClickAds)
                             AppOpenManager.getInstance().disableAdResumeByClickAction();
                         if (callback != null) {
                             callback.onAdClicked();
                             Log.d(TAG, "onAdClicked");
                         }
+                        AperoLogEventManager.logClickAdsEvent(context, id);
                     }
                 })
                 .withNativeAdOptions(adOptions)
@@ -1733,9 +1738,9 @@ public class Admob {
 
                 public void onAdClicked() {
                     super.onAdClicked();
-                    AperoLogEventManager.logClickAdsEvent(context, rewardedAd.getAdUnitId());
                     if (disableAdResumeWhenClickAds)
                         AppOpenManager.getInstance().disableAdResumeByClickAction();
+                    AperoLogEventManager.logClickAdsEvent(context, rewardedAd.getAdUnitId());
                 }
             });
             rewardedAd.show(context, new OnUserEarnedRewardListener() {
@@ -1798,12 +1803,12 @@ public class Admob {
 
                 public void onAdClicked() {
                     super.onAdClicked();
-                    AperoLogEventManager.logClickAdsEvent(context, rewardedAd.getAdUnitId());
                     if (disableAdResumeWhenClickAds)
                         AppOpenManager.getInstance().disableAdResumeByClickAction();
                     if (adCallback != null) {
                         adCallback.onAdClicked();
                     }
+                    AperoLogEventManager.logClickAdsEvent(context, rewardedAd.getAdUnitId());
                 }
             });
             rewardedAd.show(context, new OnUserEarnedRewardListener() {
