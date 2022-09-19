@@ -41,6 +41,7 @@ import com.ads.control.ads.wrapper.ApRewardAd;
 import com.ads.control.ads.wrapper.ApRewardItem;
 import com.ads.control.applovin.AppLovin;
 import com.ads.control.applovin.AppLovinCallback;
+import com.ads.control.event.AperoAppsflyer;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.RewardCallback;
 import com.ads.control.event.AperoAdjust;
@@ -106,7 +107,7 @@ public class AperoAd {
      * @param context
      * @param adConfig AperoAdConfig object used for SDK initialisation
      */
-    public void init(Context context, AperoAdConfig adConfig) {
+    public void init(Application context, AperoAdConfig adConfig) {
         init(context, adConfig, false);
     }
 
@@ -115,14 +116,20 @@ public class AperoAd {
      * @param adConfig             AperoAdConfig object used for SDK initialisation
      * @param enableDebugMediation set show Mediation Debugger - use only for Max Mediation
      */
-    public void init(Context context, AperoAdConfig adConfig, Boolean enableDebugMediation) {
+    public void init(Application context, AperoAdConfig adConfig, Boolean enableDebugMediation) {
         if (adConfig == null) {
             throw new RuntimeException("cant not set AperoAdConfig null");
         }
         this.adConfig = adConfig;
         AppUtil.VARIANT_DEV = adConfig.isVariantDev();
         Log.i(TAG, "Config variant dev: " + AppUtil.VARIANT_DEV);
+        if (adConfig.isEnableAppsflyer()) {
+            Log.i(TAG, "init appsflyer");
+            AperoAppsflyer.enableAppsflyer = true;
+            AperoAppsflyer.getInstance().init(context, adConfig.getAppsflyerToken(), adConfig.isVariantDev());
+        }
         if (adConfig.isEnableAdjust()) {
+            Log.i(TAG, "init adjust");
             AperoAdjust.enableAdjust = true;
             setupAdjust(adConfig.isVariantDev(), adConfig.getAdjustToken());
         }
@@ -985,7 +992,7 @@ public class AperoAd {
                     @Override
                     public void onAdFailedToLoad(@Nullable LoadAdError i) {
                         super.onAdFailedToLoad(i);
-                        Log.e(TAG, "onAdFailedToLoad : NativeAd" );
+                        Log.e(TAG, "onAdFailedToLoad : NativeAd");
                     }
                 });
                 break;
@@ -1000,7 +1007,7 @@ public class AperoAd {
                     @Override
                     public void onAdFailedToLoad(@Nullable MaxError i) {
                         super.onAdFailedToLoad(i);
-                        Log.e(TAG, "onAdFailedToLoad : NativeAd" );
+                        Log.e(TAG, "onAdFailedToLoad : NativeAd");
                     }
                 });
                 break;
@@ -1031,7 +1038,7 @@ public class AperoAd {
                     @Override
                     public void onAdFailedToLoad(@Nullable LoadAdError i) {
                         super.onAdFailedToLoad(i);
-                        Log.e(TAG, "onAdFailedToLoad : NativeAd" );
+                        Log.e(TAG, "onAdFailedToLoad : NativeAd");
                     }
                 });
                 break;
@@ -1046,7 +1053,7 @@ public class AperoAd {
                     @Override
                     public void onAdFailedToLoad(@Nullable MaxError i) {
                         super.onAdFailedToLoad(i);
-                        Log.e(TAG, "onAdFailedToLoad : NativeAd" );
+                        Log.e(TAG, "onAdFailedToLoad : NativeAd");
                     }
                 });
                 break;
@@ -1173,6 +1180,7 @@ public class AperoAd {
         }
         return apRewardAd;
     }
+
     public ApRewardAd getRewardAdInterstitial(Activity activity, String id) {
         ApRewardAd apRewardAd = new ApRewardAd();
         switch (adConfig.getMediationProvider()) {
@@ -1262,7 +1270,7 @@ public class AperoAd {
         }
         switch (adConfig.getMediationProvider()) {
             case AperoAdConfig.PROVIDER_ADMOB:
-                if (apRewardAd.isRewardInterstitial()){
+                if (apRewardAd.isRewardInterstitial()) {
                     Admob.getInstance().showRewardInterstitial(activity, apRewardAd.getAdmobRewardInter(), new RewardCallback() {
 
                         @Override
@@ -1289,7 +1297,7 @@ public class AperoAd {
                             }
                         }
                     });
-                }else {
+                } else {
                     Admob.getInstance().showRewardAds(activity, apRewardAd.getAdmobReward(), new RewardCallback() {
 
                         @Override

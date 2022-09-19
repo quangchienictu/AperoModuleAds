@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AdsMultiDexApplication extends MultiDexApplication {
-    public static String TAG = "AdjustApero";
+
     protected AperoAdConfig aperoAdConfig;
     protected List<String> listTestDevice ;
     @Override

@@ -68,7 +68,6 @@ public class AperoAdjust {
 
             Adjust.trackAdRevenue( adjustAdRevenue );
 
-            AperoLogEventManager.logPaidAdImpression(context,ad);
         }
     }
 }

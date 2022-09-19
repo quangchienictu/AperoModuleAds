@@ -18,143 +18,30 @@ import com.adjust.sdk.OnEventTrackingFailedListener;
 import com.adjust.sdk.OnEventTrackingSucceededListener;
 import com.adjust.sdk.OnSessionTrackingFailedListener;
 import com.adjust.sdk.OnSessionTrackingSucceededListener;
+import com.ads.control.ads.AperoAdConfig;
 import com.ads.control.event.AperoAdjust;
 import com.ads.control.admob.AppOpenManager;
 import com.ads.control.admob.Admob;
 import com.ads.control.util.AppUtil;
 import com.ads.control.util.SharePreferenceUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AdsApplication extends Application {
 
+    protected AperoAdConfig aperoAdConfig;
+    protected List<String> listTestDevice ;
     @Override
     public void onCreate() {
         super.onCreate();
-        AppUtil.VARIANT_DEV = buildDebug();
-        Log.i("Application", " run debug: " + AppUtil.VARIANT_DEV);
-        Admob.getInstance().init(this, getListTestDeviceId());
-
-        if (enableAdsResume()) {
-            AppOpenManager.getInstance().init(this, getOpenAppAdId());
-        }
-        if (enableAdjust()) {
-            setupIdEvent();
-            setupAdjust();
-        }
-
+        listTestDevice = new ArrayList<String>();
+        aperoAdConfig = new AperoAdConfig();
+        aperoAdConfig.setApplication(this);
         if (SharePreferenceUtils.getInstallTime(this) == 0) {
             SharePreferenceUtils.setInstallTime(this);
         }
-
         AppUtil.currentTotalRevenue001Ad = SharePreferenceUtils.getCurrentTotalRevenue001Ad(this);
     }
 
-
-    public abstract boolean enableAdsResume();
-
-    public abstract List<String> getListTestDeviceId();
-
-    public abstract String getOpenAppAdId();
-
-    public abstract Boolean buildDebug();
-
-    private void setupIdEvent() {
-        AperoAdjust.enableAdjust = true;
-    }
-
-    private void setupAdjust() {
-
-        String environment = buildDebug() ? AdjustConfig.ENVIRONMENT_SANDBOX : AdjustConfig.ENVIRONMENT_PRODUCTION;
-        Log.i("Application", "setupAdjust: " + environment);
-        AdjustConfig config = new AdjustConfig(this, getAdjustToken(), environment);
-
-        // Change the log level.
-        config.setLogLevel(LogLevel.VERBOSE);
-        config.setOnAttributionChangedListener(new OnAttributionChangedListener() {
-            @Override
-            public void onAttributionChanged(AdjustAttribution attribution) {
-                Log.d("AdjustApero", "Attribution callback called!");
-                Log.d("AdjustApero", "Attribution: " + attribution.toString());
-            }
-        });
-
-        // Set event success tracking delegate.
-        config.setOnEventTrackingSucceededListener(new OnEventTrackingSucceededListener() {
-            @Override
-            public void onFinishedEventTrackingSucceeded(AdjustEventSuccess eventSuccessResponseData) {
-                Log.d("AdjustApero", "Event success callback called!");
-                Log.d("AdjustApero", "Event success data: " + eventSuccessResponseData.toString());
-            }
-        });
-        // Set event failure tracking delegate.
-        config.setOnEventTrackingFailedListener(new OnEventTrackingFailedListener() {
-            @Override
-            public void onFinishedEventTrackingFailed(AdjustEventFailure eventFailureResponseData) {
-                Log.d("AdjustApero", "Event failure callback called!");
-                Log.d("AdjustApero", "Event failure data: " + eventFailureResponseData.toString());
-            }
-        });
-
-        // Set session success tracking delegate.
-        config.setOnSessionTrackingSucceededListener(new OnSessionTrackingSucceededListener() {
-            @Override
-            public void onFinishedSessionTrackingSucceeded(AdjustSessionSuccess sessionSuccessResponseData) {
-                Log.d("AdjustApero", "Session success callback called!");
-                Log.d("AdjustApero", "Session success data: " + sessionSuccessResponseData.toString());
-            }
-        });
-
-        // Set session failure tracking delegate.
-        config.setOnSessionTrackingFailedListener(new OnSessionTrackingFailedListener() {
-            @Override
-            public void onFinishedSessionTrackingFailed(AdjustSessionFailure sessionFailureResponseData) {
-                Log.d("AdjustApero", "Session failure callback called!");
-                Log.d("AdjustApero", "Session failure data: " + sessionFailureResponseData.toString());
-            }
-        });
-        config.setSendInBackground(true);
-        Adjust.onCreate(config);
-        registerActivityLifecycleCallbacks(new AdjustLifecycleCallbacks());
-
-    }
-
-
-    public abstract boolean enableAdjust();
-
-
-    public abstract String getAdjustToken();
-
-
-    private static final class AdjustLifecycleCallbacks implements ActivityLifecycleCallbacks {
-        @Override
-        public void onActivityResumed(Activity activity) {
-            Adjust.onResume();
-        }
-
-        @Override
-        public void onActivityPaused(Activity activity) {
-            Adjust.onPause();
-        }
-
-        @Override
-        public void onActivityStopped(Activity activity) {
-        }
-
-        @Override
-        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-        }
-
-        @Override
-        public void onActivityDestroyed(Activity activity) {
-        }
-
-        @Override
-        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        }
-
-        @Override
-        public void onActivityStarted(Activity activity) {
-        }
-    }
 }

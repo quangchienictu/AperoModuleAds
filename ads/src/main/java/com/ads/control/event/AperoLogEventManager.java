@@ -18,10 +18,12 @@ public class AperoLogEventManager {
 
     public static void logPaidAdImpression(Context context, AdValue adValue, String adUnitId, String mediationAdapterClassName) {
         logEventWithAds(context, (float) adValue.getValueMicros(), adValue.getPrecisionType(), adUnitId, mediationAdapterClassName);
+        AperoAdjust.pushTrackEventAdmob(adValue);
     }
 
     public static void logPaidAdImpression(Context context, MaxAd adValue) {
         logEventWithAds(context, (float) adValue.getRevenue(), 0, adValue.getAdUnitId(), adValue.getNetworkName());
+        AperoAdjust.pushTrackEventApplovin(adValue, context);
     }
 
     private static void logEventWithAds(Context context, float revenue, int precision, String adUnitId, String network) {
@@ -145,8 +147,9 @@ public class AperoLogEventManager {
         AperoAdjust.onTrackRevenue(eventName, revenue, currency);
     }
 
-    public static void onTrackRevenuePurchase(float revenue, String currency) {
+    public static void onTrackRevenuePurchase(float revenue, String currency,String idPurchase, int typeIAP) {
         AperoAdjust.onTrackRevenuePurchase(revenue, currency);
+        AperoAppsflyer.getInstance().onTrackRevenuePurchase(revenue, currency,idPurchase, typeIAP);
     }
 
     public static void pushTrackEventAdmob(AdValue adValue) {
