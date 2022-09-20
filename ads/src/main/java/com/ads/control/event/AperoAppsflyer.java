@@ -11,6 +11,7 @@ import com.adjust.sdk.AdjustAdRevenue;
 import com.adjust.sdk.AdjustConfig;
 import com.adjust.sdk.AdjustEvent;
 import com.ads.control.billing.AppPurchase;
+import com.ads.control.funtion.AdType;
 import com.applovin.mediation.MaxAd;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
@@ -86,27 +87,9 @@ public class AperoAppsflyer {
                 });
     }
 
-    public void pushTrackEventAdmobBanner(AdValue adValue, String idAd) {
-        pushTrackEventAdmob(adValue, idAd, AppsFlyerAdNetworkEventType.BANNER);
-    }
 
-    public void pushTrackEventAdmobInter(AdValue adValue, String idAd) {
-        pushTrackEventAdmob(adValue, idAd, AppsFlyerAdNetworkEventType.INTERSTITIAL);
-    }
 
-    public void pushTrackEventAdmobNative(AdValue adValue, String idAd) {
-        pushTrackEventAdmob(adValue, idAd, AppsFlyerAdNetworkEventType.NATIVE);
-    }
-
-    public void pushTrackEventAdmobReward(AdValue adValue, String idAd) {
-        pushTrackEventAdmob(adValue, idAd, AppsFlyerAdNetworkEventType.REWARDED);
-    }
-
-    public void pushTrackEventAdmobAppOpen(Context context, AdValue adValue, String idAd) {
-        pushTrackEventAdmob(adValue, idAd, AppsFlyerAdNetworkEventType.APP_OPEN);
-    }
-
-    public void pushTrackEventAdmob(AdValue adValue, String idAd, AppsFlyerAdNetworkEventType adType) {
+    public void pushTrackEventAdmob(AdValue adValue, String idAd, AdType adType) {
         if (enableAppsflyer) {
             Map<String, String> customParams = new HashMap<>();
             customParams.put(Scheme.AD_UNIT, idAd);
@@ -122,8 +105,20 @@ public class AperoAppsflyer {
         }
     }
 
-    public void pushTrackEventApplovin(MaxAd ad, Context context) {
+    public void pushTrackEventApplovin(MaxAd ad,   AdType adType) {
+        if (enableAppsflyer) {
+            Map<String, String> customParams = new HashMap<>();
+            customParams.put(Scheme.AD_UNIT, ad.getAdUnitId());
+            customParams.put(Scheme.AD_TYPE, adType.toString());
 
+            AppsFlyerAdRevenue.logAdRevenue(
+                    "Max",
+                    MediationNetwork.applovinmax,
+                    Currency.getInstance(Locale.US),
+                    ad.getRevenue() / 1000000.0,
+                    customParams
+            );
+        }
     }
 
     public void onTrackRevenue(Context context, String eventName, float revenue, String currency) {

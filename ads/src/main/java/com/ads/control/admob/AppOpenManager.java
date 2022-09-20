@@ -25,7 +25,9 @@ import com.ads.control.billing.AppPurchase;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
 import com.ads.control.dialog.ResumeLoadingDialog;
 import com.ads.control.event.AperoAdjust;
+import com.ads.control.event.AperoAppsflyer;
 import com.ads.control.event.AperoLogEventManager;
+import com.ads.control.funtion.AdType;
 import com.google.android.gms.ads.AdActivity;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
@@ -225,23 +227,21 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                         if (!isSplash) {
                             AppOpenManager.this.appResumeAd = ad;
                             AppOpenManager.this.appResumeAd.setOnPaidEventListener(adValue -> {
-                                AperoAdjust.pushTrackEventAdmob(adValue);
                                 AperoLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         ad.getAdUnitId(),
                                         ad.getResponseInfo()
-                                                .getMediationAdapterClassName());
+                                                .getMediationAdapterClassName(),AdType.APP_OPEN);
                             });
                             AppOpenManager.this.appResumeLoadTime = (new Date()).getTime();
                         } else {
                             AppOpenManager.this.splashAd = ad;
                             AppOpenManager.this.splashAd.setOnPaidEventListener(adValue -> {
-                                AperoAdjust.pushTrackEventAdmob(adValue);
                                 AperoLogEventManager.logPaidAdImpression(myApplication.getApplicationContext(),
                                         adValue,
                                         ad.getAdUnitId(),
                                         ad.getResponseInfo()
-                                                .getMediationAdapterClassName());
+                                                .getMediationAdapterClassName(),AdType.APP_OPEN);
                             });
                             AppOpenManager.this.splashLoadTime = (new Date()).getTime();
                         }
@@ -603,13 +603,11 @@ public class AppOpenManager implements Application.ActivityLifecycleCallbacks, L
                                         adValue,
                                         appOpenAd.getAdUnitId(),
                                         appOpenAd.getResponseInfo()
-                                                .getMediationAdapterClassName());
+                                                .getMediationAdapterClassName(), AdType.APP_OPEN);
                             });
 
                             showAdIfAvailable(true);
                         }
-
-
                     }
 
                     /**
