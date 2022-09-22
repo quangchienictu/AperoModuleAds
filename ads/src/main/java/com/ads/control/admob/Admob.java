@@ -188,13 +188,6 @@ public class Admob {
                 WebView.setDataDirectorySuffix(processName);
             }
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            String processName = Application.getProcessName();
-            String packageName = context.getPackageName();
-            if (!packageName.equals(processName)) {
-                WebView.setDataDirectorySuffix(processName);
-            }
-        }
 
         MobileAds.initialize(context, initializationStatus -> {
         });
