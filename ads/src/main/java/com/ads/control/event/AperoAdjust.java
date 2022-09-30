@@ -51,10 +51,10 @@ public class AperoAdjust {
 
     public static void pushTrackEventAdmob(AdValue adValue) {
         if (AperoAdjust.enableAdjust) {
-            AdjustAdRevenue adRevenue = new AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB);
-            adRevenue.setRevenue(adValue.getValueMicros() / 1000000.0, adValue.getCurrencyCode());
+                AdjustAdRevenue adRevenue = new AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB);
+                adRevenue.setRevenue(adValue.getValueMicros() / 1000000.0, adValue.getCurrencyCode());
 
-            Adjust.trackAdRevenue(adRevenue);
+                Adjust.trackAdRevenue(adRevenue);
         }
     }
 
