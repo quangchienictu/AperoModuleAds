@@ -18,10 +18,15 @@ public class AperoAdConfig {
 
     private boolean isVariantDev = false;
     private boolean enableAdjust = false;
+    private boolean enableAppsflyer= false;
     /**
      * adjustToken enable adjust and setup adjust token
      */
     private String adjustToken = "";
+    /**
+     * appsflyerToken enable Appsflyer and setup dev key
+     */
+    private String appsflyerToken = "";
     /**
      * eventNamePurchase push event to adjust when user purchased
      */
@@ -41,6 +46,11 @@ public class AperoAdConfig {
         this.isVariantDev = isVariantDev;
     }
 
+    public void enableAppsflyer(String appsflyerToken){
+        enableAppsflyer = true;
+        this.appsflyerToken = appsflyerToken;
+    }
+
     public void enableAdjust(String adjustToken){
         enableAdjust = true;
         this.adjustToken = adjustToken;
@@ -51,6 +61,9 @@ public class AperoAdConfig {
         this.adjustToken = adjustToken;
         this.eventNamePurchase = eventNamePurchase;
     }
+
+
+
 
     public String getEventNamePurchase() {
         return eventNamePurchase;
@@ -79,6 +92,10 @@ public class AperoAdConfig {
         return adjustToken;
     }
 
+    public String getAppsflyerToken() {
+        return appsflyerToken;
+    }
+
     public String getIdAdResume() {
         return idAdResume;
     }
@@ -105,5 +122,9 @@ public class AperoAdConfig {
 
     public Boolean isEnableAdjust() {
         return enableAdjust;
+    }
+
+    public boolean isEnableAppsflyer() {
+        return enableAppsflyer;
     }
 }

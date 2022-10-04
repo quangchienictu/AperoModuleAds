@@ -13,6 +13,7 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.ads.control.event.AperoLogEventManager;
 import com.ads.control.funtion.BillingListener;
 import com.ads.control.funtion.PurchaseListener;
 import com.ads.control.event.AperoAdjust;
@@ -623,8 +624,8 @@ public class AppPurchase {
 
         //tracking adjust
         double price = getPriceWithoutCurrency(idPurchaseCurrent, typeIap);
-        String currentcy = getCurrency(idPurchaseCurrent, typeIap);
-        AperoAdjust.onTrackRevenuePurchase((float) price, currentcy);
+        String currency = getCurrency(idPurchaseCurrent, typeIap);
+        AperoLogEventManager.onTrackRevenuePurchase((float) price, currency, idPurchaseCurrent,typeIap);
 
         if (purchaseListioner != null)
             isPurchase = true;

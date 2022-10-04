@@ -39,6 +39,8 @@
 -keep public class com.android.installreferrer.** { *; }
 #pangle
 -keep class com.bytedance.sdk.openadsdk.** { *; }
+#Appsflyer
+-keep class com.appsflyer.** { *; }
 
 #tintergal
 -keepattributes Signature

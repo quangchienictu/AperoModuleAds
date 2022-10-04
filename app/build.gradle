@@ -9,7 +9,7 @@ android {
 
 
     defaultConfig {
-        applicationId "com.example.andmoduleads"
+        applicationId "com.apero.moduleads"
         minSdkVersion 24
         targetSdkVersion 31
         versionCode 2
@@ -30,6 +30,24 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
+        }
+    }
+    flavorDimensions "default"
+    productFlavors {
+        appDev {
+            //use id test when dev
+            manifestPlaceholders = [ ad_app_id:"ca-app-pub-3940256099942544~3347511713"]
+            buildConfigField "String", "ad_interstitial_splash", "\"ca-app-pub-3940256099942544/1033173712\""
+            buildConfigField "String", "ad_appopen_resume", "\"ca-app-pub-3940256099942544/3419835294\""
+            buildConfigField "Boolean", "build_debug", "true"
+
+        }
+        appProduct {
+            //add your id ad here
+            manifestPlaceholders = [ ad_app_id:"ca-app-pub-3940256099942544~3347511713"]
+            buildConfigField "String", "ad_interstitial_splash", "\"ca-app-pub-3940256099942544/1033173712\""
+            buildConfigField "String", "ad_appopen_resume", "\"ca-app-pub-3940256099942544/3419835294\""
+            buildConfigField "Boolean", "build_debug", "false"
         }
     }
     compileOptions {

@@ -15,6 +15,7 @@ import java.util.List;
 
 public class MyApplication extends AdsMultiDexApplication {
 
+    private final String APPSFLYER_TOKEN = "2PUNpdyDTkedZTgeKkWCyB";
     private final String ADJUST_TOKEN = "cc4jvudppczk";
     private final String EVENT_PURCHASE_ADJUST = "gzel1k";
 
@@ -30,7 +31,6 @@ public class MyApplication extends AdsMultiDexApplication {
     }
 
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -44,9 +44,10 @@ public class MyApplication extends AdsMultiDexApplication {
     }
 
     private void initAds() {
-        aperoAdConfig.setMediationProvider(AperoAdConfig.PROVIDER_ADMOB);
+        aperoAdConfig.setMediationProvider(AperoAdConfig.PROVIDER_MAX);
         aperoAdConfig.setVariant(BuildConfig.DEBUG);
         aperoAdConfig.enableAdjust(ADJUST_TOKEN,EVENT_PURCHASE_ADJUST);
+        aperoAdConfig.enableAppsflyer(APPSFLYER_TOKEN);
         aperoAdConfig.setIdAdResume(AppOpenManager.AD_UNIT_ID_TEST);
         listTestDevice.add("EC25F576DA9B6CE74778B268CB87E431");
         aperoAdConfig.setListDeviceTest(listTestDevice);
@@ -62,7 +63,6 @@ public class MyApplication extends AdsMultiDexApplication {
         listINAPId.add(MainActivity.PRODUCT_ID);
         List<String> listSubsId = new ArrayList<>();
         AppPurchase.getInstance().initBilling(getApplication(),listINAPId,listSubsId);
-
     }
 
 }

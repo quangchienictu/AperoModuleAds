@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.ads.control.funtion.AdType;
 import com.ads.control.util.AppUtil;
 import com.ads.control.util.SharePreferenceUtils;
 import com.applovin.mediation.MaxAd;
@@ -16,12 +17,16 @@ public class AperoLogEventManager {
 
     private static final String TAG = "AperoLogEventManager";
 
-    public static void logPaidAdImpression(Context context, AdValue adValue, String adUnitId, String mediationAdapterClassName) {
+    public static void logPaidAdImpression(Context context, AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
         logEventWithAds(context, (float) adValue.getValueMicros(), adValue.getPrecisionType(), adUnitId, mediationAdapterClassName);
+        AperoAdjust.pushTrackEventAdmob(adValue);
+        AperoAppsflyer.getInstance().pushTrackEventAdmob(adValue, adUnitId, adType);
     }
 
-    public static void logPaidAdImpression(Context context, MaxAd adValue) {
+    public static void logPaidAdImpression(Context context, MaxAd adValue,AdType adType) {
         logEventWithAds(context, (float) adValue.getRevenue(), 0, adValue.getAdUnitId(), adValue.getNetworkName());
+        AperoAdjust.pushTrackEventApplovin(adValue, context);
+        AperoAppsflyer.getInstance().pushTrackEventApplovin(adValue,  adType);
     }
 
     private static void logEventWithAds(Context context, float revenue, int precision, String adUnitId, String network) {
@@ -145,8 +150,9 @@ public class AperoLogEventManager {
         AperoAdjust.onTrackRevenue(eventName, revenue, currency);
     }
 
-    public static void onTrackRevenuePurchase(float revenue, String currency) {
+    public static void onTrackRevenuePurchase(float revenue, String currency,String idPurchase, int typeIAP) {
         AperoAdjust.onTrackRevenuePurchase(revenue, currency);
+        AperoAppsflyer.getInstance().onTrackRevenuePurchase(revenue, currency,idPurchase, typeIAP);
     }
 
     public static void pushTrackEventAdmob(AdValue adValue) {

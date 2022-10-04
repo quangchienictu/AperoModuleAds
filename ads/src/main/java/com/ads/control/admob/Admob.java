@@ -40,7 +40,9 @@ import com.ads.control.ads.nativeAds.AperoAdPlacer;
 import com.ads.control.ads.nativeAds.AperoAdPlacerSettings;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
+import com.ads.control.event.AperoAppsflyer;
 import com.ads.control.funtion.AdCallback;
+import com.ads.control.funtion.AdType;
 import com.ads.control.funtion.AdmodHelper;
 import com.ads.control.funtion.RewardCallback;
 import com.ads.control.event.AperoAdjust;
@@ -489,12 +491,12 @@ public class Admob {
 
         mInterstitialSplash.setOnPaidEventListener(adValue -> {
             Log.d(TAG, "OnPaidEvent splash:" + adValue.getValueMicros());
-            AperoAdjust.pushTrackEventAdmob(adValue);
+
             AperoLogEventManager.logPaidAdImpression(context,
                     adValue,
                     mInterstitialSplash.getAdUnitId(),
                     mInterstitialSplash.getResponseInfo()
-                            .getMediationAdapterClassName());
+                            .getMediationAdapterClassName(), AdType.INTERSTITIAL);
         });
 
         if (handlerTimeout != null && rdTimeout != null) {
@@ -654,13 +656,13 @@ public class Admob {
 
                 if (interstitialAd != null) {
                     interstitialAd.setOnPaidEventListener(adValue -> {
-                        AperoAdjust.pushTrackEventAdmob(adValue);
+                        
                         Log.d(TAG, "OnPaidEvent loadInterstitialAds:" + adValue.getValueMicros());
                         AperoLogEventManager.logPaidAdImpression(context,
                                 adValue,
                                 interstitialAd.getAdUnitId(),
                                 interstitialAd.getResponseInfo()
-                                        .getMediationAdapterClassName());
+                                        .getMediationAdapterClassName(), AdType.INTERSTITIAL);
                     });
                 }
             }
@@ -723,12 +725,12 @@ public class Admob {
                         //tracking adjust
                         interstitialAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
-                            AperoAdjust.pushTrackEventAdmob(adValue);
+
                             AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     interstitialAd.getAdUnitId(),
                                     interstitialAd.getResponseInfo()
-                                            .getMediationAdapterClassName());
+                                            .getMediationAdapterClassName(), AdType.INTERSTITIAL);
                         });
                         Log.i(TAG, "InterstitialAds onAdLoaded");
                     }
@@ -1071,12 +1073,12 @@ public class Admob {
                     if (adView != null) {
                         adView.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
-                            AperoAdjust.pushTrackEventAdmob(adValue);
+
                             AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     adView.getAdUnitId(),
                                     adView.getResponseInfo()
-                                            .getMediationAdapterClassName());
+                                            .getMediationAdapterClassName(), AdType.BANNER);
                         });
                     }
                 }
@@ -1133,12 +1135,12 @@ public class Admob {
                     if (adView != null) {
                         adView.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
-                            AperoAdjust.pushTrackEventAdmob(adValue);
+
                             AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     adView.getAdUnitId(),
                                     adView.getResponseInfo()
-                                            .getMediationAdapterClassName());
+                                            .getMediationAdapterClassName(), AdType.BANNER);
                         });
                     }
                 }
@@ -1235,11 +1237,11 @@ public class Admob {
                         callback.onUnifiedNativeAdLoaded(nativeAd);
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
-                            AperoAdjust.pushTrackEventAdmob(adValue);
+
                             AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     id,
-                                    "native");
+                                    nativeAd.getResponseInfo().getMediationAdapterClassName(), AdType.NATIVE);
                         });
                     }
                 })
@@ -1290,11 +1292,11 @@ public class Admob {
                         callback.onUnifiedNativeAdLoaded(nativeAd);
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent getInterstitalAds:" + adValue.getValueMicros());
-                            AperoAdjust.pushTrackEventAdmob(adValue);
+
                             AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     id,
-                                    "native");
+                                    nativeAd.getResponseInfo().getMediationAdapterClassName(), AdType.NATIVE);
                         });
                     }
                 })
@@ -1356,11 +1358,11 @@ public class Admob {
                                 .inflate(layout, null);
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent native:" + adValue.getValueMicros());
-                            AperoAdjust.pushTrackEventAdmob(adValue);
+
                             AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     id,
-                                    "native");
+                                    nativeAd.getResponseInfo().getMediationAdapterClassName(), AdType.NATIVE);
                         });
                         populateUnifiedNativeAdView(nativeAd, adView);
                         frameLayout.removeAllViews();
@@ -1426,11 +1428,11 @@ public class Admob {
                                 .inflate(layout, null);
                         nativeAd.setOnPaidEventListener(adValue -> {
                             Log.d(TAG, "OnPaidEvent Native:" + adValue.getValueMicros());
-                            AperoAdjust.pushTrackEventAdmob(adValue);
+
                             AperoLogEventManager.logPaidAdImpression(context,
                                     adValue,
                                     id,
-                                    "native");
+                                    nativeAd.getResponseInfo().getMediationAdapterClassName(), AdType.NATIVE);
                         });
                         populateUnifiedNativeAdView(nativeAd, adView);
                         frameLayout.removeAllViews();
@@ -1623,11 +1625,11 @@ public class Admob {
                 Admob.this.rewardedAd.setOnPaidEventListener(adValue -> {
 
                     Log.d(TAG, "OnPaidEvent Reward:" + adValue.getValueMicros());
-                    AperoAdjust.pushTrackEventAdmob(adValue);
+
                     AperoLogEventManager.logPaidAdImpression(context,
                             adValue,
-                            rewardedAd.getAdUnitId(),
-                            "rewardedAd");
+                            rewardedAd.getAdUnitId(),Admob.this.rewardedAd.getResponseInfo().getMediationAdapterClassName()
+                            , AdType.REWARDED);
                 });
             }
 
@@ -1663,11 +1665,12 @@ public class Admob {
                 Admob.this.rewardedAd = rewardedAd;
                 Admob.this.rewardedAd.setOnPaidEventListener(adValue -> {
                     Log.d(TAG, "OnPaidEvent Reward:" + adValue.getValueMicros());
-                    AperoAdjust.pushTrackEventAdmob(adValue);
+
                     AperoLogEventManager.logPaidAdImpression(context,
                             adValue,
                             rewardedAd.getAdUnitId(),
-                            "rewardedAd");
+                            Admob.this.rewardedAd.getResponseInfo().getMediationAdapterClassName()
+                            , AdType.REWARDED);
                 });
 
             }
@@ -1705,11 +1708,11 @@ public class Admob {
                 Log.i(TAG, "RewardInterstitial onAdLoaded "  );
                 rewardedAd.setOnPaidEventListener(adValue -> {
                     Log.d(TAG, "OnPaidEvent Reward:" + adValue.getValueMicros());
-                    AperoAdjust.pushTrackEventAdmob(adValue);
                     AperoLogEventManager.logPaidAdImpression(context,
                             adValue,
                             rewardedAd.getAdUnitId(),
-                            "rewardedAd");
+                             rewardedAd.getResponseInfo().getMediationAdapterClassName()
+                            , AdType.REWARDED);
                 });
             }
 
