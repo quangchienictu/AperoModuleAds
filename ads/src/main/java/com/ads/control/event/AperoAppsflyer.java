@@ -2,6 +2,7 @@ package com.ads.control.event;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -61,6 +62,23 @@ public class AperoAppsflyer {
         AppsFlyerLib.getInstance().setDebugLog(enableDebugLog);
     }
 
+    public void onTrackEventAddToCard(String contentId){
+        Map<String, Object> eventValues = new HashMap<String, Object>();
+        eventValues.put(AFInAppEventParameterName.CONTENT_ID, contentId);
+        AppsFlyerLib.getInstance().logEvent(context,
+                AFInAppEventType.ADD_TO_CART, eventValues, new AppsFlyerRequestListener() {
+                    @Override
+                    public void onSuccess() {
+                        Log.i(TAG, "onTrackEventAddToCard contentId:" + contentId + " success ");
+                    }
+
+                    @Override
+                    public void onError(int i, @NonNull String s) {
+                        Log.i(TAG, "onTrackEventAddToCard contentId:" + contentId + " error: " + s);
+                    }
+                });
+    }
+
     void onTrackRevenuePurchase(float price, String currency, String contentId, int typeIAP) {
         String type = "";
         if (typeIAP == AppPurchase.TYPE_IAP.PURCHASE)
@@ -68,7 +86,7 @@ public class AperoAppsflyer {
         else
             type = "subs";
         Map<String, Object> eventValues = new HashMap<String, Object>();
-        eventValues.put(AFInAppEventParameterName.PRICE, price);
+        eventValues.put(AFInAppEventParameterName.REVENUE, price);
         eventValues.put(AFInAppEventParameterName.CONTENT_ID, contentId);
         eventValues.put(AFInAppEventParameterName.CURRENCY, currency);
         eventValues.put(AFInAppEventParameterName.CONTENT_TYPE, type);
@@ -88,8 +106,8 @@ public class AperoAppsflyer {
     }
 
 
-
     public void pushTrackEventAdmob(AdValue adValue, String idAd, AdType adType) {
+        Log.i(TAG, "pushTrackEventAdmob  enableAppsflyer:"+enableAppsflyer+ " --- value: "+adValue.getValueMicros() / 1000000.0 + " -- adType: " +adType.toString());
         if (enableAppsflyer) {
             Map<String, String> customParams = new HashMap<>();
             customParams.put(Scheme.AD_UNIT, idAd);
@@ -101,11 +119,12 @@ public class AperoAppsflyer {
                     Currency.getInstance(Locale.US),
                     adValue.getValueMicros() / 1000000.0,
                     customParams
-            );
+           );
         }
     }
 
     public void pushTrackEventApplovin(MaxAd ad,   AdType adType) {
+        Log.i(TAG, "pushTrackEventApplovin  enableAppsflyer:"+enableAppsflyer+ " --- value: "+ad.getRevenue()  + " -- adType: " +adType.toString());
         if (enableAppsflyer) {
             Map<String, String> customParams = new HashMap<>();
             customParams.put(Scheme.AD_UNIT, ad.getAdUnitId());
@@ -115,12 +134,15 @@ public class AperoAppsflyer {
                     "Max",
                     MediationNetwork.applovinmax,
                     Currency.getInstance(Locale.US),
-                    ad.getRevenue() / 1000000.0,
+                    ad.getRevenue() ,
                     customParams
             );
         }
     }
 
+    public void updateServerUninstallToken(Application context, String token ) {
+        AppsFlyerLib.getInstance().updateServerUninstallToken(context, token);
+    }
     public void onTrackRevenue(Context context, String eventName, float revenue, String currency) {
 
     }

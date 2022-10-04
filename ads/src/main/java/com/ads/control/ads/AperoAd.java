@@ -126,7 +126,7 @@ public class AperoAd {
         if (adConfig.isEnableAppsflyer()) {
             Log.i(TAG, "init appsflyer");
             AperoAppsflyer.enableAppsflyer = true;
-            AperoAppsflyer.getInstance().init(context, adConfig.getAppsflyerToken(), adConfig.isVariantDev());
+            AperoAppsflyer.getInstance().init(context, adConfig.getAppsflyerToken(),this.adConfig.isVariantDev());
         }
         if (adConfig.isEnableAdjust()) {
             Log.i(TAG, "init adjust");
