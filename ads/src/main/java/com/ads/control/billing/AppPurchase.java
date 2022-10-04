@@ -11,13 +11,10 @@ import android.widget.Toast;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.ads.control.event.AperoLogEventManager;
 import com.ads.control.funtion.BillingListener;
 import com.ads.control.funtion.PurchaseListener;
-import com.ads.control.event.AperoAdjust;
-import com.ads.control.funtion.PurchaseListioner;
 import com.ads.control.util.AppUtil;
 import com.android.billingclient.api.AcknowledgePurchaseParams;
 import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
@@ -34,10 +31,7 @@ import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
-import com.android.billingclient.api.SkuDetails;
-import com.android.billingclient.api.SkuDetailsParams;
-import com.android.billingclient.api.SkuDetailsResponseListener;
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.*;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Currency;
@@ -60,7 +54,7 @@ public class AppPurchase {
     private String productId;
     private ArrayList<QueryProductDetailsParams.Product> listSubscriptionId;
     private ArrayList<QueryProductDetailsParams.Product> listINAPId;
-    private PurchaseListioner purchaseListioner;
+    private PurchaseListener purchaseListener;
     private BillingListener billingListener;
     private Boolean isInitBillingFinish = false;
     private BillingClient billingClient;
@@ -80,8 +74,8 @@ public class AppPurchase {
     private boolean isPurchase = false;//state purchase on app
     private String idPurchased = "";//id purchased
 
-    public void setPurchaseListener(PurchaseListioner purchaseListener) {
-        this.purchaseListioner = purchaseListener;
+    public void setPurchaseListener(PurchaseListener purchaseListener) {
+        this.purchaseListener = purchaseListener;
     }
 
     /**
@@ -162,8 +156,8 @@ public class AppPurchase {
                     handlePurchase(purchase);
                 }
             } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
-                if (purchaseListioner != null)
-                    purchaseListioner.onUserCancelBilling();
+                if (purchaseListener != null)
+                    purchaseListener.onUserCancelBilling();
                 Log.d(TAG, "onPurchasesUpdated:USER_CANCELED ");
             } else {
                 Log.d(TAG, "onPurchasesUpdated:... ");
@@ -435,8 +429,8 @@ public class AppPurchase {
 
     public String purchase(Activity activity, String productId) {
         if (skuListINAPFromStore == null) {
-            if (purchaseListioner != null)
-                purchaseListioner.displayErrorMessage("Billing error init");
+            if (purchaseListener != null)
+                purchaseListener.displayErrorMessage("Billing error init");
             return "";
         }
         if (AppUtil.VARIANT_DEV) {
@@ -477,8 +471,8 @@ public class AppPurchase {
         switch (billingResult.getResponseCode()) {
 
             case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE:
-                if (purchaseListioner != null)
-                    purchaseListioner.displayErrorMessage("Billing not supported for type of request");
+                if (purchaseListener != null)
+                    purchaseListener.displayErrorMessage("Billing not supported for type of request");
                 return "Billing not supported for type of request";
 
             case BillingClient.BillingResponseCode.ITEM_NOT_OWNED:
@@ -486,8 +480,8 @@ public class AppPurchase {
                 return "";
 
             case BillingClient.BillingResponseCode.ERROR:
-                if (purchaseListioner != null)
-                    purchaseListioner.displayErrorMessage("Error completing request");
+                if (purchaseListener != null)
+                    purchaseListener.displayErrorMessage("Error completing request");
                 return "Error completing request";
 
             case BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED:
@@ -506,13 +500,13 @@ public class AppPurchase {
                 return "Timeout";
 
             case BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE:
-                if (purchaseListioner != null)
-                    purchaseListioner.displayErrorMessage("Network error.");
+                if (purchaseListener != null)
+                    purchaseListener.displayErrorMessage("Network error.");
                 return "Network Connection down";
 
             case BillingClient.BillingResponseCode.USER_CANCELED:
-                if (purchaseListioner != null)
-                    purchaseListioner.displayErrorMessage("Request Canceled");
+                if (purchaseListener != null)
+                    purchaseListener.displayErrorMessage("Request Canceled");
                 return "Request Canceled";
 
             case BillingClient.BillingResponseCode.OK:
@@ -526,8 +520,8 @@ public class AppPurchase {
     public String subscribe(Activity activity, String SubsId) {
 
         if (skuListSubsFromStore == null) {
-            if (purchaseListioner != null)
-                purchaseListioner.displayErrorMessage("Billing error init");
+            if (purchaseListener != null)
+                purchaseListener.displayErrorMessage("Billing error init");
             return "";
         }
 
@@ -563,8 +557,8 @@ public class AppPurchase {
         switch (billingResult.getResponseCode()) {
 
             case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE:
-                if (purchaseListioner != null)
-                    purchaseListioner.displayErrorMessage("Billing not supported for type of request");
+                if (purchaseListener != null)
+                    purchaseListener.displayErrorMessage("Billing not supported for type of request");
                 return "Billing not supported for type of request";
 
             case BillingClient.BillingResponseCode.ITEM_NOT_OWNED:
@@ -572,8 +566,8 @@ public class AppPurchase {
                 return "";
 
             case BillingClient.BillingResponseCode.ERROR:
-                if (purchaseListioner != null)
-                    purchaseListioner.displayErrorMessage("Error completing request");
+                if (purchaseListener != null)
+                    purchaseListener.displayErrorMessage("Error completing request");
                 return "Error completing request";
 
             case BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED:
@@ -592,13 +586,13 @@ public class AppPurchase {
                 return "Timeout";
 
             case BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE:
-                if (purchaseListioner != null)
-                    purchaseListioner.displayErrorMessage("Network error.");
+                if (purchaseListener != null)
+                    purchaseListener.displayErrorMessage("Network error.");
                 return "Network Connection down";
 
             case BillingClient.BillingResponseCode.USER_CANCELED:
-                if (purchaseListioner != null)
-                    purchaseListioner.displayErrorMessage("Request Canceled");
+                if (purchaseListener != null)
+                    purchaseListener.displayErrorMessage("Request Canceled");
                 return "Request Canceled";
 
             case BillingClient.BillingResponseCode.OK:
@@ -661,9 +655,9 @@ public class AppPurchase {
         String currency = getCurrency(idPurchaseCurrent, typeIap);
         AperoLogEventManager.onTrackRevenuePurchase((float) price, currency, idPurchaseCurrent,typeIap);
 
-        if (purchaseListioner != null)
+        if (purchaseListener != null)
             isPurchase = true;
-        purchaseListioner.onProductPurchased(purchase.getOrderId(), purchase.getOriginalJson());
+        purchaseListener.onProductPurchased(purchase.getOrderId(), purchase.getOriginalJson());
         if (isConsumePurchase) {
             ConsumeParams consumeParams =
                     ConsumeParams.newBuilder()
