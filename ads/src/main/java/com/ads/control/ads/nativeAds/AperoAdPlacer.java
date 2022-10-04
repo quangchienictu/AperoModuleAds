@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ads.control.R;
@@ -17,6 +18,7 @@ import com.ads.control.ads.wrapper.StatusAd;
 import com.ads.control.funtion.AdCallback;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdValue;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.OnPaidEventListener;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
@@ -88,6 +90,13 @@ public class AperoAdPlacer {
                             nativeAd.setStatus(StatusAd.AD_LOADED);
                             listAd.put(pos, nativeAd);
                             populateAdToViewHolder(holder, unifiedNativeAd, pos);
+                        }
+
+                        @Override
+                        public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                            super.onAdFailedToLoad(i);
+                            ShimmerFrameLayout containerShimmer = holder.itemView.findViewById(R.id.shimmer_container_native);
+                            containerShimmer.setVisibility(View.GONE);
                         }
 
                         @Override
