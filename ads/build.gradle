@@ -63,7 +63,7 @@ dependencies {
 
     def multidex_version = "2.0.1"
     implementation "androidx.multidex:multidex:$multidex_version"
-    def billing_version = "4.0.0"
+    def billing_version = "5.0.0"
     implementation "com.android.billingclient:billing:$billing_version"
     //adjust
     implementation 'com.adjust.sdk:adjust-android:4.28.9'

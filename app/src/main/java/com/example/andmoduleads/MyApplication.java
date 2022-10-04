@@ -39,8 +39,9 @@ public class MyApplication extends AdsMultiDexApplication {
         Admob.getInstance().setNumToShowAds(0);
 
         storageCommon = new StorageCommon();
-        initBilling();
         initAds();
+
+        initBilling();
     }
 
     private void initAds() {
