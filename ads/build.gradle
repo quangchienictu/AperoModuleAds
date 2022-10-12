@@ -86,6 +86,5 @@ dependencies {
 
     // appsflyer
     implementation 'com.appsflyer:af-android-sdk:6.8.2'
-    implementation 'com.segment.analytics.android:analytics:4.+'
     implementation 'com.appsflyer:adrevenue:6.4.3'
 }
