@@ -51,6 +51,8 @@ public class AppPurchase {
     @SuppressLint("StaticFieldLeak")
     private String price = "1.49$";
     private String oldPrice = "2.99$";
+
+    @Deprecated
     private String productId;
     private ArrayList<QueryProductDetailsParams.Product> listSubscriptionId;
     private ArrayList<QueryProductDetailsParams.Product> listINAPId;
@@ -233,9 +235,7 @@ public class AppPurchase {
 
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
+
 
     public void addSubcriptionId(String id) {
         if (listSubscriptionId == null)
@@ -248,8 +248,8 @@ public class AppPurchase {
     }
 
     public void addProductId(String id) {
-        if (listINAPId == null)
-            listINAPId = new ArrayList<QueryProductDetailsParams.Product>();
+        if (listSubscriptionId == null)
+            listSubscriptionId = new ArrayList<QueryProductDetailsParams.Product>();
 
         listSubscriptionId.add(QueryProductDetailsParams.Product.newBuilder()
                 .setProductId(id)
@@ -415,7 +415,7 @@ public class AppPurchase {
         return log.toString();
     }*/
 
-
+    @Deprecated
     public void purchase(Activity activity) {
         if (productId == null) {
             Log.e(TAG, "Purchase false:productId null");
@@ -530,15 +530,11 @@ public class AppPurchase {
             purchase(activity, PRODUCT_ID_TEST);
             return "Billing test";
         }
-        ProductDetails productDetails = skuDetailsINAPMap.get(productId);
+        ProductDetails productDetails = skuDetailsINAPMap.get(SubsId);
         if (productDetails == null) {
             return "Product ID invalid";
         }
-/*        int selectedOfferIndex = 0;// undefined variable for what
-        String offerToken = productDetails
-                .getSubscriptionOfferDetails()
-                .get(selectedOfferIndex)
-                .getOfferToken();*/
+
 
         ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
                 ImmutableList.of(
@@ -691,10 +687,8 @@ public class AppPurchase {
         }
     }
 
-    //    public boolean handleActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        return bp.handleActivityResult(requestCode, resultCode, data);
-//    }
-//
+
+    @Deprecated
     public String getPrice() {
         return getPrice(productId);
     }
