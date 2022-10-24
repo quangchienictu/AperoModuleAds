@@ -5,12 +5,12 @@ This is SDK ads by [Apero](https://apero.vn/). It has built in some sdk for easy
 - MAX Mediation(Applovin)
 - Google Billing
 - Adjust
-- Firebase log tracking event
+- Firebase auto log tracking event, tROAS
 
 # Import Module
 ~~~
 	maven { url 'https://jitpack.io' }
-	implementation 'com.github.AperoVN:AperoModuleAds:5.2.0'
+	implementation 'com.github.AperoVN:AperoModuleAds:5.2.2'
 ~~~	 
 # Summary
 * [Setup AperoAd](#setup_aperoad)
@@ -60,7 +60,7 @@ class App : AdsMultiDexApplication(){
 	...
 	aperoAdConfig.setMediationProvider(AperoAdConfig.PROVIDER_ADMOB);
         aperoAdConfig.setVariant(BuildConfig.build_debug);
-        aperoAdConfig.enableAdjust(ADJUST_TOKEN,EVENT_PURCHASE_ADJUST);
+        aperoAdConfig.enableAdjust(ADJUST_TOKEN); // enable ajust with adjust token
         aperoAdConfig.setIdAdResume(AppOpenManager.AD_UNIT_ID_TEST);
         listTestDevice.add(ID_TEST_DEVICE);
         aperoAdConfig.setListDeviceTest(listTestDevice);
