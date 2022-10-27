@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
             idBanner = getString(R.string.admod_banner_id);
             idNative = getString(R.string.admod_native_id);
             idInter = getString(R.string.admod_interstitial_id);
-            layoutNativeCustom = com.ads.control.R.layout.custom_native_admod_medium;
+            layoutNativeCustom = com.ads.control.R.layout.custom_native_admod_medium_rate;
         } else {
             idBanner = getString(R.string.applovin_test_banner);
             idNative = getString(R.string.applovin_test_native);
