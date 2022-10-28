@@ -22,6 +22,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,14 +41,12 @@ import com.ads.control.ads.nativeAds.AperoAdPlacer;
 import com.ads.control.ads.nativeAds.AperoAdPlacerSettings;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.dialog.PrepareLoadingAdsDialog;
-import com.ads.control.event.AperoAppsflyer;
+import com.ads.control.event.AperoLogEventManager;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.AdType;
 import com.ads.control.funtion.AdmodHelper;
 import com.ads.control.funtion.RewardCallback;
-import com.ads.control.event.AperoAdjust;
 import com.ads.control.util.AppUtil;
-import com.ads.control.event.AperoLogEventManager;
 import com.applovin.mediation.AppLovinExtras;
 import com.applovin.mediation.ApplovinAdapter;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -156,6 +155,7 @@ public class Admob {
 
     /**
      * Disable ad resume when user click ads and back to app
+     *
      * @param disableAdResumeWhenClickAds
      */
     public void setDisableAdResumeWhenClickAds(boolean disableAdResumeWhenClickAds) {
@@ -215,6 +215,7 @@ public class Admob {
     /**
      * If true -> callback onNextAction() is called right after Ad Interstitial showed
      * It help remove delay when user click close Ad and onAdClosed called
+     *
      * @param openActivityAfterShowInterAds
      */
     public void setOpenActivityAfterShowInterAds(boolean openActivityAfterShowInterAds) {
@@ -358,7 +359,7 @@ public class Admob {
             @Override
             public void onAdFailedToShow(@Nullable AdError adError) {
                 super.onAdFailedToShow(adError);
-                if (adListener !=null){
+                if (adListener != null) {
                     adListener.onAdFailedToShow(adError);
                     adListener.onNextAction();
                 }
@@ -451,10 +452,11 @@ public class Admob {
                     }
                 }
             }
+
             @Override
             public void onAdFailedToShow(@Nullable AdError adError) {
                 super.onAdFailedToShow(adError);
-                if (adListener !=null){
+                if (adListener != null) {
                     adListener.onAdFailedToShow(adError);
                     adListener.onNextAction();
                 }
@@ -656,7 +658,7 @@ public class Admob {
 
                 if (interstitialAd != null) {
                     interstitialAd.setOnPaidEventListener(adValue -> {
-                        
+
                         Log.d(TAG, "OnPaidEvent loadInterstitialAds:" + adValue.getValueMicros());
                         AperoLogEventManager.logPaidAdImpression(context,
                                 adValue,
@@ -1499,8 +1501,8 @@ public class Admob {
         adView.setBodyView(adView.findViewById(R.id.ad_body));
         adView.setCallToActionView(adView.findViewById(R.id.ad_call_to_action));
         adView.setIconView(adView.findViewById(R.id.ad_app_icon));
-//        adView.setPriceView(adView.findViewById(R.id.ad_price));
-//        adView.setStarRatingView(adView.findViewById(R.id.ad_stars));
+        adView.setPriceView(adView.findViewById(R.id.ad_price));
+        adView.setStarRatingView(adView.findViewById(R.id.ad_stars));
 //        adView.setStoreView(adView.findViewById(R.id.ad_store));
         adView.setAdvertiserView(adView.findViewById(R.id.ad_advertiser));
 
@@ -1547,16 +1549,16 @@ public class Admob {
             e.printStackTrace();
         }
 
-//        try {
-//            if (nativeAd.getPrice() == null) {
-//                Objects.requireNonNull(adView.getPriceView()).setVisibility(View.INVISIBLE);
-//            } else {
-//                Objects.requireNonNull(adView.getPriceView()).setVisibility(View.VISIBLE);
-//                ((TextView) adView.getPriceView()).setText(nativeAd.getPrice());
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        try {
+            if (nativeAd.getPrice() == null) {
+                Objects.requireNonNull(adView.getPriceView()).setVisibility(View.INVISIBLE);
+            } else {
+                Objects.requireNonNull(adView.getPriceView()).setVisibility(View.VISIBLE);
+                ((TextView) adView.getPriceView()).setText(nativeAd.getPrice());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 //
 //        try {
 //            if (nativeAd.getStore() == null) {
@@ -1569,16 +1571,16 @@ public class Admob {
 //            e.printStackTrace();
 //        }
 //
-//        try {
-//            if (nativeAd.getStarRating() == null) {
-//                Objects.requireNonNull(adView.getStarRatingView()).setVisibility(View.INVISIBLE);
-//            } else {
-//                ((RatingBar) Objects.requireNonNull(adView.getStarRatingView())).setRating(nativeAd.getStarRating().floatValue());
-//                adView.getStarRatingView().setVisibility(View.VISIBLE);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        try {
+            if (nativeAd.getStarRating() == null) {
+                Objects.requireNonNull(adView.getStarRatingView()).setVisibility(View.INVISIBLE);
+            } else {
+                ((RatingBar) Objects.requireNonNull(adView.getStarRatingView())).setRating(nativeAd.getStarRating().floatValue());
+                adView.getStarRatingView().setVisibility(View.VISIBLE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         try {
             if (nativeAd.getAdvertiser() == null) {
@@ -1628,7 +1630,7 @@ public class Admob {
 
                     AperoLogEventManager.logPaidAdImpression(context,
                             adValue,
-                            rewardedAd.getAdUnitId(),Admob.this.rewardedAd.getResponseInfo().getMediationAdapterClassName()
+                            rewardedAd.getAdUnitId(), Admob.this.rewardedAd.getResponseInfo().getMediationAdapterClassName()
                             , AdType.REWARDED);
                 });
             }
@@ -1705,13 +1707,13 @@ public class Admob {
             @Override
             public void onAdLoaded(@NonNull RewardedInterstitialAd rewardedAd) {
                 callback.onRewardAdLoaded(rewardedAd);
-                Log.i(TAG, "RewardInterstitial onAdLoaded "  );
+                Log.i(TAG, "RewardInterstitial onAdLoaded ");
                 rewardedAd.setOnPaidEventListener(adValue -> {
                     Log.d(TAG, "OnPaidEvent Reward:" + adValue.getValueMicros());
                     AperoLogEventManager.logPaidAdImpression(context,
                             adValue,
                             rewardedAd.getAdUnitId(),
-                             rewardedAd.getResponseInfo().getMediationAdapterClassName()
+                            rewardedAd.getResponseInfo().getMediationAdapterClassName()
                             , AdType.REWARDED);
                 });
             }
@@ -1798,7 +1800,7 @@ public class Admob {
      * @param rewardedInterstitialAd
      * @param adCallback
      */
-    public void showRewardInterstitial(final Activity activity,RewardedInterstitialAd rewardedInterstitialAd, final RewardCallback adCallback) {
+    public void showRewardInterstitial(final Activity activity, RewardedInterstitialAd rewardedInterstitialAd, final RewardCallback adCallback) {
         if (AppPurchase.getInstance().isPurchased(activity)) {
             adCallback.onUserEarnedReward(null);
             return;
