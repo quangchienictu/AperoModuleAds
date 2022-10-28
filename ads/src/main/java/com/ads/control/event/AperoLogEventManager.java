@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.ads.control.ads.AperoAdConfig;
 import com.ads.control.funtion.AdType;
 import com.ads.control.util.AppUtil;
 import com.ads.control.util.SharePreferenceUtils;
@@ -18,24 +19,24 @@ public class AperoLogEventManager {
     private static final String TAG = "AperoLogEventManager";
 
     public static void logPaidAdImpression(Context context, AdValue adValue, String adUnitId, String mediationAdapterClassName, AdType adType) {
-        logEventWithAds(context, (float) adValue.getValueMicros(), adValue.getPrecisionType(), adUnitId, mediationAdapterClassName);
+        logEventWithAds(context, (float) adValue.getValueMicros(), adValue.getPrecisionType(), adUnitId, mediationAdapterClassName, AperoAdConfig.PROVIDER_ADMOB);
         AperoAdjust.pushTrackEventAdmob(adValue);
         AperoAppsflyer.getInstance().pushTrackEventAdmob(adValue, adUnitId, adType);
     }
 
-    public static void logPaidAdImpression(Context context, MaxAd adValue,AdType adType) {
-        logEventWithAds(context, (float) adValue.getRevenue(), 0, adValue.getAdUnitId(), adValue.getNetworkName());
+    public static void logPaidAdImpression(Context context, MaxAd adValue, AdType adType) {
+        logEventWithAds(context, (float) adValue.getRevenue(), 0, adValue.getAdUnitId(), adValue.getNetworkName(), AperoAdConfig.PROVIDER_MAX);
         AperoAdjust.pushTrackEventApplovin(adValue, context);
-        AperoAppsflyer.getInstance().pushTrackEventApplovin(adValue,  adType);
+        AperoAppsflyer.getInstance().pushTrackEventApplovin(adValue, adType);
     }
 
-    private static void logEventWithAds(Context context, float revenue, int precision, String adUnitId, String network) {
+    private static void logEventWithAds(Context context, float revenue, int precision, String adUnitId, String network, int mediationProvider) {
         Log.d(TAG, String.format(
-                "Paid event of value %.0f microcents in currency USD of precision %s%n occurred for ad unit %s from ad network %s.",
+                "Paid event of value %.0f microcents in currency USD of precision %s%n occurred for ad unit %s from ad network %s.mediation provider: %s%n",
                 revenue,
                 precision,
                 adUnitId,
-                network));
+                network, mediationProvider));
 
         Bundle params = new Bundle(); // Log ad value in micros.
         params.putDouble("valuemicros", revenue);
@@ -47,9 +48,9 @@ public class AperoLogEventManager {
         params.putString("network", network);
 
         // log revenue this ad
-        logPaidAdImpressionValue(context, revenue / 1000000.0, precision, adUnitId, network);
-        FirebaseAnalyticsUtil.logEventWithAds(context,params);
-        FacebookEventUtils.logEventWithAds(context,params);
+        logPaidAdImpressionValue(context, revenue / 1000000.0, precision, adUnitId, network, mediationProvider);
+        FirebaseAnalyticsUtil.logEventWithAds(context, params);
+        FacebookEventUtils.logEventWithAds(context, params);
         // update current tota
         // l revenue ads
         SharePreferenceUtils.updateCurrentTotalRevenueAd(context, (float) revenue);
@@ -64,7 +65,7 @@ public class AperoLogEventManager {
         logTotalRevenueAdIn7DaysIfNeed(context);
     }
 
-    private static void logPaidAdImpressionValue(Context context, double value, int precision, String adunitid, String network) {
+    private static void logPaidAdImpressionValue(Context context, double value, int precision, String adunitid, String network, int mediationProvider) {
         Bundle params = new Bundle();
         params.putDouble("value", value);
         params.putString("currency", "USD");
@@ -72,8 +73,10 @@ public class AperoLogEventManager {
         params.putString("adunitid", adunitid);
         params.putString("network", network);
 
-        FirebaseAnalyticsUtil.logPaidAdImpressionValue(context, params);
-        FacebookEventUtils.logPaidAdImpressionValue(context, params);
+
+        FirebaseAnalyticsUtil.logPaidAdImpressionValue(context, params, mediationProvider);
+
+        FacebookEventUtils.logPaidAdImpressionValue(context, params, mediationProvider);
     }
 
     public static void logClickAdsEvent(Context context, String adUnitId) {
@@ -150,9 +153,9 @@ public class AperoLogEventManager {
         AperoAdjust.onTrackRevenue(eventName, revenue, currency);
     }
 
-    public static void onTrackRevenuePurchase(float revenue, String currency,String idPurchase, int typeIAP) {
+    public static void onTrackRevenuePurchase(float revenue, String currency, String idPurchase, int typeIAP) {
         AperoAdjust.onTrackRevenuePurchase(revenue, currency);
-        AperoAppsflyer.getInstance().onTrackRevenuePurchase(revenue, currency,idPurchase, typeIAP);
+        AperoAppsflyer.getInstance().onTrackRevenuePurchase(revenue, currency, idPurchase, typeIAP);
     }
 
     public static void pushTrackEventAdmob(AdValue adValue) {
