@@ -46,7 +46,7 @@ public class MyApplication extends AdsMultiDexApplication {
 
     private void initAds() {
         aperoAdConfig.setMediationProvider(AperoAdConfig.PROVIDER_ADMOB);
-        aperoAdConfig.setVariant(BuildConfig.DEBUG);
+        aperoAdConfig.setVariant(BuildConfig.build_debug);
         aperoAdConfig.enableAdjust(ADJUST_TOKEN,EVENT_PURCHASE_ADJUST);
         aperoAdConfig.enableAppsflyer(APPSFLYER_TOKEN);
         aperoAdConfig.setIdAdResume(AppOpenManager.AD_UNIT_ID_TEST);

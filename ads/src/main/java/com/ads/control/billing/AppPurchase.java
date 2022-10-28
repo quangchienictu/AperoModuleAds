@@ -334,7 +334,7 @@ public class AppPurchase {
                             if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null) {
                                 for (Purchase purchase : list) {
                                     for (QueryProductDetailsParams.Product id : listINAPId) {
-                                        if (purchase.getProducts().contains(id)) {
+                                        if (purchase.getProducts().contains(id.zza())) {
                                             Log.d(TAG, "verifyPurchased INAPP: true");
                                             isPurchase = true;
                                             if (!verified) {

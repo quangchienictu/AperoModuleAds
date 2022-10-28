@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -149,15 +150,23 @@ public class MainActivity extends AppCompatActivity {
             rewardAd = AperoAd.getInstance().getRewardAd(this, getString(R.string.admod_app_reward_id));
         });
 
-
-        findViewById(R.id.btIap).setOnClickListener(v -> {
-            InAppDialog dialog = new InAppDialog(this);
-            dialog.setCallback(() -> {
-                AppPurchase.getInstance().purchase(this, PRODUCT_ID);
-                dialog.dismiss();
-
-            });
-            dialog.show();
+        Button btnIAP =  findViewById(R.id.btIap);
+        if (AppPurchase.getInstance().isPurchased()){
+            btnIAP.setText("Consume Purchase");
+        }else {
+            btnIAP.setText("Purchase");
+        }
+        btnIAP.setOnClickListener(v -> {
+            if (AppPurchase.getInstance().isPurchased()){
+                AppPurchase.getInstance().consumePurchase(AppPurchase.PRODUCT_ID_TEST);
+            }else {
+                InAppDialog dialog = new InAppDialog(this);
+                dialog.setCallback(() -> {
+                    AppPurchase.getInstance().purchase(this, PRODUCT_ID);
+                    dialog.dismiss();
+                });
+                dialog.show();
+            }
         });
 
     }

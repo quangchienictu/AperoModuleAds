@@ -41,6 +41,7 @@ import com.ads.control.ads.wrapper.ApRewardAd;
 import com.ads.control.ads.wrapper.ApRewardItem;
 import com.ads.control.applovin.AppLovin;
 import com.ads.control.applovin.AppLovinCallback;
+import com.ads.control.billing.AppPurchase;
 import com.ads.control.event.AperoAppsflyer;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.RewardCallback;
@@ -980,6 +981,14 @@ public class AperoAd {
                              int layoutCustomNative) {
         FrameLayout adPlaceHolder = activity.findViewById(R.id.fl_adplaceholder);
         ShimmerFrameLayout containerShimmerLoading = activity.findViewById(R.id.shimmer_container_native);
+
+        if (AppPurchase.getInstance().isPurchased()){
+            if (containerShimmerLoading!=null){
+                containerShimmerLoading.stopShimmer();
+                containerShimmerLoading.setVisibility(View.GONE);
+            }
+            return;
+        }
         switch (adConfig.getMediationProvider()) {
             case AperoAdConfig.PROVIDER_ADMOB:
                 Admob.getInstance().loadNativeAd(((Context) activity), id, new AdCallback() {
