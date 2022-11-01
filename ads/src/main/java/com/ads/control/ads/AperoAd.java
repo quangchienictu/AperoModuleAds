@@ -176,6 +176,7 @@ public class AperoAd {
 
         // Change the log level.
         config.setLogLevel(LogLevel.VERBOSE);
+        config.setPreinstallTrackingEnabled(true);
         config.setOnAttributionChangedListener(new OnAttributionChangedListener() {
             @Override
             public void onAttributionChanged(AdjustAttribution attribution) {
