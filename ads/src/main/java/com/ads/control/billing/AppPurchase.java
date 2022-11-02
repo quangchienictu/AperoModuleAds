@@ -359,12 +359,7 @@ public class AppPurchase {
         }
 
         if (listSubscriptionId != null) {
-            billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS, new PurchasesResponseListener() {
-                @Override
-                public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> list) {
 
-                }
-            });
             billingClient.queryPurchasesAsync(
                     QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.SUBS).build(),
                     new PurchasesResponseListener() {

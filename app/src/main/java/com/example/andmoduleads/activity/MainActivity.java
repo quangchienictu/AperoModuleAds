@@ -17,6 +17,7 @@ import com.ads.control.admob.AppOpenManager;
 import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdCallback;
 import com.ads.control.ads.AperoAdConfig;
+import com.ads.control.ads.nativeAds.AperoNativeAdView;
 import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.ads.wrapper.ApRewardAd;
@@ -52,12 +53,15 @@ public class MainActivity extends AppCompatActivity {
     private String idInter = "";
 
     private int layoutNativeCustom;
-
+    private AperoNativeAdView aperoNativeAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         frAds = findViewById(R.id.fl_adplaceholder);
+        aperoNativeAdView = findViewById(R.id.aperoNativeAds);
+
+
         configMediationProvider();
         AperoAd.getInstance().setCountClickToShowAds(3);
 
@@ -71,8 +75,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom);
-
+//        AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom);
+        aperoNativeAdView.setLayoutLoading(R.layout.loading_native_medium);
+        aperoNativeAdView.setLayoutCustomNativeAd(layoutNativeCustom);
+        aperoNativeAdView.loadNativeAd(this, idNative);
         AppPurchase.getInstance().setPurchaseListener(new PurchaseListener() {
             @Override
             public void onProductPurchased(String productId, String transactionDetails) {

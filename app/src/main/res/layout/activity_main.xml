@@ -7,10 +7,17 @@
     android:background="#FDA6A6"
     tools:context=".activity.MainActivity">
 
+    <com.ads.control.ads.nativeAds.AperoNativeAdView
+        android:layout_width="match_parent"
+        android:id="@+id/aperoNativeAds"
 
-    <include
+        android:layout_height="wrap_content"/>
+
+<!--    <include
+        app:layoutLoading="@layout/layout_native_medium"
+        app:layoutCustomNativeAd="@layout/custom_native_admod_medium_rate"
         android:id="@+id/include3"
-        layout="@layout/layout_native_medium" />
+        layout="@layout/layout_native_medium" />-->
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/linearLayoutCompat"
@@ -20,7 +27,7 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/include"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include3">
+        app:layout_constraintTop_toBottomOf="@+id/aperoNativeAds">
 
 
         <Button
