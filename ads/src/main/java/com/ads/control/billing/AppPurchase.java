@@ -32,6 +32,7 @@ import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
 import com.google.common.collect.*;
+
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Currency;
@@ -83,6 +84,7 @@ public class AppPurchase {
     /**
      * Listener init billing app
      * When init available auto call onInitBillingFinish with resultCode = 0
+     *
      * @param billingListener
      */
     public void setBillingListener(BillingListener billingListener) {
@@ -113,6 +115,7 @@ public class AppPurchase {
     /**
      * Listener init billing app with timeout
      * When init available auto call onInitBillingFinish with resultCode = 0
+     *
      * @param billingListener
      * @param timeout
      */
@@ -236,7 +239,6 @@ public class AppPurchase {
     }
 
 
-
     public void addSubcriptionId(String id) {
         if (listSubscriptionId == null)
             listSubscriptionId = new ArrayList<QueryProductDetailsParams.Product>();
@@ -258,7 +260,7 @@ public class AppPurchase {
     }
 
     public void initBilling(final Application application) {
-        listSubscriptionId =new ArrayList<QueryProductDetailsParams.Product>();
+        listSubscriptionId = new ArrayList<QueryProductDetailsParams.Product>();
         listINAPId = new ArrayList<QueryProductDetailsParams.Product>();
         if (AppUtil.VARIANT_DEV) {
             listSubscriptionId.add(QueryProductDetailsParams.Product.newBuilder()
@@ -312,8 +314,8 @@ public class AppPurchase {
         return isPurchase;
     }
 
-    public String getIdPurchased(){
-        return  idPurchased;
+    public String getIdPurchased() {
+        return idPurchased;
     }
 
     private boolean verifiedINAP = false;
@@ -644,7 +646,7 @@ public class AppPurchase {
         //tracking adjust
         double price = getPriceWithoutCurrency(idPurchaseCurrent, typeIap);
         String currency = getCurrency(idPurchaseCurrent, typeIap);
-        AperoLogEventManager.onTrackRevenuePurchase((float) price, currency, idPurchaseCurrent,typeIap);
+        AperoLogEventManager.onTrackRevenuePurchase((float) price, currency, idPurchaseCurrent, typeIap);
 
         if (purchaseListener != null)
             isPurchase = true;
@@ -703,33 +705,91 @@ public class AppPurchase {
         ProductDetails skuDetails = skuDetailsSubsMap.get(productId);
         if (skuDetails == null)
             return "";
-        Log.e(TAG, "getPrice: " + skuDetails.getOneTimePurchaseOfferDetails().getFormattedPrice());
 
-        return skuDetails.getOneTimePurchaseOfferDetails().getFormattedPrice();
+        Log.e(TAG, "getPrice: " + skuDetails.getOneTimePurchaseOfferDetails().getFormattedPrice());
+        List<ProductDetails.SubscriptionOfferDetails> subsDetail = skuDetails.getSubscriptionOfferDetails();
+        List<ProductDetails.PricingPhase> pricingPhaseList = subsDetail.get(subsDetail.size() - 1).getPricingPhases().getPricingPhaseList();
+        return pricingPhaseList.get(pricingPhaseList.size() - 1).getFormattedPrice();
     }
 
+    /**
+     * Get Price Pricing Phase List Subs
+     * @param productId
+     * @return
+     */
+    public List<ProductDetails.PricingPhase> getPricePricingPhaseList(String productId) {
+        ProductDetails skuDetails = skuDetailsSubsMap.get(productId);
+        if (skuDetails == null)
+            return null;
+
+        Log.e(TAG, "getPrice: " + skuDetails.getOneTimePurchaseOfferDetails().getFormattedPrice());
+        List<ProductDetails.SubscriptionOfferDetails> subsDetail = skuDetails.getSubscriptionOfferDetails();
+        List<ProductDetails.PricingPhase> pricingPhaseList = subsDetail.get(subsDetail.size() - 1).getPricingPhases().getPricingPhaseList();
+        return pricingPhaseList;
+    }
+
+    /**
+     * Get Formatted Price by country
+     * Get final price with id
+     * @param productId
+     * @return
+     */
     public String getIntroductorySubPrice(String productId) {
         ProductDetails skuDetails = skuDetailsSubsMap.get(productId);
         if (skuDetails == null) {
             return "";
         }
-        return skuDetails.getOneTimePurchaseOfferDetails().getFormattedPrice();
+        if (skuDetails.getOneTimePurchaseOfferDetails() !=null)
+            return skuDetails.getOneTimePurchaseOfferDetails().getFormattedPrice();
+        else if (skuDetails.getSubscriptionOfferDetails() !=null){
+            List<ProductDetails.SubscriptionOfferDetails> subsDetail = skuDetails.getSubscriptionOfferDetails();
+            List<ProductDetails.PricingPhase> pricingPhaseList = subsDetail.get(subsDetail.size() - 1).getPricingPhases().getPricingPhaseList();
+            return pricingPhaseList.get(pricingPhaseList.size() - 1).getFormattedPrice();
+        }else {
+            return "";
+        }
+
     }
 
+    /**
+     * Get Currency subs or IAP by country
+     * @param productId
+     * @param typeIAP
+     * @return
+     */
     public String getCurrency(String productId, int typeIAP) {
         ProductDetails skuDetails = typeIAP == TYPE_IAP.PURCHASE ? skuDetailsINAPMap.get(productId) : skuDetailsSubsMap.get(productId);
         if (skuDetails == null) {
             return "";
         }
-        return skuDetails.getOneTimePurchaseOfferDetails().getPriceCurrencyCode();
+        if (typeIAP == TYPE_IAP.PURCHASE)
+            return skuDetails.getOneTimePurchaseOfferDetails().getPriceCurrencyCode();
+        else {
+            List<ProductDetails.SubscriptionOfferDetails> subsDetail = skuDetails.getSubscriptionOfferDetails();
+            List<ProductDetails.PricingPhase> pricingPhaseList = subsDetail.get(subsDetail.size() - 1).getPricingPhases().getPricingPhaseList();
+            return pricingPhaseList.get(pricingPhaseList.size() - 1).getPriceCurrencyCode();
+        }
     }
 
+    /**
+     * Get Price Amount Micros subs or IAP
+     * Get final price with id
+     * @param productId
+     * @param typeIAP
+     * @return
+     */
     public double getPriceWithoutCurrency(String productId, int typeIAP) {
         ProductDetails skuDetails = typeIAP == TYPE_IAP.PURCHASE ? skuDetailsINAPMap.get(productId) : skuDetailsSubsMap.get(productId);
         if (skuDetails == null) {
             return 0;
         }
-        return skuDetails.getOneTimePurchaseOfferDetails().getPriceAmountMicros();
+        if (typeIAP == TYPE_IAP.PURCHASE)
+            return skuDetails.getOneTimePurchaseOfferDetails().getPriceAmountMicros();
+        else {
+            List<ProductDetails.SubscriptionOfferDetails> subsDetail = skuDetails.getSubscriptionOfferDetails();
+            List<ProductDetails.PricingPhase> pricingPhaseList = subsDetail.get(subsDetail.size() - 1).getPricingPhases().getPricingPhaseList();
+            return pricingPhaseList.get(pricingPhaseList.size() - 1).getPriceAmountMicros();
+        }
     }
 //
 //    public String getOldPrice() {
@@ -739,6 +799,12 @@ public class AppPurchase {
 //        return formatCurrency(skuDetails.priceValue / discount, skuDetails.currency);
 //    }
 
+    /**
+     * Format currency and price by country
+     * @param price
+     * @param currency
+     * @return
+     */
     private String formatCurrency(double price, String currency) {
         NumberFormat format = NumberFormat.getCurrencyInstance();
         format.setMaximumFractionDigits(0);
