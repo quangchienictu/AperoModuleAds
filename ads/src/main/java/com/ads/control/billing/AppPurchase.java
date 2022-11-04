@@ -527,17 +527,18 @@ public class AppPurchase {
             purchase(activity, PRODUCT_ID_TEST);
             return "Billing test";
         }
-        ProductDetails productDetails = skuDetailsINAPMap.get(SubsId);
+        ProductDetails productDetails = skuDetailsSubsMap.get(SubsId);
         if (productDetails == null) {
             return "Product ID invalid";
         }
-
-
+        ProductDetails skuDetails = skuDetailsSubsMap.get(SubsId);
+        List<ProductDetails.SubscriptionOfferDetails> subsDetail = skuDetails.getSubscriptionOfferDetails();
+        String offerToken = subsDetail.get(subsDetail.size() - 1).getOfferToken();
         ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
                 ImmutableList.of(
                         BillingFlowParams.ProductDetailsParams.newBuilder()
                                 .setProductDetails(productDetails)
-//                                .setOfferToken(offerToken)
+                                .setOfferToken(offerToken)
                                 .build()
                 );
 
