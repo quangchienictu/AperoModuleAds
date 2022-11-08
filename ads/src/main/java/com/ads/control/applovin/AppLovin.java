@@ -624,6 +624,7 @@ public class AppLovin {
                         dialog.dismiss();
                     dialog = new PrepareLoadingAdsDialog(context);
                     try {
+                        callback.onInterstitialShow();
                         dialog.setCancelable(false);
                         dialog.show();
                     } catch (Exception e) {

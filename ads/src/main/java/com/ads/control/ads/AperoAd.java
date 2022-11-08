@@ -127,7 +127,7 @@ public class AperoAd {
         if (adConfig.isEnableAppsflyer()) {
             Log.i(TAG, "init appsflyer");
             AperoAppsflyer.enableAppsflyer = true;
-            AperoAppsflyer.getInstance().init(context, adConfig.getAppsflyerToken(),this.adConfig.isVariantDev());
+            AperoAppsflyer.getInstance().init(context, adConfig.getAppsflyerToken(), this.adConfig.isVariantDev());
         }
         if (adConfig.isEnableAdjust()) {
             Log.i(TAG, "init adjust");
@@ -788,9 +788,13 @@ public class AperoAd {
                     @Override
                     public void onAdClicked() {
                         super.onAdClicked();
-                        if (callback != null) {
-                            callback.onAdClicked();
-                        }
+                        callback.onAdClicked();
+                    }
+
+                    @Override
+                    public void onInterstitialShow() {
+                        super.onInterstitialShow();
+                        callback.onInterstitialShow();
                     }
                 };
                 Admob.getInstance().forceShowInterstitial(context, mInterstitialAd.getInterstitialAd(), adCallback);
@@ -824,9 +828,13 @@ public class AperoAd {
                     @Override
                     public void onAdClicked() {
                         super.onAdClicked();
-                        if (callback != null) {
-                            callback.onAdClicked();
-                        }
+                        callback.onAdClicked();
+                    }
+
+                    @Override
+                    public void onInterstitialShow() {
+                        super.onInterstitialShow();
+                        callback.onInterstitialShow();
                     }
                 }, false);
         }
@@ -931,6 +939,14 @@ public class AperoAd {
                             callback.onAdClicked();
                         }
                     }
+
+                    @Override
+                    public void onInterstitialShow() {
+                        super.onInterstitialShow();
+                        if (callback != null) {
+                            callback.onInterstitialShow();
+                        }
+                    }
                 };
                 Admob.getInstance().showInterstitialAdByTimes(context, mInterstitialAd.getInterstitialAd(), adCallback);
                 break;
@@ -967,6 +983,14 @@ public class AperoAd {
                             callback.onAdClicked();
                         }
                     }
+
+                    @Override
+                    public void onInterstitialShow() {
+                        super.onInterstitialShow();
+                        if (callback != null) {
+                            callback.onInterstitialShow();
+                        }
+                    }
                 }, false);
         }
     }
@@ -983,8 +1007,8 @@ public class AperoAd {
         FrameLayout adPlaceHolder = activity.findViewById(R.id.fl_adplaceholder);
         ShimmerFrameLayout containerShimmerLoading = activity.findViewById(R.id.shimmer_container_native);
 
-        if (AppPurchase.getInstance().isPurchased()){
-            if (containerShimmerLoading!=null){
+        if (AppPurchase.getInstance().isPurchased()) {
+            if (containerShimmerLoading != null) {
                 containerShimmerLoading.stopShimmer();
                 containerShimmerLoading.setVisibility(View.GONE);
             }

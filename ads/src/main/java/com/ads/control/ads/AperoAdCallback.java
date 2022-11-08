@@ -10,13 +10,11 @@ import com.ads.control.ads.wrapper.ApRewardAd;
 import com.ads.control.ads.wrapper.ApRewardItem;
 
 public class AperoAdCallback {
-
-
-    public void onNextAction(){}
+    public void onNextAction() {
+    }
 
     public void onAdClosed() {
     }
-
 
     public void onAdFailedToLoad(@Nullable ApAdError adError) {
     }
@@ -26,7 +24,6 @@ public class AperoAdCallback {
 
     public void onAdLeftApplication() {
     }
-
 
     public void onAdLoaded() {
 
@@ -51,7 +48,12 @@ public class AperoAdCallback {
     public void onNativeAdLoaded(@NonNull ApNativeAd nativeAd) {
 
     }
+
     public void onUserEarnedReward(@NonNull ApRewardItem rewardItem) {
+
+    }
+
+    public void onInterstitialShow() {
 
     }
 }

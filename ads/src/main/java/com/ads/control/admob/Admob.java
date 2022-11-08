@@ -892,6 +892,7 @@ public class Admob {
                     dialog = new PrepareLoadingAdsDialog(context);
                     dialog.setCancelable(false);
                     try {
+                        callback.onInterstitialShow();
                         dialog.show();
                     } catch (Exception e) {
                         callback.onNextAction();
@@ -905,12 +906,9 @@ public class Admob {
                     if (((AppCompatActivity) context).getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
                         if (openActivityAfterShowInterAds && callback != null) {
                             callback.onNextAction();
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (dialog != null && dialog.isShowing() && !((Activity) context).isDestroyed())
-                                        dialog.dismiss();
-                                }
+                            new Handler().postDelayed(() -> {
+                                if (dialog != null && dialog.isShowing() && !((Activity) context).isDestroyed())
+                                    dialog.dismiss();
                             }, 1500);
                         }
                         Log.i(TAG, "start show InterstitialAd " + ((AppCompatActivity) context).getLifecycle().getCurrentState().name() + "/" + ProcessLifecycleOwner.get().getLifecycle().getCurrentState().name());

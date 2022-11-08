@@ -21,13 +21,12 @@ import com.ads.control.ads.nativeAds.AperoNativeAdView;
 import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
 import com.ads.control.ads.wrapper.ApRewardAd;
-import com.ads.control.ads.wrapper.ApRewardItem;
-import com.ads.control.event.AperoAdjust;
 import com.ads.control.billing.AppPurchase;
-import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.dialog.DialogExitApp1;
 import com.ads.control.dialog.InAppDialog;
+import com.ads.control.event.AperoAdjust;
 import com.ads.control.funtion.AdCallback;
+import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.funtion.PurchaseListener;
 import com.example.andmoduleads.R;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -54,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int layoutNativeCustom;
     private AperoNativeAdView aperoNativeAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btShowAds).setOnClickListener(v -> {
             if (mInterstitialAd.isReady()) {
 
-                ApInterstitialAd inter =    AperoAd.getInstance().getInterstitialAds(this, idInter);
+                ApInterstitialAd inter = AperoAd.getInstance().getInterstitialAds(this, idInter);
 
                 AperoAd.getInstance().showInterstitialAdByTimes(this, mInterstitialAd, new AperoAdCallback() {
                     @Override
@@ -119,6 +119,12 @@ public class MainActivity extends AppCompatActivity {
                     public void onAdFailedToShow(@Nullable ApAdError adError) {
                         super.onAdFailedToShow(adError);
                         Log.i(TAG, "onAdFailedToShow:" + adError.getMessage());
+                    }
+
+                    @Override
+                    public void onInterstitialShow() {
+                        super.onInterstitialShow();
+                        Log.d(TAG, "onInterstitialShow");
                     }
                 }, true);
             } else {
@@ -141,6 +147,12 @@ public class MainActivity extends AppCompatActivity {
                         super.onAdFailedToShow(adError);
                         Log.i(TAG, "onAdFailedToShow:" + adError.getMessage());
                     }
+
+                    @Override
+                    public void onInterstitialShow() {
+                        super.onInterstitialShow();
+                        Log.d(TAG, "onInterstitialShow");
+                    }
                 }, true);
             } else {
                 loadAdInterstitial();
@@ -156,16 +168,16 @@ public class MainActivity extends AppCompatActivity {
             rewardAd = AperoAd.getInstance().getRewardAd(this, getString(R.string.admod_app_reward_id));
         });
 
-        Button btnIAP =  findViewById(R.id.btIap);
-        if (AppPurchase.getInstance().isPurchased()){
+        Button btnIAP = findViewById(R.id.btIap);
+        if (AppPurchase.getInstance().isPurchased()) {
             btnIAP.setText("Consume Purchase");
-        }else {
+        } else {
             btnIAP.setText("Purchase");
         }
         btnIAP.setOnClickListener(v -> {
-            if (AppPurchase.getInstance().isPurchased()){
+            if (AppPurchase.getInstance().isPurchased()) {
                 AppPurchase.getInstance().consumePurchase(AppPurchase.PRODUCT_ID_TEST);
-            }else {
+            } else {
                 InAppDialog dialog = new InAppDialog(this);
                 dialog.setCallback(() -> {
                     AppPurchase.getInstance().purchase(this, PRODUCT_ID);
