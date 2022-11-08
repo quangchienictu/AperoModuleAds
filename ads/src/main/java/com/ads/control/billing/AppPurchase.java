@@ -69,10 +69,16 @@ public class AppPurchase {
     private boolean isListGot;
     private boolean isConsumePurchase = false;
 
+    private int countReconnectBilling = 0;
+    private int countMaxReconnectBilling = 4;
     //tracking purchase adjust
     private String idPurchaseCurrent = "";
     private int typeIap;
-    private boolean verified = false;
+    // status verify purchase INAP & SUBS
+    private boolean verifyFinish = false;
+
+    private boolean isVerifyINAP = false;
+    private boolean isVerifySUBS = false;
 
     private boolean isPurchase = false;//state purchase on app
     private String idPurchased = "";//id purchased
@@ -318,13 +324,11 @@ public class AppPurchase {
         return idPurchased;
     }
 
-    private boolean verifiedINAP = false;
-    private boolean verifiedSUBS = false;
 
     // kiểm tra trạng thái purchase
     public void verifyPurchased(boolean isCallback) {
         Log.d(TAG, "isPurchased : " + listSubscriptionId.size());
-        verified = false;
+        verifyFinish = false;
         if (listINAPId != null) {
             billingClient.queryPurchasesAsync(
                     QueryPurchasesParams.newBuilder().setProductType(BillingClient.ProductType.INAPP).build(),
@@ -339,22 +343,31 @@ public class AppPurchase {
                                         if (purchase.getProducts().contains(id.zza())) {
                                             Log.d(TAG, "verifyPurchased INAPP: true");
                                             isPurchase = true;
-                                            if (!verified) {
+                                            if (!verifyFinish) {
                                                 if (billingListener != null && isCallback)
                                                     billingListener.onInitBillingFinished(billingResult.getResponseCode());
-                                                verified = true;
-                                                verifiedINAP = true;
+                                                verifyFinish = true;
+                                                isVerifyINAP = true;
                                                 return;
                                             }
                                         }
                                     }
                                 }
+                            } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED) {
+                                Log.e(TAG, "onQueryPurchasesResponse: SERVICE_DISCONNECTED");
+                                verifyFinish = true;
+                                if (countReconnectBilling >= countMaxReconnectBilling)
+                                    return;
+                                billingClient.startConnection(purchaseClientStateListener);
+                                countReconnectBilling++;
+                                return;
                             }
-                            if (verifiedSUBS && !verified) {
+
+                            if (isVerifySUBS && !verifyFinish) {
                                 // chưa mua subs và IAP
                                 billingListener.onInitBillingFinished(billingResult.getResponseCode());
                             }
-                            verifiedINAP = true;
+                            isVerifyINAP = true;
                         }
                     }
             );
@@ -375,24 +388,31 @@ public class AppPurchase {
                                         if (purchase.getProducts().contains(id)) {
                                             Log.d(TAG, "verifyPurchased SUBS: true");
                                             isPurchase = true;
-                                            if (!verified) {
+                                            if (!verifyFinish) {
                                                 if (billingListener != null && isCallback)
                                                     billingListener.onInitBillingFinished(billingResult.getResponseCode());
-                                                verified = true;
-                                                verifiedINAP = true;
+                                                verifyFinish = true;
+                                                isVerifySUBS = true;
                                                 return;
                                             }
                                         }
                                     }
                                 }
+                            } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED) {
+                                verifyFinish = true;
+                                if (countReconnectBilling >= countMaxReconnectBilling)
+                                    return;
+                                billingClient.startConnection(purchaseClientStateListener);
+                                countReconnectBilling++;
+                                return;
                             }
-                            if (verifiedINAP && !verified) {
+                            if (isVerifyINAP && !verifyFinish) {
                                 // chưa mua subs và IAP
                                 if (billingListener != null && isCallback) {
                                     billingListener.onInitBillingFinished(billingResult.getResponseCode());
                                 }
                             }
-                            verifiedSUBS = true;
+                            isVerifySUBS = true;
                         }
                     }
             );
@@ -716,6 +736,7 @@ public class AppPurchase {
 
     /**
      * Get Price Pricing Phase List Subs
+     *
      * @param productId
      * @return
      */
@@ -732,6 +753,7 @@ public class AppPurchase {
     /**
      * Get Formatted Price by country
      * Get final price with id
+     *
      * @param productId
      * @return
      */
@@ -740,13 +762,13 @@ public class AppPurchase {
         if (skuDetails == null) {
             return "";
         }
-        if (skuDetails.getOneTimePurchaseOfferDetails() !=null)
+        if (skuDetails.getOneTimePurchaseOfferDetails() != null)
             return skuDetails.getOneTimePurchaseOfferDetails().getFormattedPrice();
-        else if (skuDetails.getSubscriptionOfferDetails() !=null){
+        else if (skuDetails.getSubscriptionOfferDetails() != null) {
             List<ProductDetails.SubscriptionOfferDetails> subsDetail = skuDetails.getSubscriptionOfferDetails();
             List<ProductDetails.PricingPhase> pricingPhaseList = subsDetail.get(subsDetail.size() - 1).getPricingPhases().getPricingPhaseList();
             return pricingPhaseList.get(pricingPhaseList.size() - 1).getFormattedPrice();
-        }else {
+        } else {
             return "";
         }
 
@@ -754,6 +776,7 @@ public class AppPurchase {
 
     /**
      * Get Currency subs or IAP by country
+     *
      * @param productId
      * @param typeIAP
      * @return
@@ -775,6 +798,7 @@ public class AppPurchase {
     /**
      * Get Price Amount Micros subs or IAP
      * Get final price with id
+     *
      * @param productId
      * @param typeIAP
      * @return
@@ -802,6 +826,7 @@ public class AppPurchase {
 
     /**
      * Format currency and price by country
+     *
      * @param price
      * @param currency
      * @return
