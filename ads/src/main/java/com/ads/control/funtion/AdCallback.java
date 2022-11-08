@@ -13,7 +13,8 @@ import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
 
 public class AdCallback {
 
-    public void onNextAction(){}
+    public void onNextAction() {
+    }
 
     public void onAdClosed() {
     }
@@ -31,6 +32,7 @@ public class AdCallback {
 
     public void onAdLoaded() {
     }
+
     public void onAdSplashReady() {
     }
 
@@ -52,6 +54,10 @@ public class AdCallback {
 
 
     public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
+
+    }
+
+    public void onInterstitialShow() {
 
     }
 }
