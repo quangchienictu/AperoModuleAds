@@ -353,11 +353,14 @@ public class AppPurchase {
                                         }
                                     }
                                 }
-                            } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED) {
-                                Log.e(TAG, "onQueryPurchasesResponse: SERVICE_DISCONNECTED");
-                                verifyFinish = true;
-                                if (countReconnectBilling >= countMaxReconnectBilling)
+                            }
+                            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED && !verifyFinish) {
+                                Log.e(TAG, "onQueryPurchasesResponse INAPP: SERVICE_DISCONNECTED  === count reconnect:"+countReconnectBilling);                                verifyFinish = true;
+                                if (countReconnectBilling >= countMaxReconnectBilling){
+                                    billingListener.onInitBillingFinished(billingResult.getResponseCode());
                                     return;
+                                }
+
                                 billingClient.startConnection(purchaseClientStateListener);
                                 countReconnectBilling++;
                                 return;
@@ -398,10 +401,15 @@ public class AppPurchase {
                                         }
                                     }
                                 }
-                            } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED) {
+                            }
+
+                            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED && !verifyFinish) {
+                                Log.e(TAG, "onQueryPurchasesResponse SUBS: SERVICE_DISCONNECTED  === count reconnect:"+countReconnectBilling);
                                 verifyFinish = true;
-                                if (countReconnectBilling >= countMaxReconnectBilling)
+                                if (countReconnectBilling >= countMaxReconnectBilling){
+                                    billingListener.onInitBillingFinished(billingResult.getResponseCode());
                                     return;
+                                }
                                 billingClient.startConnection(purchaseClientStateListener);
                                 countReconnectBilling++;
                                 return;
