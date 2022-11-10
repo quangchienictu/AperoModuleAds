@@ -359,7 +359,7 @@ public class AppPurchase {
                                     }
                                 }
                             }
-                            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED && !verifyFinish) {
+                            /*if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED && !verifyFinish) {
                                 Log.e(TAG, "onQueryPurchasesResponse INAPP: SERVICE_DISCONNECTED  === count reconnect:" + countReconnectBilling);
                                 verifyFinish = true;
                                 if (countReconnectBilling >= countMaxReconnectBilling) {
@@ -370,7 +370,7 @@ public class AppPurchase {
                                 billingClient.startConnection(purchaseClientStateListener);
                                 countReconnectBilling++;
                                 return;
-                            }
+                            }*/
 
                             if (isVerifySUBS && !verifyFinish) {
                                 // chưa mua subs và IAP
@@ -394,7 +394,7 @@ public class AppPurchase {
                             if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && list != null) {
                                 for (Purchase purchase : list) {
                                     for (QueryProductDetailsParams.Product id : listSubscriptionId) {
-                                        if (purchase.getProducts().contains(id)) {
+                                        if (purchase.getProducts().contains(id.zza())) {
                                             Log.d(TAG, "verifyPurchased SUBS: true");
                                             isPurchase = true;
                                             if (!verifyFinish) {
@@ -409,7 +409,7 @@ public class AppPurchase {
                                 }
                             }
 
-                            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED && !verifyFinish) {
+                            /*if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED && !verifyFinish) {
                                 Log.e(TAG, "onQueryPurchasesResponse SUBS: SERVICE_DISCONNECTED  === count reconnect:" + countReconnectBilling);
                                 verifyFinish = true;
                                 if (countReconnectBilling >= countMaxReconnectBilling) {
@@ -419,7 +419,7 @@ public class AppPurchase {
                                 billingClient.startConnection(purchaseClientStateListener);
                                 countReconnectBilling++;
                                 return;
-                            }
+                            }*/
                             if (isVerifyINAP && !verifyFinish) {
                                 // chưa mua subs và IAP
                                 if (billingListener != null && isCallback) {
