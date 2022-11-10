@@ -2009,7 +2009,7 @@ public class Admob {
         Log.e(TAG, "Found test ad id on debug : " + AppUtil.VARIANT_DEV);
 
         if (!AppUtil.VARIANT_DEV) {
-            throw new RuntimeException("Found test ad id on release");
+            throw new RuntimeException("Found test ad id on release: "+id);
         }
     }
 

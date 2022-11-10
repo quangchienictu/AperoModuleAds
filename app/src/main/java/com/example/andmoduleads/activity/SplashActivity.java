@@ -19,6 +19,7 @@ import com.ads.control.ads.wrapper.ApNativeAd;
 import com.ads.control.ads.wrapper.StatusAd;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.funtion.BillingListener;
+import com.example.andmoduleads.BuildConfig;
 import com.example.andmoduleads.R;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -37,7 +38,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         if (AperoAd.getInstance().getMediationProvider() == AperoAdConfig.PROVIDER_ADMOB)
-            idAdSplash = getString(R.string.admod_interstitial_id);
+            idAdSplash = BuildConfig.ad_interstitial_splash;
         else
             idAdSplash = getString(R.string.applovin_test_inter);
         AppPurchase.getInstance().setBillingListener(new BillingListener() {

@@ -28,6 +28,7 @@ import com.ads.control.event.AperoAdjust;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.DialogExitListener;
 import com.ads.control.funtion.PurchaseListener;
+import com.example.andmoduleads.BuildConfig;
 import com.example.andmoduleads.R;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.nativead.NativeAd;
@@ -165,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 AperoAd.getInstance().forceShowRewardAd(this, rewardAd, new AperoAdCallback());
                 return;
             }
-            rewardAd = AperoAd.getInstance().getRewardAd(this, getString(R.string.admod_app_reward_id));
+            rewardAd = AperoAd.getInstance().getRewardAd(this,  BuildConfig.ad_reward);
         });
 
         Button btnIAP = findViewById(R.id.btIap);
@@ -191,9 +192,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void configMediationProvider() {
         if (AperoAd.getInstance().getMediationProvider() == AperoAdConfig.PROVIDER_ADMOB) {
-            idBanner = getString(R.string.admod_banner_id);
-            idNative = getString(R.string.admod_native_id);
-            idInter = getString(R.string.admod_interstitial_id);
+            idBanner = BuildConfig.ad_banner;
+            idNative = BuildConfig.ad_native;
+            idInter = BuildConfig.ad_interstitial_splash;
             layoutNativeCustom = com.ads.control.R.layout.custom_native_admod_medium_rate;
         } else {
             idBanner = getString(R.string.applovin_test_banner);
@@ -228,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (unifiedNativeAd != null)
             return;
-        Admob.getInstance().loadNativeAd(this, getString(R.string.admod_native_id), new AdCallback() {
+        Admob.getInstance().loadNativeAd(this,BuildConfig.ad_native, new AdCallback() {
             @Override
             public void onUnifiedNativeAdLoaded(NativeAd unifiedNativeAd) {
                 MainActivity.this.unifiedNativeAd = unifiedNativeAd;

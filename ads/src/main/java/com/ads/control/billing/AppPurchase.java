@@ -193,39 +193,44 @@ public class AppPurchase {
             isInitBillingFinish = true;
             if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                 isAvailable = true;
-                QueryProductDetailsParams paramsINAP = QueryProductDetailsParams.newBuilder()
-                        .setProductList(listINAPId)
-                        .build();
+                // check product detail INAP
+                if (listINAPId.size() > 0) {
+                    QueryProductDetailsParams paramsINAP = QueryProductDetailsParams.newBuilder()
+                            .setProductList(listINAPId)
+                            .build();
 
-                billingClient.queryProductDetailsAsync(
-                        paramsINAP,
-                        new ProductDetailsResponseListener() {
-                            public void onProductDetailsResponse(BillingResult billingResult, List<ProductDetails> productDetailsList) {
-                                if (productDetailsList != null) {
-                                    Log.d(TAG, "onSkuINAPDetailsResponse: " + productDetailsList.size());
-                                    skuListINAPFromStore = productDetailsList;
-                                    isListGot = true;
-                                    addSkuINAPToMap(productDetailsList);
+                    billingClient.queryProductDetailsAsync(
+                            paramsINAP,
+                            new ProductDetailsResponseListener() {
+                                public void onProductDetailsResponse(BillingResult billingResult, List<ProductDetails> productDetailsList) {
+                                    if (productDetailsList != null) {
+                                        Log.d(TAG, "onSkuINAPDetailsResponse: " + productDetailsList.size());
+                                        skuListINAPFromStore = productDetailsList;
+                                        isListGot = true;
+                                        addSkuINAPToMap(productDetailsList);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                }
+                // check product detail SUBS
+                if (listSubscriptionId.size() > 0) {
+                    QueryProductDetailsParams paramsSUBS = QueryProductDetailsParams.newBuilder()
+                            .setProductList(listSubscriptionId)
+                            .build();
 
-                QueryProductDetailsParams paramsSUBS = QueryProductDetailsParams.newBuilder()
-                        .setProductList(listSubscriptionId)
-                        .build();
-
-                billingClient.queryProductDetailsAsync(
-                        paramsSUBS,
-                        new ProductDetailsResponseListener() {
-                            public void onProductDetailsResponse(BillingResult billingResult, List<ProductDetails> productDetailsList) {
-                                if (productDetailsList != null) {
-                                    Log.d(TAG, "onSkuSubsDetailsResponse: " + productDetailsList.size());
-                                    skuListSubsFromStore = productDetailsList;
-                                    isListGot = true;
-                                    addSkuSubsToMap(productDetailsList);
+                    billingClient.queryProductDetailsAsync(
+                            paramsSUBS,
+                            new ProductDetailsResponseListener() {
+                                public void onProductDetailsResponse(BillingResult billingResult, List<ProductDetails> productDetailsList) {
+                                    if (productDetailsList != null) {
+                                        Log.d(TAG, "onSkuSubsDetailsResponse: " + productDetailsList.size());
+                                        skuListSubsFromStore = productDetailsList;
+                                        isListGot = true;
+                                        addSkuSubsToMap(productDetailsList);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                }
             } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.SERVICE_UNAVAILABLE || billingResult.getResponseCode() == BillingClient.BillingResponseCode.ERROR) {
                 Log.e(TAG, "onBillingSetupFinished:ERROR ");
 
@@ -355,8 +360,9 @@ public class AppPurchase {
                                 }
                             }
                             if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED && !verifyFinish) {
-                                Log.e(TAG, "onQueryPurchasesResponse INAPP: SERVICE_DISCONNECTED  === count reconnect:"+countReconnectBilling);                                verifyFinish = true;
-                                if (countReconnectBilling >= countMaxReconnectBilling){
+                                Log.e(TAG, "onQueryPurchasesResponse INAPP: SERVICE_DISCONNECTED  === count reconnect:" + countReconnectBilling);
+                                verifyFinish = true;
+                                if (countReconnectBilling >= countMaxReconnectBilling) {
                                     billingListener.onInitBillingFinished(billingResult.getResponseCode());
                                     return;
                                 }
@@ -404,9 +410,9 @@ public class AppPurchase {
                             }
 
                             if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.SERVICE_DISCONNECTED && !verifyFinish) {
-                                Log.e(TAG, "onQueryPurchasesResponse SUBS: SERVICE_DISCONNECTED  === count reconnect:"+countReconnectBilling);
+                                Log.e(TAG, "onQueryPurchasesResponse SUBS: SERVICE_DISCONNECTED  === count reconnect:" + countReconnectBilling);
                                 verifyFinish = true;
-                                if (countReconnectBilling >= countMaxReconnectBilling){
+                                if (countReconnectBilling >= countMaxReconnectBilling) {
                                     billingListener.onInitBillingFinished(billingResult.getResponseCode());
                                     return;
                                 }
