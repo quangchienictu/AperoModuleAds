@@ -17,6 +17,7 @@ import com.ads.control.admob.AppOpenManager;
 import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdCallback;
 import com.ads.control.ads.AperoAdConfig;
+import com.ads.control.ads.bannerAds.AperoBannerAdView;
 import com.ads.control.ads.nativeAds.AperoNativeAdView;
 import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         */
         aperoNativeAdView.loadNativeAd(this, idNative);
 
-        
+
         AppPurchase.getInstance().setPurchaseListener(new PurchaseListener() {
             @Override
             public void onProductPurchased(String productId, String transactionDetails) {
@@ -107,8 +108,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        AperoAd.getInstance().loadBanner(this, idBanner);
-
+//        AperoAd.getInstance().loadBanner(this, idBanner);
+        AperoBannerAdView bannerAdView = findViewById(R.id.bannerView);
+        bannerAdView.loadBanner(this, idBanner);
         loadAdInterstitial();
 
         findViewById(R.id.btShowAds).setOnClickListener(v -> {
