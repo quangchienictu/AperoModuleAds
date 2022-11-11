@@ -75,11 +75,18 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-//        AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom);
+        /**
+         * Sample integration native ads
+         */
+        /*
+        AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom);
         aperoNativeAdView.setLayoutLoading(R.layout.loading_native_medium);
         aperoNativeAdView.setLayoutCustomNativeAd(layoutNativeCustom);
+        aperoNativeAdView.loadNativeAd(this, idNative,layoutNativeCustom,R.layout.loading_native_medium);
+        */
         aperoNativeAdView.loadNativeAd(this, idNative);
+
+        
         AppPurchase.getInstance().setPurchaseListener(new PurchaseListener() {
             @Override
             public void onProductPurchased(String productId, String transactionDetails) {
