@@ -521,6 +521,7 @@ public class Admob {
             public void onAdDismissedFullScreenContent() {
                 Log.d(TAG, " Splash:onAdDismissedFullScreenContent ");
                 AppOpenManager.getInstance().setInterstitialShowing(false);
+                mInterstitialSplash = null;
                 if (adListener != null) {
                     if (!openActivityAfterShowInterAds) {
                         adListener.onNextAction();
@@ -531,7 +532,6 @@ public class Admob {
                         dialog.dismiss();
                     }
                 }
-                mInterstitialSplash = null;
                 isShowLoadingSplash = false;
             }
 
