@@ -24,22 +24,25 @@ This is SDK ads by [Apero](https://apero.vn/). It has built in some sdk for easy
 
 # <a id="setup_aperoad"></a>Setup AperoAd
 ## <a id="set_up_ads"></a>Setup id ads for project
+* The name must be the same as the name of the marketing request
 * Config variant test and release in gradle
-* test: using id admob test while dev
-* release: using exactly id admob,  build release (build file .aab)
+* appDev: using id admob test while dev
+* appProduct: using exactly id admob,  build release (build file .aab)
 ~~~    
       productFlavors {
-      test {
+      appDev {
               manifestPlaceholders = [ ad_app_id:"AD_APP_ID_TEST" ]
               buildConfigField "String", "ads_inter_turn_on", "\"AD_ID_INTERSTIAL_TEST\""
               buildConfigField "String", "ads_inter_turn_off", "\"AD_ID_INTERSTIAL_TEST\""
 	      buildConfigField "Boolean", "build_debug", "true"
            }
-       release {
+       appProduct {
+            // ADS CONFIG BEGIN (required)
                manifestPlaceholders = [ ad_app_id:"AD_APP_ID" ]
                buildConfigField "String", "ads_inter_splash", "\"AD_ID_INTERSTIAL\""
                buildConfigField "String", "ads_inter_turn_on", "\"AD_ID_INTERSTIAL\""
 	       buildConfigField "Boolean", "build_debug", "false"
+            // ADS CONFIG END (required)
            }
       }
 ~~~
