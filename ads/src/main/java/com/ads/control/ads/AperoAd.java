@@ -41,6 +41,7 @@ import com.ads.control.ads.wrapper.ApRewardAd;
 import com.ads.control.ads.wrapper.ApRewardItem;
 import com.ads.control.applovin.AppLovin;
 import com.ads.control.applovin.AppLovinCallback;
+import com.ads.control.applovin.AppOpenMax;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.event.AperoAppsflyer;
 import com.ads.control.funtion.AdCallback;
@@ -57,6 +58,8 @@ import com.applovin.mediation.ads.MaxRewardedAd;
 import com.applovin.mediation.nativeAds.MaxNativeAdView;
 import com.applovin.mediation.nativeAds.adPlacer.MaxAdPlacer;
 import com.applovin.mediation.nativeAds.adPlacer.MaxRecyclerAdapter;
+import com.applovin.sdk.AppLovinSdk;
+import com.applovin.sdk.AppLovinSdkConfiguration;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.LoadAdError;
@@ -145,6 +148,15 @@ public class AperoAd {
                             initCallback.initAdSuccess();
                     }
                 }, enableDebugMediation);
+
+                AppLovinSdk.initializeSdk(context, new AppLovinSdk.SdkInitializationListener() {
+                    @Override
+                    public void onSdkInitialized(AppLovinSdkConfiguration config) {
+                        if (adConfig.isEnableAdResume()) {
+                            AppOpenMax.getInstance().init(adConfig.getApplication(), adConfig.getIdAdResume());
+                        }
+                    }
+                });
                 break;
             case AperoAdConfig.PROVIDER_ADMOB:
                 Admob.getInstance().init(context, adConfig.getListDeviceTest());

@@ -69,6 +69,8 @@ public class AppLovin {
     private MaxInterstitialAd interstitialAd;
     MaxNativeAdView nativeAdView;
 
+    private boolean disableAdResumeWhenClickAds = false;
+
     public static AppLovin getInstance() {
         if (instance == null) {
             instance = new AppLovin();
@@ -198,7 +200,7 @@ public class AppLovin {
 
             @Override
             public void onAdDisplayed(MaxAd ad) {
-
+                AppOpenMax.getInstance().setInterstitialShowing(true);
             }
 
             @Override
@@ -208,6 +210,8 @@ public class AppLovin {
 
             @Override
             public void onAdClicked(MaxAd ad) {
+                if (disableAdResumeWhenClickAds)
+                    AppOpenMax.getInstance().disableAdResumeByClickAction();
                 AperoLogEventManager.logClickAdsEvent(context, ad.getAdUnitId());
             }
 
@@ -314,7 +318,7 @@ public class AppLovin {
 
             @Override
             public void onAdDisplayed(MaxAd ad) {
-
+                AppOpenMax.getInstance().setInterstitialShowing(true);
             }
 
             @Override
@@ -328,6 +332,8 @@ public class AppLovin {
                 if (adListener != null) {
                     adListener.onAdClicked();
                 }
+                if (disableAdResumeWhenClickAds)
+                    AppOpenMax.getInstance().disableAdResumeByClickAction();
             }
 
             @Override
@@ -375,11 +381,13 @@ public class AppLovin {
             @Override
             public void onAdDisplayed(MaxAd ad) {
                 Log.d(TAG, "onAdDisplayed: ");
+                AppOpenMax.getInstance().setInterstitialShowing(true);
             }
 
             @Override
             public void onAdHidden(MaxAd ad) {
                 Log.d(TAG, "onAdHidden: " + ((AppCompatActivity) activity).getLifecycle().getCurrentState());
+                AppOpenMax.getInstance().setInterstitialShowing(false);
                 isShowLoadingSplash = false;
                 if (adListener != null && ((AppCompatActivity) activity).getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
                     adListener.onAdClosed();
@@ -396,6 +404,8 @@ public class AppLovin {
                 if (adListener != null) {
                     adListener.onAdClicked();
                 }
+                if (disableAdResumeWhenClickAds)
+                    AppOpenMax.getInstance().disableAdResumeByClickAction();
             }
 
             @Override
@@ -491,6 +501,8 @@ public class AppLovin {
             @Override
             public void onAdClicked(MaxAd ad) {
                 AperoLogEventManager.logClickAdsEvent(context, ad.getAdUnitId());
+                if (disableAdResumeWhenClickAds)
+                    AppOpenMax.getInstance().disableAdResumeByClickAction();
             }
 
             @Override
@@ -557,12 +569,13 @@ public class AppLovin {
 
             @Override
             public void onAdDisplayed(MaxAd ad) {
-
+                AppOpenMax.getInstance().setInterstitialShowing(true);
             }
 
 
             @Override
             public void onAdHidden(MaxAd ad) {
+                AppOpenMax.getInstance().setInterstitialShowing(false);
                 if (callback != null && ((AppCompatActivity) context).getLifecycle().getCurrentState().isAtLeast(Lifecycle.State.RESUMED)) {
                     callback.onAdClosed();
                     if (shouldReloadAds) {
@@ -581,6 +594,8 @@ public class AppLovin {
                 if (callback != null) {
                     callback.onAdClicked();
                 }
+                if (disableAdResumeWhenClickAds)
+                    AppOpenMax.getInstance().disableAdResumeByClickAction();
             }
 
             @Override
@@ -729,6 +744,8 @@ public class AppLovin {
             @Override
             public void onAdClicked(MaxAd ad) {
                 AperoLogEventManager.logClickAdsEvent(context, ad.getAdUnitId());
+                if (disableAdResumeWhenClickAds)
+                    AppOpenMax.getInstance().disableAdResumeByClickAction();
             }
 
             @Override
@@ -796,6 +813,8 @@ public class AppLovin {
                 if (adCallback != null) {
                     adCallback.onAdClicked();
                 }
+                if (disableAdResumeWhenClickAds)
+                    AppOpenMax.getInstance().disableAdResumeByClickAction();
             }
 
             @Override
@@ -893,6 +912,8 @@ public class AppLovin {
 
                 nativeAdView = new MaxNativeAdView(binder, activity);
                 nativeAdLoader.loadAd(nativeAdView);
+                if (disableAdResumeWhenClickAds)
+                    AppOpenMax.getInstance().disableAdResumeByClickAction();
             }
         });
         nativeAdLoader.loadAd(nativeAdView);
@@ -937,6 +958,8 @@ public class AppLovin {
                 Log.e(TAG, "onNativeAdClicked: ");
                 AperoLogEventManager.logClickAdsEvent(context, ad.getAdUnitId());
                 callback.onAdClicked();
+                if (disableAdResumeWhenClickAds)
+                    AppOpenMax.getInstance().disableAdResumeByClickAction();
             }
         });
         nativeAdLoader.loadAd(nativeAdView);
@@ -1033,6 +1056,8 @@ public class AppLovin {
             public void onAdClicked(MaxAd ad) {
                 AperoLogEventManager.logClickAdsEvent(context, ad.getAdUnitId());
                 callback.onAdClicked();
+                if (disableAdResumeWhenClickAds)
+                    AppOpenMax.getInstance().disableAdResumeByClickAction();
             }
 
             @Override
@@ -1098,6 +1123,8 @@ public class AppLovin {
                 public void onAdClicked(MaxAd ad) {
                     AperoLogEventManager.logClickAdsEvent(context, ad.getAdUnitId());
                     callback.onAdClicked();
+                    if (disableAdResumeWhenClickAds)
+                        AppOpenMax.getInstance().disableAdResumeByClickAction();
                 }
 
                 @Override
