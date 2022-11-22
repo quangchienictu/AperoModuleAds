@@ -63,6 +63,7 @@ public class MyApplication extends AdsMultiDexApplication {
         List<String> listINAPId = new ArrayList<>();
         listINAPId.add(MainActivity.PRODUCT_ID);
         List<String> listSubsId = new ArrayList<>();
+
         AppPurchase.getInstance().initBilling(getApplication(),listINAPId,listSubsId);
     }
 

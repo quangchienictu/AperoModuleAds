@@ -17,6 +17,7 @@ import com.ads.control.admob.AppOpenManager;
 import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdCallback;
 import com.ads.control.ads.AperoAdConfig;
+import com.ads.control.ads.bannerAds.AperoBannerAdView;
 import com.ads.control.ads.nativeAds.AperoNativeAdView;
 import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.ads.wrapper.ApInterstitialAd;
@@ -59,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        frAds = findViewById(R.id.fl_adplaceholder);
         aperoNativeAdView = findViewById(R.id.aperoNativeAds);
 
 
@@ -75,11 +75,18 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-//        AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom);
+        /**
+         * Sample integration native ads
+         */
+        /*
+        AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom);
         aperoNativeAdView.setLayoutLoading(R.layout.loading_native_medium);
         aperoNativeAdView.setLayoutCustomNativeAd(layoutNativeCustom);
+        aperoNativeAdView.loadNativeAd(this, idNative,layoutNativeCustom,R.layout.loading_native_medium);
+        */
         aperoNativeAdView.loadNativeAd(this, idNative);
+
+
         AppPurchase.getInstance().setPurchaseListener(new PurchaseListener() {
             @Override
             public void onProductPurchased(String productId, String transactionDetails) {
@@ -100,8 +107,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        AperoAd.getInstance().loadBanner(this, idBanner);
-
+//        AperoAd.getInstance().loadBanner(this, idBanner);
+        AperoBannerAdView bannerAdView = findViewById(R.id.bannerView);
+        bannerAdView.loadBanner(this, idBanner);
         loadAdInterstitial();
 
         findViewById(R.id.btShowAds).setOnClickListener(v -> {

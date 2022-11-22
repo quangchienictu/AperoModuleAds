@@ -8,14 +8,17 @@
     tools:context=".activity.MainActivity">
 
     <com.ads.control.ads.nativeAds.AperoNativeAdView
-        android:layout_width="match_parent"
         android:id="@+id/aperoNativeAds"
-
-        android:layout_height="wrap_content"/>
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_150sdp"
+        android:background="@drawable/bg_card_ads"
+        app:layoutCustomNativeAd="@layout/custom_native_admod_medium_rate"
+        app:layoutLoading="@layout/loading_native_medium"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 <!--    <include
-        app:layoutLoading="@layout/layout_native_medium"
-        app:layoutCustomNativeAd="@layout/custom_native_admod_medium_rate"
+
         android:id="@+id/include3"
         layout="@layout/layout_native_medium" />-->
 
@@ -85,9 +88,8 @@
             android:text="Track Revenue adjust" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/layout_banner_control"
+    <com.ads.control.ads.bannerAds.AperoBannerAdView
+        android:id="@+id/bannerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

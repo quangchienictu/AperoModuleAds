@@ -250,47 +250,11 @@ public class AppPurchase {
     }
 
 
-    public void addSubcriptionId(String id) {
-        if (listSubscriptionId == null)
-            listSubscriptionId = new ArrayList<QueryProductDetailsParams.Product>();
-
-        listSubscriptionId.add(QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(id)
-                .setProductType(BillingClient.ProductType.SUBS)
-                .build());
-    }
-
-    public void addProductId(String id) {
-        if (listSubscriptionId == null)
-            listSubscriptionId = new ArrayList<QueryProductDetailsParams.Product>();
-
-        listSubscriptionId.add(QueryProductDetailsParams.Product.newBuilder()
-                .setProductId(id)
-                .setProductType(BillingClient.ProductType.INAPP)
-                .build());
-    }
-
-    public void initBilling(final Application application) {
-        listSubscriptionId = new ArrayList<QueryProductDetailsParams.Product>();
-        listINAPId = new ArrayList<QueryProductDetailsParams.Product>();
-        if (AppUtil.VARIANT_DEV) {
-            listSubscriptionId.add(QueryProductDetailsParams.Product.newBuilder()
-                    .setProductId(PRODUCT_ID_TEST)
-                    .setProductType(BillingClient.ProductType.INAPP)
-                    .build());
-        }
-        billingClient = BillingClient.newBuilder(application)
-                .setListener(purchasesUpdatedListener)
-                .enablePendingPurchases()
-                .build();
-
-        billingClient.startConnection(purchaseClientStateListener);
-    }
-
     public void initBilling(final Application application, List<
             String> listINAPId, List<String> listSubsId) {
 
         if (AppUtil.VARIANT_DEV) {
+            // auto add purchase test when dev
             listINAPId.add(PRODUCT_ID_TEST);
         }
         this.listSubscriptionId = listIdToListProduct(listSubsId, BillingClient.ProductType.SUBS);
@@ -479,17 +443,11 @@ public class AppPurchase {
         idPurchaseCurrent = productId;
         typeIap = TYPE_IAP.PURCHASE;
 
-/*        int selectedOfferIndex = 0;// undefined variable for what
-        String offerToken = productDetails
-                .getSubscriptionOfferDetails()
-                .get(selectedOfferIndex)
-                .getOfferToken();*/
 
         ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
                 ImmutableList.of(
                         BillingFlowParams.ProductDetailsParams.newBuilder()
                                 .setProductDetails(productDetails)
-//                                .setOfferToken(offerToken)
                                 .build()
                 );
 
