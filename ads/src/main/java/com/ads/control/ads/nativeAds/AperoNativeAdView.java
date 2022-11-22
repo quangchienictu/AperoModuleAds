@@ -24,7 +24,7 @@ import com.facebook.shimmer.ShimmerFrameLayout;
  */
 public class AperoNativeAdView extends RelativeLayout {
 
-    private int layoutCustomNativeAd;
+    private int layoutCustomNativeAd = 0;
     private ShimmerFrameLayout layoutLoading;
     private FrameLayout layoutPlaceHolder;
     private String TAG = "AperoNativeAdView";
@@ -88,8 +88,11 @@ public class AperoNativeAdView extends RelativeLayout {
 
     public void loadNativeAd(Activity activity, String idAd) {
         if(layoutLoading == null){
-            Log.e(TAG, "populateNativeAdView error : layoutLoading not set"  );
-            return;
+            setLayoutLoading(R.layout.loading_native_medium);
+        }
+        if (layoutCustomNativeAd == 0){
+            layoutCustomNativeAd = R.layout.custom_native_admod_medium_rate;
+            setLayoutCustomNativeAd(layoutCustomNativeAd);
         }
         AperoAd.getInstance().loadNativeAd(activity, idAd, layoutCustomNativeAd, layoutPlaceHolder, layoutLoading);
     }

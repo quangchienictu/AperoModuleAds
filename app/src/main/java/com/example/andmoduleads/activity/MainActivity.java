@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        frAds = findViewById(R.id.fl_adplaceholder);
         aperoNativeAdView = findViewById(R.id.aperoNativeAds);
 
 
