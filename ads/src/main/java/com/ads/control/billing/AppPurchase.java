@@ -31,7 +31,7 @@ import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.QueryPurchasesParams;
-import com.google.common.collect.*;
+import com.google.common.collect.ImmutableList;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -83,6 +83,9 @@ public class AppPurchase {
     private boolean isPurchase = false;//state purchase on app
     private String idPurchased = "";//id purchased
 
+    private Handler handlerTimeout;
+    private Runnable rdTimeout;
+
     public void setPurchaseListener(PurchaseListener purchaseListener) {
         this.purchaseListener = purchaseListener;
     }
@@ -126,22 +129,21 @@ public class AppPurchase {
      * @param timeout
      */
     public void setBillingListener(BillingListener billingListener, int timeout) {
+        Log.d(TAG, "setBillingListener: timeout " + timeout);
         this.billingListener = billingListener;
         if (isAvailable) {
+            Log.d(TAG, "setBillingListener: finish");
             billingListener.onInitBillingFinished(0);
             isInitBillingFinish = true;
             return;
         }
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!isInitBillingFinish) {
-                    Log.e(TAG, "setBillingListener: timeout ");
-                    isInitBillingFinish = true;
-                    billingListener.onInitBillingFinished(BillingClient.BillingResponseCode.ERROR);
-                }
-            }
-        }, timeout);
+        handlerTimeout = new Handler();
+        rdTimeout = () -> {
+            Log.d(TAG, "setBillingListener: timeout run ");
+            isInitBillingFinish = true;
+            billingListener.onInitBillingFinished(BillingClient.BillingResponseCode.ERROR);
+        };
+        handlerTimeout.postDelayed(rdTimeout, timeout);
     }
 
     public void setPrice(String price) {
@@ -313,8 +315,12 @@ public class AppPurchase {
                                             Log.d(TAG, "verifyPurchased INAPP: true");
                                             isPurchase = true;
                                             if (!verifyFinish) {
-                                                if (billingListener != null && isCallback)
+                                                if (billingListener != null && isCallback) {
                                                     billingListener.onInitBillingFinished(billingResult.getResponseCode());
+                                                    if (handlerTimeout != null && rdTimeout != null) {
+                                                        handlerTimeout.removeCallbacks(rdTimeout);
+                                                    }
+                                                }
                                                 verifyFinish = true;
                                                 isVerifyINAP = true;
                                                 return;
@@ -339,6 +345,9 @@ public class AppPurchase {
                             if (isVerifySUBS && !verifyFinish) {
                                 // chưa mua subs và IAP
                                 billingListener.onInitBillingFinished(billingResult.getResponseCode());
+                                if (handlerTimeout != null && rdTimeout != null) {
+                                    handlerTimeout.removeCallbacks(rdTimeout);
+                                }
                             }
                             isVerifyINAP = true;
                         }
@@ -362,8 +371,12 @@ public class AppPurchase {
                                             Log.d(TAG, "verifyPurchased SUBS: true");
                                             isPurchase = true;
                                             if (!verifyFinish) {
-                                                if (billingListener != null && isCallback)
+                                                if (billingListener != null && isCallback) {
                                                     billingListener.onInitBillingFinished(billingResult.getResponseCode());
+                                                    if (handlerTimeout != null && rdTimeout != null) {
+                                                        handlerTimeout.removeCallbacks(rdTimeout);
+                                                    }
+                                                }
                                                 verifyFinish = true;
                                                 isVerifySUBS = true;
                                                 return;
@@ -388,6 +401,9 @@ public class AppPurchase {
                                 // chưa mua subs và IAP
                                 if (billingListener != null && isCallback) {
                                     billingListener.onInitBillingFinished(billingResult.getResponseCode());
+                                    if (handlerTimeout != null && rdTimeout != null) {
+                                        handlerTimeout.removeCallbacks(rdTimeout);
+                                    }
                                 }
                             }
                             isVerifySUBS = true;
