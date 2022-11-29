@@ -48,9 +48,9 @@ This is SDK ads by [Apero](https://apero.vn/). It has built in some sdk for easy
 ~~~
 AndroidManiafest.xml
 ~~~
-  <meta-data
-  	android:name="com.google.android.gms.ads.APPLICATION_ID"
-  	android:value="@string/admob_app_id" />
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="${ad_app_id}" />
 ~~~
 ## <a id="config_ads"></a>Config ads
 Create class Application
@@ -64,9 +64,9 @@ class App : AdsMultiDexApplication(){
 	...
 	aperoAdConfig.setMediationProvider(AperoAdConfig.PROVIDER_ADMOB);
         aperoAdConfig.setVariant(BuildConfig.build_debug);
-        aperoAdConfig.enableAdjust(ADJUST_TOKEN); // enable ajust with adjust token
-	aperoAdConfig.enableAppsflyer(APPSFLYER_TOKEN);// enable ajust with appsflyer token
-        aperoAdConfig.setIdAdResume(AppOpenManager.AD_UNIT_ID_TEST);
+        aperoAdConfig.enableAdjust(ADJUST_TOKEN); // optional: enable ajust with adjust token
+	aperoAdConfig.enableAppsflyer(APPSFLYER_TOKEN);//optional: enable ajust with appsflyer token
+        aperoAdConfig.setIdAdResume(BuildConfig.ads_open_app);//optional: enable ads resume
         listTestDevice.add(ID_TEST_DEVICE);
         aperoAdConfig.setListDeviceTest(listTestDevice);
 	AperoAd.getInstance().init(this, aperoAdConfig, false);
