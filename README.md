@@ -11,7 +11,7 @@ This is SDK ads by [Apero](https://apero.vn/). It has built in some sdk for easy
 # Import Module
 ~~~
 	maven { url 'https://jitpack.io' }
-	implementation 'com.github.AperoVN:AperoModuleAds:5.2.2'
+	implementation 'com.github.AperoVN:AperoModuleAds:5.4.1'
 ~~~	 
 # Summary
 * [Setup AperoAd](#setup_aperoad)
@@ -131,8 +131,21 @@ Show and auto release ad interstitial
             }
 ~~~
 ### Ad Banner
-include layout banner
-activity_main.xml
+
+#### Latest way:
+~~~
+    <com.ads.control.ads.bannerAds.AperoBannerAdView
+        android:id="@+id/bannerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintBottom_toBottomOf="parent" />
+~~~
+call load ad banner
+~~~
+	bannerAdView.loadBanner(this, idBanner);
+~~~
+#### The older way:
 ~~~
   <include
   android:id="@+id/include"
@@ -142,7 +155,7 @@ activity_main.xml
   android:layout_alignParentBottom="true"
   app:layout_constraintBottom_toBottomOf="parent" />
 ~~~
-load ad banner
+call load ad banner
 ~~~
   AperoAd.getInstance().loadBanner(this, idBanner);
 ~~~
@@ -158,19 +171,27 @@ Load ad native before show
             }
         });
 ~~~
-show ad native
+Populate native ad to view
 ~~~
 	AperoAd.getInstance().populateNativeAdView(MainApplovinActivity.this,nativeAd,flParentNative,shimmerFrameLayout);
 ~~~
 auto load and show native contains loading
 
-activity_main.xml
+in layout XML
 ~~~
-  <include layout="@layout/layout_native_control" />
+      <com.ads.control.ads.nativeAds.AperoNativeAdView
+        android:id="@+id/aperoNativeAds"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_150sdp"
+        android:background="@drawable/bg_card_ads"
+        app:layoutCustomNativeAd="@layout/custom_native_admod_medium_rate"
+        app:layoutLoading="@layout/loading_native_medium"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 ~~~
-MainActivity
+Call load native ad
 ~~~
-  AperoAd.getInstance().loadNativeAd(this, idNative, layoutNativeCustom);
+ aperoNativeAdView.loadNativeAd(this, idNative);
 ~~~
 Load Ad native for recyclerView
 ~~~~
