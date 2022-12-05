@@ -8,15 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.ads.control.admob.Admob;
 import com.ads.control.admob.AppOpenManager;
 import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdCallback;
-import com.ads.control.ads.AperoAdConfig;
+import com.ads.control.config.AperoAdConfig;
 import com.ads.control.ads.AperoInitCallback;
 import com.ads.control.ads.wrapper.ApAdError;
 import com.ads.control.ads.wrapper.ApNativeAd;
-import com.ads.control.ads.wrapper.StatusAd;
 import com.ads.control.billing.AppPurchase;
 import com.ads.control.funtion.BillingListener;
 import com.example.andmoduleads.BuildConfig;

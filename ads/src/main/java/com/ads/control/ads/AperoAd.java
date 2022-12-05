@@ -42,6 +42,7 @@ import com.ads.control.ads.wrapper.ApRewardItem;
 import com.ads.control.applovin.AppLovin;
 import com.ads.control.applovin.AppLovinCallback;
 import com.ads.control.billing.AppPurchase;
+import com.ads.control.config.AperoAdConfig;
 import com.ads.control.event.AperoAppsflyer;
 import com.ads.control.funtion.AdCallback;
 import com.ads.control.funtion.RewardCallback;
@@ -127,12 +128,12 @@ public class AperoAd {
         if (adConfig.isEnableAppsflyer()) {
             Log.i(TAG, "init appsflyer");
             AperoAppsflyer.enableAppsflyer = true;
-            AperoAppsflyer.getInstance().init(context, adConfig.getAppsflyerToken(), this.adConfig.isVariantDev());
+            AperoAppsflyer.getInstance().init(context, adConfig.getAppsflyerConfig().getAppsflyerToken(), this.adConfig.isVariantDev());
         }
         if (adConfig.isEnableAdjust()) {
             Log.i(TAG, "init adjust");
             AperoAdjust.enableAdjust = true;
-            setupAdjust(adConfig.isVariantDev(), adConfig.getAdjustToken());
+            setupAdjust(adConfig.isVariantDev(), adConfig.getAdjustConfig().getAdjustToken());
         }
         switch (adConfig.getMediationProvider()) {
             case AperoAdConfig.PROVIDER_MAX:

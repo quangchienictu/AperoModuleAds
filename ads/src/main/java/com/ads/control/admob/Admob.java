@@ -1253,6 +1253,12 @@ public class Admob {
                     }
 
                     @Override
+                    public void onAdImpression() {
+                        super.onAdImpression();
+                        Log.d(TAG, "native onAdImpression");
+                    }
+
+                    @Override
                     public void onAdClicked() {
                         super.onAdClicked();
                         if (disableAdResumeWhenClickAds)

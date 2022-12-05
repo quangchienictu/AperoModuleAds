@@ -1,10 +1,8 @@
 package com.ads.control.application;
 
-import android.util.Log;
-
 import androidx.multidex.MultiDexApplication;
 
-import com.ads.control.ads.AperoAdConfig;
+import com.ads.control.config.AperoAdConfig;
 import com.ads.control.util.AppUtil;
 import com.ads.control.util.SharePreferenceUtils;
 
@@ -19,8 +17,7 @@ public abstract class AdsMultiDexApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         listTestDevice = new ArrayList<String>();
-        aperoAdConfig = new AperoAdConfig();
-        aperoAdConfig.setApplication(this);
+        aperoAdConfig = new AperoAdConfig(this);
         if (SharePreferenceUtils.getInstallTime(this) == 0) {
             SharePreferenceUtils.setInstallTime(this);
         }

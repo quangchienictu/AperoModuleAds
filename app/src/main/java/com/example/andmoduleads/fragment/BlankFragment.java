@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.ads.control.admob.Admob;
 import com.ads.control.ads.AperoAd;
-import com.ads.control.ads.AperoAdConfig;
+import com.ads.control.config.AperoAdConfig;
 import com.ads.control.funtion.AdCallback;
 import com.example.andmoduleads.R;
 import com.example.andmoduleads.activity.ContentActivity;
