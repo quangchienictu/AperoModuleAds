@@ -1094,6 +1094,72 @@ public class AperoAd {
                 break;
         }
     }
+    /**
+     * Load native ad and auto populate ad to adPlaceHolder and hide containerShimmerLoading
+     *
+     * @param activity
+     * @param id
+     * @param layoutCustomNative
+     * @param adPlaceHolder
+     * @param containerShimmerLoading
+     */
+    public void loadNativeAd(final Activity activity, String id,
+                             int layoutCustomNative, FrameLayout adPlaceHolder, ShimmerFrameLayout
+                                     containerShimmerLoading, AperoAdCallback callback) {
+        switch (adConfig.getMediationProvider()) {
+            case AperoAdConfig.PROVIDER_ADMOB:
+                Admob.getInstance().loadNativeAd(((Context) activity), id, new AdCallback() {
+                    @Override
+                    public void onUnifiedNativeAdLoaded(@NonNull NativeAd unifiedNativeAd) {
+                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                        callback.onNativeAdLoaded(new ApNativeAd(layoutCustomNative, unifiedNativeAd));
+                        populateNativeAdView(activity, new ApNativeAd(layoutCustomNative, unifiedNativeAd), adPlaceHolder, containerShimmerLoading);
+                    }
+
+
+                    @Override
+                    public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                        super.onAdFailedToLoad(i);
+                        callback.onAdFailedToLoad(new ApAdError(i));
+                    }
+
+                    @Override
+                    public void onAdFailedToShow(@Nullable AdError adError) {
+                        super.onAdFailedToShow(adError);
+                        callback.onAdFailedToShow(new ApAdError(adError));
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        callback.onAdClicked();
+                    }
+                });
+                break;
+            case AperoAdConfig.PROVIDER_MAX:
+                AppLovin.getInstance().loadNativeAd(activity, id, layoutCustomNative, new AppLovinCallback() {
+                    @Override
+                    public void onUnifiedNativeAdLoaded(MaxNativeAdView unifiedNativeAd) {
+                        super.onUnifiedNativeAdLoaded(unifiedNativeAd);
+                        callback.onNativeAdLoaded(new ApNativeAd(layoutCustomNative, unifiedNativeAd));
+                        populateNativeAdView(activity, new ApNativeAd(layoutCustomNative, unifiedNativeAd), adPlaceHolder, containerShimmerLoading);
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@Nullable MaxError i) {
+                        super.onAdFailedToLoad(i);
+                        callback.onAdFailedToLoad(new ApAdError(i));
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        callback.onAdClicked();
+                    }
+                });
+                break;
+        }
+    }
 
     /**
      * Result a ApNativeAd in onUnifiedNativeAdLoaded when native ad loaded
