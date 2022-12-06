@@ -11,7 +11,7 @@ This is SDK ads by [Apero](https://apero.vn/). It has built in some sdk for easy
 # Import Module
 ~~~
 	maven { url 'https://jitpack.io' }
-	implementation 'com.github.AperoVN:AperoModuleAds:5.4.1'
+	implementation 'com.github.AperoVN:AperoModuleAds:5.5.0'
 ~~~	 
 # Summary
 * [Setup AperoAd](#setup_aperoad)
@@ -23,11 +23,14 @@ This is SDK ads by [Apero](https://apero.vn/). It has built in some sdk for easy
 * [Ads rule](#ads_rule)
 
 # <a id="setup_aperoad"></a>Setup AperoAd
-## <a id="set_up_ads"></a>Setup id ads for project
+## <a id="set_up_ads"></a>Setup enviroment with id ads for project
+
+We recommend you to setup 2 environments for your project, and only use test id during development, live ids only use when needed and for publishing to Google Store
 * The name must be the same as the name of the marketing request
 * Config variant test and release in gradle
 * appDev: using id admob test while dev
-* appProduct: using exactly id admob,  build release (build file .aab)
+* appProd: using exactly id admob,  build release (build file .aab)
+
 ~~~    
       productFlavors {
       appDev {
@@ -36,7 +39,7 @@ This is SDK ads by [Apero](https://apero.vn/). It has built in some sdk for easy
               buildConfigField "String", "ads_inter_turn_off", "\"AD_ID_INTERSTIAL_TEST\""
 	      buildConfigField "Boolean", "build_debug", "true"
            }
-       appProduct {
+       appProd {
             // ADS CONFIG BEGIN (required)
                manifestPlaceholders = [ ad_app_id:"AD_APP_ID" ]
                buildConfigField "String", "ads_inter_splash", "\"AD_ID_INTERSTIAL\""
@@ -56,25 +59,40 @@ AndroidManiafest.xml
 Create class Application
 
 Configure your mediation here. using PROVIDER_ADMOB or PROVIDER_MAX
+
+*** Note:Cannot use id ad test for production enviroment 
 ~~~
 class App : AdsMultiDexApplication(){
     @Override
     public void onCreate() {
         super.onCreate();
 	...
-	aperoAdConfig.setMediationProvider(AperoAdConfig.PROVIDER_ADMOB);
-        aperoAdConfig.setVariant(BuildConfig.build_debug);
-        aperoAdConfig.enableAdjust(ADJUST_TOKEN); // optional: enable ajust with adjust token
-	aperoAdConfig.enableAppsflyer(APPSFLYER_TOKEN);//optional: enable ajust with appsflyer token
-        aperoAdConfig.setIdAdResume(BuildConfig.ads_open_app);//optional: enable ads resume
-        listTestDevice.add(ID_TEST_DEVICE);
+        String environment = BuildConfig.build_debug ? AperoAdConfig.ENVIRONMENT_DEVELOP : AperoAdConfig.ENVIRONMENT_PRODUCTION;
+        aperoAdConfig = new AperoAdConfig(this, AperoAdConfig.PROVIDER_ADMOB, environment);
+
+        // Optional: setup Adjust event
+        AdjustConfig adjustConfig = new AdjustConfig(true,ADJUST_TOKEN);
+        adjustConfig.setEventAdImpression(EVENT_AD_IMPRESSION_ADJUST);
+        adjustConfig.setEventNamePurchase(EVENT_PURCHASE_ADJUST);
+        aperoAdConfig.setAdjustConfig(adjustConfig);
+
+        // Optional: setup Appsflyer event
+        AppsflyerConfig appsflyerConfig = new AppsflyerConfig(true,APPSFLYER_TOKEN);
+        aperoAdConfig.setAppsflyerConfig(appsflyerConfig);
+
+        // Optional: enable ads resume
+        aperoAdConfig.setIdAdResume(BuildConfig.ads_open_app);
+
+        // Optional: setup list device test - recommended to use
+        listTestDevice.add(DEVICE_ID_TEST);
         aperoAdConfig.setListDeviceTest(listTestDevice);
-	AperoAd.getInstance().init(this, aperoAdConfig, false);
-	
-	// Auto disable ad resume after user click ads and back to app
-	Admob.getInstance().setDisableAdResumeWhenClickAds(true);
-	// If true -> onNextAction() is called right after Ad Interstitial showed
-	Admob.getInstance().setOpenActivityAfterShowInterAds(false);
+
+        AperoAd.getInstance().init(this, aperoAdConfig, false);
+
+        // Auto disable ad resume after user click ads and back to app
+        Admob.getInstance().setDisableAdResumeWhenClickAds(true);
+        // If true -> onNextAction() is called right after Ad Interstitial showed
+        Admob.getInstance().setOpenActivityAfterShowInterAds(false);
 	}
 }
 ~~~
