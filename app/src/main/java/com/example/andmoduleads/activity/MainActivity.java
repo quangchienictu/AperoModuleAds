@@ -16,7 +16,7 @@ import com.ads.control.admob.Admob;
 import com.ads.control.admob.AppOpenManager;
 import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdCallback;
-import com.ads.control.ads.AperoAdConfig;
+import com.ads.control.config.AperoAdConfig;
 import com.ads.control.ads.bannerAds.AperoBannerAdView;
 import com.ads.control.ads.nativeAds.AperoNativeAdView;
 import com.ads.control.ads.wrapper.ApAdError;

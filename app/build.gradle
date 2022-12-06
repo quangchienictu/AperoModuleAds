@@ -44,18 +44,21 @@ android {
             buildConfigField "String", "ad_reward_inter", "\"ca-app-pub-3940256099942544/5354046379\""
             buildConfigField "String", "ad_appopen_resume", "\"ca-app-pub-3940256099942544/3419835294\""
             buildConfigField "String", "ad_native", "\"ca-app-pub-3940256099942544/2247696110\""
+            buildConfigField "String", "ads_open_app", "\"ca-app-pub-3940256099942544/3419835294\""
             buildConfigField "Boolean", "build_debug", "true"
 
         }
-        appProduct {
+        appProd {
             //add your id ad here
-            manifestPlaceholders = [ ad_app_id:"ca-app-pub-3940256099942544~3347511713A"]
-            buildConfigField "String", "ad_interstitial_splash", "\"ca-app-pub-3940256099942544/1033173712A\""
-            buildConfigField "String", "ad_banner", "\"ca-app-pub-3940256099942544/6300978111A\""
-            buildConfigField "String", "ad_reward", "\"ca-app-pub-3940256099942544/5224354917A\""
-            buildConfigField "String", "ad_reward_inter", "\"ca-app-pub-3940256099942544/5354046379A\""
-            buildConfigField "String", "ad_appopen_resume", "\"ca-app-pub-3940256099942544/3419835294A\""
-            buildConfigField "String", "ad_native", "\"ca-app-pub-3940256099942544/2247696110A\""
+            manifestPlaceholders = [ ad_app_id:"ca-app-pub-3940256099942544~3347511713"]
+            buildConfigField "String", "ad_interstitial_splash", "\"ca-app-pub-3940256099942544/1033173712\""
+            buildConfigField "String", "ad_banner", "\"ca-app-pub-3940256099942544/6300978111\""
+            buildConfigField "String", "ad_reward", "\"ca-app-pub-3940256099942544/5224354917\""
+            buildConfigField "String", "ad_reward_inter", "\"ca-app-pub-3940256099942544/5354046379\""
+            buildConfigField "String", "ad_appopen_resume", "\"ca-app-pub-3940256099942544/3419835294\""
+            buildConfigField "String", "ad_native", "\"ca-app-pub-3940256099942544/2247696110\""
+            buildConfigField "String", "ad_native", "\"ca-app-pub-3940256099942544/3419835294\""
+            buildConfigField "String", "ads_open_app", "\"ca-app-pub-3940256099942544/3419835294\""
             buildConfigField "Boolean", "build_debug", "false"
         }
     }

@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 
 import com.ads.control.R;
 import com.ads.control.ads.AperoAd;
+import com.ads.control.ads.AperoAdCallback;
 import com.ads.control.ads.wrapper.ApNativeAd;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
@@ -50,10 +51,14 @@ public class AperoBannerAdView extends RelativeLayout {
     }
 
     private void init() {
-        inflate(getContext(),R.layout.layout_banner_control, this);
+        inflate(getContext(), R.layout.layout_banner_control, this);
     }
 
-    public void loadBanner(Activity activity, String idBanner){
-        AperoAd.getInstance().loadBanner(activity, idBanner);
+    public void loadBanner(Activity activity, String idBanner) {
+        loadBanner(activity, idBanner, new AperoAdCallback());
+    }
+
+    public void loadBanner(Activity activity, String idBanner, AperoAdCallback aperoAdCallback) {
+        AperoAd.getInstance().loadBanner(activity, idBanner, aperoAdCallback);
     }
 }

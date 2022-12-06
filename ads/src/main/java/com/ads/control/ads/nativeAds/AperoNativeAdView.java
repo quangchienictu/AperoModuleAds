@@ -16,6 +16,7 @@ import androidx.annotation.StyleableRes;
 
 import com.ads.control.R;
 import com.ads.control.ads.AperoAd;
+import com.ads.control.ads.AperoAdCallback;
 import com.ads.control.ads.wrapper.ApNativeAd;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
@@ -86,7 +87,10 @@ public class AperoNativeAdView extends RelativeLayout {
         AperoAd.getInstance().populateNativeAdView(activity, nativeAd, layoutPlaceHolder, layoutLoading);
     }
 
-    public void loadNativeAd(Activity activity, String idAd) {
+    public void loadNativeAd(Activity activity, String idAd ) {
+        loadNativeAd(activity, idAd, new AperoAdCallback(){});
+    }
+    public void loadNativeAd(Activity activity, String idAd, AperoAdCallback aperoAdCallback) {
         if(layoutLoading == null){
             setLayoutLoading(R.layout.loading_native_medium);
         }
@@ -94,13 +98,18 @@ public class AperoNativeAdView extends RelativeLayout {
             layoutCustomNativeAd = R.layout.custom_native_admod_medium_rate;
             setLayoutCustomNativeAd(layoutCustomNativeAd);
         }
-        AperoAd.getInstance().loadNativeAd(activity, idAd, layoutCustomNativeAd, layoutPlaceHolder, layoutLoading);
+        AperoAd.getInstance().loadNativeAd(activity, idAd, layoutCustomNativeAd, layoutPlaceHolder, layoutLoading,aperoAdCallback);
     }
 
     public void loadNativeAd(Activity activity, String idAd, int layoutCustomNativeAd, int idLayoutLoading) {
-
         setLayoutLoading(idLayoutLoading);
         setLayoutCustomNativeAd(layoutCustomNativeAd);
         loadNativeAd(activity,idAd);
+    }
+
+    public void loadNativeAd(Activity activity, String idAd, int layoutCustomNativeAd, int idLayoutLoading, AperoAdCallback aperoAdCallback) {
+        setLayoutLoading(idLayoutLoading);
+        setLayoutCustomNativeAd(layoutCustomNativeAd);
+        loadNativeAd(activity,idAd,aperoAdCallback);
     }
 }

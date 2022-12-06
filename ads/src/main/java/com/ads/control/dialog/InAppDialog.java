@@ -55,7 +55,7 @@ public class InAppDialog extends Dialog {
             findViewById(R.id.view_split).setVisibility(View.VISIBLE);
         }
 //        tvOldPrice.setText(AppPurchase.getInstance().getOldPrice());
-        tvPrice.setText(AppPurchase.getInstance().getPrice("android.test.purchased"));
+        tvPrice.setText(AppPurchase.getInstance().getPrice(AppPurchase.PRODUCT_ID_TEST));
         tvOldPrice.setPaintFlags(tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
     }
 
