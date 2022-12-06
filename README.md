@@ -25,11 +25,11 @@ This is SDK ads by [Apero](https://apero.vn/). It has built in some sdk for easy
 # <a id="setup_aperoad"></a>Setup AperoAd
 ## <a id="set_up_ads"></a>Setup enviroment with id ads for project
 
-We recommend you to setup 2 environments for your project, and only use test id during development, live ids only use when needed and for publishing to Google Store
+We recommend you to setup 2 environments for your project, and only use test id during development, ids from your admob only use when needed and for publishing to Google Store
 * The name must be the same as the name of the marketing request
 * Config variant test and release in gradle
 * appDev: using id admob test while dev
-* appProd: using exactly id admob,  build release (build file .aab)
+* appProd: use ids from your admob,  build release (build file .aab)
 
 ~~~    
       productFlavors {
