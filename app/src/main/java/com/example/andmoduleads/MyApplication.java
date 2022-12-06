@@ -20,7 +20,7 @@ public class MyApplication extends AdsMultiDexApplication {
     private final String APPSFLYER_TOKEN = "2PUNpdyDTkedZTgeKkWCyB";
     private final String ADJUST_TOKEN = "cc4jvudppczk";
     private final String EVENT_PURCHASE_ADJUST = "gzel1k";
-    private final String EVENT_AD_IMPRESSION_ADJUST = "";
+    private final String EVENT_AD_IMPRESSION_ADJUST = "gzel1k";
 
     protected StorageCommon storageCommon;
     private static MyApplication context;
@@ -63,10 +63,13 @@ public class MyApplication extends AdsMultiDexApplication {
 
         // Optional: enable ads resume
         aperoAdConfig.setIdAdResume(BuildConfig.ads_open_app);
+
+        // Optional: setup list device test - recommended to use
         listTestDevice.add("EC25F576DA9B6CE74778B268CB87E431");
         aperoAdConfig.setListDeviceTest(listTestDevice);
 
         AperoAd.getInstance().init(this, aperoAdConfig, false);
+
         Admob.getInstance().setOpenActivityAfterShowInterAds(false);
         Admob.getInstance().setDisableAdResumeWhenClickAds(true);
 

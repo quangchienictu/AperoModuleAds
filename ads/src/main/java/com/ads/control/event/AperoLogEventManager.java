@@ -74,6 +74,7 @@ public class AperoLogEventManager {
         params.putString("network", network);
 
 
+        AperoAdjust.logPaidAdImpressionValue(value, "USD");
         FirebaseAnalyticsUtil.logPaidAdImpressionValue(context, params, mediationProvider);
 
         FacebookEventUtils.logPaidAdImpressionValue(context, params, mediationProvider);

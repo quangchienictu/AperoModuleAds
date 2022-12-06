@@ -259,6 +259,10 @@ public class AperoAd {
         }
     }
 
+    public AperoAdConfig getAdConfig() {
+        return adConfig;
+    }
+
     public void loadBanner(final Activity mActivity, String id) {
         switch (adConfig.getMediationProvider()) {
             case AperoAdConfig.PROVIDER_ADMOB:
