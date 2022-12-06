@@ -273,13 +273,49 @@ public class AperoAd {
         }
     }
 
-    public void loadBanner(final Activity mActivity, String id, final AdCallback adCallback) {
+    public void loadBanner(final Activity mActivity, String id, final AperoAdCallback adCallback) {
         switch (adConfig.getMediationProvider()) {
             case AperoAdConfig.PROVIDER_ADMOB:
-                Admob.getInstance().loadBanner(mActivity, id, adCallback);
+                Admob.getInstance().loadBanner(mActivity, id, new AdCallback(){
+                    @Override
+                    public void onAdLoaded() {
+                        super.onAdLoaded();
+                        adCallback.onAdLoaded();
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        adCallback.onAdClicked();
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                        super.onAdFailedToLoad(i);
+                        adCallback.onAdFailedToLoad(new ApAdError(i));
+                    }
+                });
                 break;
             case AperoAdConfig.PROVIDER_MAX:
-                AppLovin.getInstance().loadBanner(mActivity, id, adCallback);
+                AppLovin.getInstance().loadBanner(mActivity, id, new AdCallback(){
+                    @Override
+                    public void onAdLoaded() {
+                        super.onAdLoaded();
+                        adCallback.onAdLoaded();
+                    }
+
+                    @Override
+                    public void onAdClicked() {
+                        super.onAdClicked();
+                        adCallback.onAdClicked();
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@Nullable LoadAdError i) {
+                        super.onAdFailedToLoad(i);
+                        adCallback.onAdFailedToLoad(new ApAdError(i));
+                    }
+                });
         }
     }
 

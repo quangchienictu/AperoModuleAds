@@ -70,8 +70,10 @@ public class MyApplication extends AdsMultiDexApplication {
 
         AperoAd.getInstance().init(this, aperoAdConfig, false);
 
-        Admob.getInstance().setOpenActivityAfterShowInterAds(false);
+        // Auto disable ad resume after user click ads and back to app
         Admob.getInstance().setDisableAdResumeWhenClickAds(true);
+        // If true -> onNextAction() is called right after Ad Interstitial showed
+        Admob.getInstance().setOpenActivityAfterShowInterAds(false);
 
     }
 
