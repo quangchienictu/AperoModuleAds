@@ -48,7 +48,7 @@ public class MyApplication extends AdsMultiDexApplication {
     }
 
     private void initAds() {
-        String environment = BuildConfig.build_debug ? AperoAdConfig.ENVIRONMENT_DEVELOP : AperoAdConfig.ENVIRONMENT_PRODUCTION;
+        String environment = BuildConfig.env_dev ? AperoAdConfig.ENVIRONMENT_DEVELOP : AperoAdConfig.ENVIRONMENT_PRODUCTION;
         aperoAdConfig = new AperoAdConfig(this, AperoAdConfig.PROVIDER_ADMOB, environment);
 
         // Optional: setup Adjust event

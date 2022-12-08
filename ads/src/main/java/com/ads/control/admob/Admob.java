@@ -2015,7 +2015,8 @@ public class Admob {
         Log.e(TAG, "Found test ad id on debug : " + AppUtil.VARIANT_DEV);
 
         if (!AppUtil.VARIANT_DEV) {
-            throw new RuntimeException("Found test ad id on release: "+id);
+            Log.e(TAG, "Found test ad id on environment production. use test id only for develop environment ");
+            throw new RuntimeException("Found test ad id on environment production. Id found: "+id);
         }
     }
 
