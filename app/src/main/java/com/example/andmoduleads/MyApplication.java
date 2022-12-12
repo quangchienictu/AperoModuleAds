@@ -58,8 +58,8 @@ public class MyApplication extends AdsMultiDexApplication {
         aperoAdConfig.setAdjustConfig(adjustConfig);
 
         // Optional: setup Appsflyer event
-        AppsflyerConfig appsflyerConfig = new AppsflyerConfig(true,APPSFLYER_TOKEN);
-        aperoAdConfig.setAppsflyerConfig(appsflyerConfig);
+//        AppsflyerConfig appsflyerConfig = new AppsflyerConfig(true,APPSFLYER_TOKEN);
+//        aperoAdConfig.setAppsflyerConfig(appsflyerConfig);
 
         // Optional: enable ads resume
         aperoAdConfig.setIdAdResume(BuildConfig.ads_open_app);

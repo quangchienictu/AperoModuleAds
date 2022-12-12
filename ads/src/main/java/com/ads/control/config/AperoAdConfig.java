@@ -132,8 +132,8 @@ public class AperoAdConfig {
     }
 
     public boolean isEnableAppsflyer() {
-        if (adjustConfig == null)
+        if (appsflyerConfig == null)
             return false;
-        return adjustConfig.isEnableAdjust();
+        return appsflyerConfig.isEnableAppsflyer();
     }
 }
