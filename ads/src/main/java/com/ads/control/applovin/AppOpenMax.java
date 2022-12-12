@@ -59,6 +59,10 @@ public class AppOpenMax implements Application.ActivityLifecycleCallbacks, Lifec
         this.myApplication = application;
         this.myApplication.registerActivityLifecycleCallbacks(this);
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
+    }
+
+    // Policy Max: Load sau Ad Splash
+    public void loadAdResumeMax(Application application, String appOpenAdId){
         appOpenAd = new MaxAppOpenAd(appOpenAdId, application);
         appOpenAd.setListener(this);
         appOpenAd.loadAd();
