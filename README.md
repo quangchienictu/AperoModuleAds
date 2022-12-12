@@ -11,7 +11,7 @@ This is SDK ads by [Apero](https://apero.vn/). It has built in some sdk for easy
 # Import Module
 ~~~
 	maven { url 'https://jitpack.io' }
-	implementation 'com.github.AperoVN:AperoModuleAds:5.5.0'
+	implementation 'com.github.AperoVN:AperoModuleAds:5.5.1'
 ~~~	 
 # Summary
 * [Setup AperoAd](#setup_aperoad)
