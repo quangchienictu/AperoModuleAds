@@ -1,5 +1,7 @@
 package com.ads.control.admob;
 
+import static com.ads.control.util.AppUtil.convertDpToPixel;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -105,6 +107,10 @@ public class Admob {
     private boolean openActivityAfterShowInterAds = false;
     private Context context;
 //    private AppOpenAd appOpenAd = null;
+
+    public static final String BANNER_INLINE_SMALL_STYLE = "BANNER_INLINE_SMALL_STYLE";
+    public static final String BANNER_INLINE_LARGE_STYLE = "BANNER_INLINE_LARGE_STYLE";
+    private final int MAX_SMALL_INLINE_BANNER_HEIGHT = 32; // dp unit
 
     InterstitialAd mInterstitialSplash;
     InterstitialAd interstitialAd;
@@ -931,18 +937,6 @@ public class Admob {
     }
 
     /**
-     * Load quảng cáo Banner Trong Activity set Inline adaptive banners
-     *
-     * @param mActivity
-     * @param id
-     */
-    public void loadBanner(final Activity mActivity, String id, Boolean useInlineAdaptive) {
-        final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
-        final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer, true);
-    }
-
-    /**
      * Load quảng cáo Banner Trong Activity
      *
      * @param mActivity
@@ -951,7 +945,7 @@ public class Admob {
     public void loadBanner(final Activity mActivity, String id) {
         final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer, false);
+        loadBanner(mActivity, id, adContainer, containerShimmer, null, false, BANNER_INLINE_LARGE_STYLE);
     }
 
     /**
@@ -960,10 +954,10 @@ public class Admob {
      * @param mActivity
      * @param id
      */
-    public void loadBanner(final Activity mActivity, String id, final AdCallback callback) {
+    public void loadBanner(final Activity mActivity, String id, AdCallback callback) {
         final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer, callback, false);
+        loadBanner(mActivity, id, adContainer, containerShimmer, callback, false, BANNER_INLINE_LARGE_STYLE);
     }
 
 
@@ -972,11 +966,56 @@ public class Admob {
      *
      * @param mActivity
      * @param id
+     * @deprecated Using loadInlineBanner()
      */
+    @Deprecated
+    public void loadBanner(final Activity mActivity, String id, Boolean useInlineAdaptive) {
+        final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
+        loadBanner(mActivity, id, adContainer, containerShimmer, null, useInlineAdaptive, BANNER_INLINE_LARGE_STYLE);
+    }
+
+    /**
+     * Load quảng cáo Banner Trong Activity set Inline adaptive banners
+     *
+     * @param activity
+     * @param id
+     * @param inlineStyle
+     */
+    public void loadInlineBanner(final Activity activity, String id, String inlineStyle) {
+        final FrameLayout adContainer = activity.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = activity.findViewById(R.id.shimmer_container_banner);
+        loadBanner(activity, id, adContainer, containerShimmer, null, true, inlineStyle);
+    }
+
+    /**
+     * Load quảng cáo Banner Trong Activity set Inline adaptive banners
+     *
+     * @param mActivity
+     * @param id
+     * @param callback
+     * @param useInlineAdaptive
+     * @deprecated Using loadInlineBanner() with callback
+     */
+    @Deprecated
     public void loadBanner(final Activity mActivity, String id, final AdCallback callback, Boolean useInlineAdaptive) {
         final FrameLayout adContainer = mActivity.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = mActivity.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer, callback, useInlineAdaptive);
+        loadBanner(mActivity, id, adContainer, containerShimmer, callback, useInlineAdaptive, BANNER_INLINE_LARGE_STYLE);
+    }
+
+    /**
+     * Load quảng cáo Banner Trong Activity set Inline adaptive banners
+     *
+     * @param activity
+     * @param id
+     * @param inlineStyle
+     * @param callback
+     */
+    public void loadInlineBanner(final Activity activity, String id, String inlineStyle, final AdCallback callback) {
+        final FrameLayout adContainer = activity.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = activity.findViewById(R.id.shimmer_container_banner);
+        loadBanner(activity, id, adContainer, containerShimmer, callback, true, inlineStyle);
     }
 
     /**
@@ -989,20 +1028,7 @@ public class Admob {
     public void loadBannerFragment(final Activity mActivity, String id, final View rootView) {
         final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer, false);
-    }
-
-    /**
-     * Load Quảng Cáo Banner Trong Fragment set Inline adaptive banners
-     *
-     * @param mActivity
-     * @param id
-     * @param rootView
-     */
-    public void loadBannerFragment(final Activity mActivity, String id, final View rootView, Boolean useInlineAdaptive) {
-        final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
-        final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer, useInlineAdaptive);
+        loadBanner(mActivity, id, adContainer, containerShimmer, null, false, BANNER_INLINE_LARGE_STYLE);
     }
 
     /**
@@ -1015,7 +1041,36 @@ public class Admob {
     public void loadBannerFragment(final Activity mActivity, String id, final View rootView, final AdCallback callback) {
         final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer, callback, false);
+        loadBanner(mActivity, id, adContainer, containerShimmer, callback, false, BANNER_INLINE_LARGE_STYLE);
+    }
+
+    /**
+     * Load Quảng Cáo Banner Trong Fragment set Inline adaptive banners
+     *
+     * @param mActivity
+     * @param id
+     * @param rootView
+     * @deprecated Using loadInlineBannerFragment()
+     */
+    @Deprecated
+    public void loadBannerFragment(final Activity mActivity, String id, final View rootView, Boolean useInlineAdaptive) {
+        final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
+        loadBanner(mActivity, id, adContainer, containerShimmer, null, useInlineAdaptive, BANNER_INLINE_LARGE_STYLE);
+    }
+
+    /**
+     * Load Quảng Cáo Banner Trong Fragment set Inline adaptive banners
+     *
+     * @param activity
+     * @param id
+     * @param rootView
+     * @param inlineStyle
+     */
+    public void loadInlineBannerFragment(final Activity activity, String id, final View rootView, String inlineStyle) {
+        final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
+        loadBanner(activity, id, adContainer, containerShimmer, null, true, inlineStyle);
     }
 
     /**
@@ -1025,16 +1080,34 @@ public class Admob {
      * @param id
      * @param rootView
      * @param callback
+     * @param useInlineAdaptive
+     * @deprecated Using loadInlineBannerFragment() with callback
      */
+    @Deprecated
     public void loadBannerFragment(final Activity mActivity, String id, final View rootView, final AdCallback callback, Boolean useInlineAdaptive) {
         final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
         final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
-        loadBanner(mActivity, id, adContainer, containerShimmer, callback, useInlineAdaptive);
+        loadBanner(mActivity, id, adContainer, containerShimmer, callback, useInlineAdaptive, BANNER_INLINE_LARGE_STYLE);
     }
 
-    boolean bannerLoaded = false;
+    /**
+     * Load Quảng Cáo Banner Trong Fragment set Inline adaptive banners
+     *
+     * @param activity
+     * @param id
+     * @param rootView
+     * @param inlineStyle
+     * @param callback
+     */
+    public void loadInlineBannerFragment(final Activity activity, String id, final View rootView, String inlineStyle, final AdCallback callback) {
+        final FrameLayout adContainer = rootView.findViewById(R.id.banner_container);
+        final ShimmerFrameLayout containerShimmer = rootView.findViewById(R.id.shimmer_container_banner);
+        loadBanner(activity, id, adContainer, containerShimmer, callback, true, inlineStyle);
+    }
 
-    private void loadBanner(final Activity mActivity, String id, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer, Boolean useInlineAdaptive) {
+    private void loadBanner(final Activity mActivity, String id,
+                            final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer,
+                            final AdCallback callback, Boolean useInlineAdaptive, String inlineStyle) {
         if (Arrays.asList(mActivity.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
             showTestIdAlert(mActivity, BANNER_ADS, id);
         }
@@ -1049,72 +1122,14 @@ public class Admob {
             AdView adView = new AdView(mActivity);
             adView.setAdUnitId(id);
             adContainer.addView(adView);
-            AdSize adSize = getAdSize(mActivity, useInlineAdaptive);
-            containerShimmer.getLayoutParams().height = (int) (adSize.getHeight() * Resources.getSystem().getDisplayMetrics().density + 0.5f);
-            adView.setAdSize(adSize);
-            adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-            adView.loadAd(getAdRequest());
-            adView.setAdListener(new AdListener() {
-
-                @Override
-                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                    super.onAdFailedToLoad(loadAdError);
-                    containerShimmer.stopShimmer();
-                    adContainer.setVisibility(View.GONE);
-                    containerShimmer.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAdLoaded() {
-                    Log.d(TAG, "Banner adapter class name: " + adView.getResponseInfo().getMediationAdapterClassName());
-                    containerShimmer.stopShimmer();
-                    containerShimmer.setVisibility(View.GONE);
-                    adContainer.setVisibility(View.VISIBLE);
-                    if (adView != null) {
-                        adView.setOnPaidEventListener(adValue -> {
-                            Log.d(TAG, "OnPaidEvent banner:" + adValue.getValueMicros());
-
-                            AperoLogEventManager.logPaidAdImpression(context,
-                                    adValue,
-                                    adView.getAdUnitId(),
-                                    adView.getResponseInfo()
-                                            .getMediationAdapterClassName(), AdType.BANNER);
-                        });
-                    }
-                }
-
-                @Override
-                public void onAdClicked() {
-                    super.onAdClicked();
-                    if (disableAdResumeWhenClickAds)
-                        AppOpenManager.getInstance().disableAdResumeByClickAction();
-                    AperoLogEventManager.logClickAdsEvent(context, id);
-                }
-            });
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadBanner(final Activity mActivity, String id, final FrameLayout adContainer, final ShimmerFrameLayout containerShimmer, final AdCallback callback, Boolean useInlineAdaptive) {
-        if (Arrays.asList(mActivity.getResources().getStringArray(R.array.list_id_test)).contains(id)) {
-            showTestIdAlert(mActivity, BANNER_ADS, id);
-        }
-        if (AppPurchase.getInstance().isPurchased(mActivity)) {
-            containerShimmer.setVisibility(View.GONE);
-            return;
-        }
-
-        containerShimmer.setVisibility(View.VISIBLE);
-        containerShimmer.startShimmer();
-        try {
-            AdView adView = new AdView(mActivity);
-            adView.setAdUnitId(id);
-            adContainer.addView(adView);
-            AdSize adSize = getAdSize(mActivity, useInlineAdaptive);
-            containerShimmer.getLayoutParams().height = (int) (adSize.getHeight() * Resources.getSystem().getDisplayMetrics().density + 0.5f);
+            AdSize adSize = getAdSize(mActivity, useInlineAdaptive, inlineStyle);
+            int adHeight;
+            if (useInlineAdaptive && inlineStyle.equalsIgnoreCase(BANNER_INLINE_SMALL_STYLE)) {
+                adHeight = AppUtil.convertDpToPixel(mActivity, MAX_SMALL_INLINE_BANNER_HEIGHT);
+            } else {
+                adHeight = adSize.getHeight();
+            }
+            containerShimmer.getLayoutParams().height = (int) (adHeight * Resources.getSystem().getDisplayMetrics().density + 0.5f);
             adView.setAdSize(adSize);
             adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
             adView.setAdListener(new AdListener() {
@@ -1165,7 +1180,7 @@ public class Admob {
         }
     }
 
-    private AdSize getAdSize(Activity mActivity, Boolean useInlineAdaptive) {
+    private AdSize getAdSize(Activity mActivity, Boolean useInlineAdaptive, String inlineStyle) {
 
         // Step 2 - Determine the screen width (less decorations) to use for the ad width.
         Display display = mActivity.getWindowManager().getDefaultDisplay();
@@ -1179,7 +1194,11 @@ public class Admob {
 
         // Step 3 - Get adaptive ad size and return for setting on the ad view.
         if (useInlineAdaptive) {
-            return AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(mActivity, adWidth);
+            if (inlineStyle.equalsIgnoreCase(BANNER_INLINE_LARGE_STYLE)) {
+                return AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(mActivity, adWidth);
+            } else {
+                return AdSize.getInlineAdaptiveBannerAdSize(adWidth, convertDpToPixel(mActivity, MAX_SMALL_INLINE_BANNER_HEIGHT));
+            }
         }
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mActivity, adWidth);
 
@@ -2016,7 +2035,7 @@ public class Admob {
 
         if (!AppUtil.VARIANT_DEV) {
             Log.e(TAG, "Found test ad id on environment production. use test id only for develop environment ");
-            throw new RuntimeException("Found test ad id on environment production. Id found: "+id);
+            throw new RuntimeException("Found test ad id on environment production. Id found: " + id);
         }
     }
 
