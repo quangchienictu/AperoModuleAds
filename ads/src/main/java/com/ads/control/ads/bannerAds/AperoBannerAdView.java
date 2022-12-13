@@ -13,9 +13,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.ads.control.R;
+import com.ads.control.admob.Admob;
 import com.ads.control.ads.AperoAd;
 import com.ads.control.ads.AperoAdCallback;
 import com.ads.control.ads.wrapper.ApNativeAd;
+import com.ads.control.funtion.AdCallback;
+import com.facebook.ads.Ad;
 import com.facebook.shimmer.ShimmerFrameLayout;
 
 /**
@@ -60,5 +63,29 @@ public class AperoBannerAdView extends RelativeLayout {
 
     public void loadBanner(Activity activity, String idBanner, AperoAdCallback aperoAdCallback) {
         AperoAd.getInstance().loadBanner(activity, idBanner, aperoAdCallback);
+    }
+
+    public void loadInlineBanner(Activity activity, String idBanner, String inlineStyle) {
+        Admob.getInstance().loadInlineBanner(activity, idBanner, inlineStyle);
+    }
+
+    public void loadInlineBanner(Activity activity, String idBanner, String inlineStyle, AdCallback adCallback) {
+        Admob.getInstance().loadInlineBanner(activity, idBanner, inlineStyle, adCallback);
+    }
+
+    public void loadBannerFragment(Activity activity, String idBanner, FrameLayout adContainer) {
+        AperoAd.getInstance().loadBannerFragment(activity, idBanner, adContainer);
+    }
+
+    public void loadBannerFragment(Activity activity, String idBanner, FrameLayout adContainer, AdCallback adCallback) {
+        AperoAd.getInstance().loadBannerFragment(activity, idBanner, adContainer, adCallback);
+    }
+
+    public void loadInlineBannerFragment(Activity activity, String idBanner, FrameLayout adContainer, String inlineStyle) {
+        Admob.getInstance().loadInlineBannerFragment(activity, idBanner, adContainer, inlineStyle);
+    }
+
+    public void loadInlineBannerFragment(Activity activity, String idBanner, FrameLayout adContainer, String inlineStyle, AdCallback adCallback) {
+        Admob.getInstance().loadInlineBannerFragment(activity, idBanner, adContainer, inlineStyle, adCallback);
     }
 }
