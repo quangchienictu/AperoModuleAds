@@ -73,19 +73,19 @@ public class AperoBannerAdView extends RelativeLayout {
         Admob.getInstance().loadInlineBanner(activity, idBanner, inlineStyle, adCallback);
     }
 
-    public void loadBannerFragment(Activity activity, String idBanner, FrameLayout adContainer) {
-        AperoAd.getInstance().loadBannerFragment(activity, idBanner, adContainer);
+    public void loadBannerFragment(Activity activity, String idBanner) {
+        AperoAd.getInstance().loadBannerFragment(activity, idBanner, getRootView());
     }
 
-    public void loadBannerFragment(Activity activity, String idBanner, FrameLayout adContainer, AdCallback adCallback) {
-        AperoAd.getInstance().loadBannerFragment(activity, idBanner, adContainer, adCallback);
+    public void loadBannerFragment(Activity activity, String idBanner, AdCallback adCallback) {
+        AperoAd.getInstance().loadBannerFragment(activity, idBanner, getRootView(), adCallback);
     }
 
-    public void loadInlineBannerFragment(Activity activity, String idBanner, FrameLayout adContainer, String inlineStyle) {
-        Admob.getInstance().loadInlineBannerFragment(activity, idBanner, adContainer, inlineStyle);
+    public void loadInlineBannerFragment(Activity activity, String idBanner, String inlineStyle) {
+        Admob.getInstance().loadInlineBannerFragment(activity, idBanner, getRootView(), inlineStyle);
     }
 
-    public void loadInlineBannerFragment(Activity activity, String idBanner, FrameLayout adContainer, String inlineStyle, AdCallback adCallback) {
-        Admob.getInstance().loadInlineBannerFragment(activity, idBanner, adContainer, inlineStyle, adCallback);
+    public void loadInlineBannerFragment(Activity activity, String idBanner, String inlineStyle, AdCallback adCallback) {
+        Admob.getInstance().loadInlineBannerFragment(activity, idBanner, getRootView(), inlineStyle, adCallback);
     }
 }
