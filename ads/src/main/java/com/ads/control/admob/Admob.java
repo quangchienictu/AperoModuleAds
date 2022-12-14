@@ -1,7 +1,5 @@
 package com.ads.control.admob;
 
-import static com.ads.control.util.AppUtil.convertDpToPixel;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -110,7 +108,7 @@ public class Admob {
 
     public static final String BANNER_INLINE_SMALL_STYLE = "BANNER_INLINE_SMALL_STYLE";
     public static final String BANNER_INLINE_LARGE_STYLE = "BANNER_INLINE_LARGE_STYLE";
-    private final int MAX_SMALL_INLINE_BANNER_HEIGHT = 32; // dp unit
+    private final int MAX_SMALL_INLINE_BANNER_HEIGHT = 50;
 
     InterstitialAd mInterstitialSplash;
     InterstitialAd interstitialAd;
@@ -1125,7 +1123,7 @@ public class Admob {
             AdSize adSize = getAdSize(mActivity, useInlineAdaptive, inlineStyle);
             int adHeight;
             if (useInlineAdaptive && inlineStyle.equalsIgnoreCase(BANNER_INLINE_SMALL_STYLE)) {
-                adHeight = AppUtil.convertDpToPixel(mActivity, MAX_SMALL_INLINE_BANNER_HEIGHT);
+                adHeight = MAX_SMALL_INLINE_BANNER_HEIGHT;
             } else {
                 adHeight = adSize.getHeight();
             }
@@ -1197,7 +1195,7 @@ public class Admob {
             if (inlineStyle.equalsIgnoreCase(BANNER_INLINE_LARGE_STYLE)) {
                 return AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(mActivity, adWidth);
             } else {
-                return AdSize.getInlineAdaptiveBannerAdSize(adWidth, convertDpToPixel(mActivity, MAX_SMALL_INLINE_BANNER_HEIGHT));
+                return AdSize.getInlineAdaptiveBannerAdSize(adWidth, MAX_SMALL_INLINE_BANNER_HEIGHT);
             }
         }
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(mActivity, adWidth);
